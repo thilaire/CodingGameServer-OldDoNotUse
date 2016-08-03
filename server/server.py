@@ -1,70 +1,88 @@
 #coding: utf8
 
-import SocketServer
+from socketserver import ThreadingTCPServer, BaseRequestHandler
 from bottle import Bottle, route, run, jinja2_view, install
 from functools import partial, wraps
 import threading
+from Player import Player
+
+class connectionError(Exception):
+	def __init__(self, value):
+		self.value = value
+	def __str__(self):
+		return repr(self.value)
 
 
 
-class Player:
-	allPlayers = {}
-
-	def __init__(self, name):
-		print("Add a new player: "+name)
-		self._name = name
-		self.allPlayers[name] = self
-
-	def HTMLrepr(self):
-		return "<B>"+self._name+"</B>"
-
-	@classmethod
-	def removePlayer(cls, name):
-		print "on coupe"
-		del cls.allPlayers[name]
-
-
-
-
-
-
-
-
-class MyTCPHandler(SocketServer.BaseRequestHandler):
+class PlayerSocketHandler(BaseRequestHandler):
 	"""
 	The request handler class for our server.
 
 	It is instantiated once per connection to the server.
 	"""
 	def handle(self):
-		# self.request is the TCP socket connected to the client
-		self.data = self.request.recv(1024).strip()
-		self._player = None
-		print "Receive: '"+self.data+"'"
-		if not self.data.startswith("CLIENT_NAME: "):
 
-			self.request.sendall( "Bad protocol, should start with CLIENT_NAME: ")
-			print "Send: '"+"Bad protocol, should start with CLIENT_NAME: "+"'"
-			return
-		name = self.data[13:]
-		self._player = Player( name )
-		# just send back the same data, but upper-cased
-		print "Send: OK"
-		self.request.sendall("OK")
-		while True:
-			pass
+		self._player = None
+		try:
+			name = self.getPlayerName()
+			self._player = Player( name )
+
+			while True:
+				data = str( self.request.recv(1024).strip(), "utf-8" )
+				if data.startswith("GET_LAB:"):
+					#retrieve data command
+					print("Not yet implemented...")
+					pass
+				elif data.startswith("GET_MOVE:"):
+					# get move of the opponent
+					print("Not yet implemented...")
+					pass
+				elif data.startswith("PLAY_MOVE:"):
+					# play move
+					print("Not yet implemented...")
+					pass
+				elif data.startswith("WAIT_START:"):
+					# wait start
+					print("Not yet implemented...")
+					pass
+				elif data.startswith("DISP_LAB:"):
+					# ask for display
+					self.request.sendall("OK")
+					self.request.sendall( "TOOTOTOOTOOOOT\n")
+				else:
+					raise connectionError("Bad protocol, command should not start with '"+data+"'")
+
+		except connectionError as e:
+
+			print( "Error with %s: '%s'"%(self._player.name if self._player is not None else "None", e) )
+
 
 	def finish(self):
 		"""
 		Call when the connection is closed
 		"""
 		if self._player is not None:
-			Player.removePlayer(self._player._name)
+			Player.removePlayer(self._player.name)
 			del self._player
 
-			print "Chéri, ça a coupé..."
+			print ("Chéri, ça a coupé...")
 
 
+	def getPlayerName(self):
+		"""
+		receive and treat connection to get the player name
+		:return:
+		the player name
+		or raises an exception (connectionError)
+		"""
+		data = str( self.request.recv(1024).strip(), "utf-8" )
+		print( "Receive: '"+data+"'" )
+		if not data.startswith("CLIENT_NAME: "):
+			raise connectionError( "Bad protocol, should start with CLIENT_NAME: ")
+		# just send back the same data, but upper-cased
+		print( "Send: OK")
+		self.request.sendall(b"OK")
+		return data[13:]
 
 
 
@@ -77,7 +95,7 @@ view = partial(jinja2_view, template_lookup=['templates'])
 @view("index.html")
 def index():
 	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+"</li>\n" for p in Player.allPlayers.itervalues()])
-	print "HTMList="+HTMLlist
+	print( "HTMList="+HTMLlist )
 	return {"ListOfPlayers":HTMLlist}
 
 
@@ -93,7 +111,8 @@ WEB_PORT = 8000
 
 
 # Start Socket server (connection to players)
-PlayerServer = SocketServer.TCPServer((HOST, PLAYER_PORT), MyTCPHandler)
+PlayerServer = ThreadingTCPServer((HOST, PLAYER_PORT), PlayerSocketHandler)
+print( "Run the socket server...")
 threading.Thread( target=PlayerServer.serve_forever() )
 
 

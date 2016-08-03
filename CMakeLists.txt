@@ -9,11 +9,9 @@ set(SOURCE_FILES
     clientAPI/labyrinthAPI.h
     clientAPI/labyrinthAPI.c)
 
-set(TEST_FILES test/test.c)
 
 #include_directories(.)
-
 add_executable(babyLaby ${SOURCE_FILES})
-add_executable(Test ${TEST_FILES} )
+
 
 

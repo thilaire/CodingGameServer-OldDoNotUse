@@ -25,6 +25,7 @@
  * so no need to knwo about them, or give them when we use the functions of this API
 */
 int sockfd = -1;	/* socket descriptor -1 when we are not yet connected */
+char buffer[1000];	/* global buffer used to send message (global so that it is not allocated/desallocated for each message; useful?) */
 
 
 
@@ -38,11 +39,10 @@ void dispError(const char* fct, const char* msg, ...)
 {
 	va_list args;
 	va_start (args, msg);
-	char str[1000];
-	sprintf(str,"\e[5m\e[31m\u2327\e[2m (%s):\e[0m ", fct);
-	vsprintf(str+strlen(str), msg, args);
+	sprintf(buffer,"\e[5m\e[31m\u2327\e[2m (%s):\e[0m ", fct);
+	vsprintf(buffer+strlen(buffer), msg, args);
 	va_end (args);
-	perror(str);
+	perror(buffer);
 	exit(EXIT_FAILURE);
 }
 
@@ -68,6 +68,37 @@ void dispDebug(const char* fct, const char* msg, ...)
 }
 
 
+/* Write str in the socket and get acknowledgment
+ * accept extra parameters to give to sprintf...
+ *
+ * Manage connection problems
+ */
+void sendString( const char* fct, const char* str, ...) {
+	va_list args;
+	va_start (args, str);
+	vsprintf(buffer, str, args);
+
+	/* check if the socket is open */
+	if (sockfd<0)
+		dispError( fct, "The connection to the server is not established. Call 'connectToServer' before !");
+
+	/* send our message */
+	int r = write(sockfd, buffer, strlen(buffer));
+	if (r < 0)
+		dispError( fct, "Cannot write to the socket (%s)",buffer);
+
+	/* get acknowledgment */
+	bzero(buffer,256);
+	r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( fct, "Cannot read acknowldegment from socket (sending:%s)", str);
+
+	if (strcmp(buffer,"OK"))
+		dispError( fct, "Server do not acknowledge (send:%s)",buffer);
+}
+
+
+
 /*
 Initialize connection with the server
 Parameters:
@@ -80,10 +111,8 @@ void connectToServer( char* serverName, char* name)
 {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
-	char buffer[256];
-	int r;
 
-	dispDebug("connectToServer", "");
+	dispDebug("connectToServer", "Try to connect");
 
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -107,19 +136,7 @@ void connectToServer( char* serverName, char* name)
 
 
 	/* Sending a request with our name */
-	sprintf(buffer, "CLIENT_NAME: %s",name);
-	r = write(sockfd, buffer, strlen(buffer));
-	if (r < 0)
-		dispError("connectToServer", "Writing to the socket");
-
-	/* get acknowledgment */
-	bzero(buffer,256);
-	r = read(sockfd, buffer, 255);
-	if (r<0)
-		dispError("connecToServer","Reading from socket");
-
-	if (strcmp(buffer,"OK"))
-		dispError("connectToServer",buffer);
+	sendString( "connectToServer", "CLIENT_NAME: %s",name);
 }
 
 
@@ -140,6 +157,9 @@ Parameters:
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 {
+	strcpy( labyrinthName, "FakeName");
+	*sizeX = 10;
+	*sizeY = 10;
 }
 
 
@@ -192,6 +212,19 @@ int sendMove(int type, int val)
 /* display the labyrinth */
 void printLabyrinth()
 {
+	dispDebug("printLabyrinth", "Try to get string to display labyrinth");
+
+	/* send command */
+	sendString( "printLabyrinth", "DISP_LAB");
+
+	/* get string to print */
+	char buffer[10000];
+	int r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( "printLabyrinth", "Cannot read string from socket");
+
+	/* print it */
+	printf("%s",buffer);
 }
 
 /* send a comment */

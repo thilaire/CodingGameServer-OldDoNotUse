@@ -104,20 +104,20 @@ int main()
 
 	/* play over and over... 
 	(this loop is not necessary if you only want to play one game, but will be useful for tournament)*/
-	while (1);
+	while (1)
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		getLabyrinth( labName, &lab);
+		//getLabyrinth( labName, &lab);
 		printf("On commence!\n");
 			
 		/* who's start ? */
-		lab.player = getWhoStarts();
+		//lab.player = getWhoStarts();
 		
 		do {
 			if (lab.player==1)	/* The opponent plays */
 			{
-				finished = getMove( &type, &val);
+				//finished = getMove( &type, &val);
 				playMove( &lab, type, val);
 			}
 			else
@@ -125,7 +125,7 @@ int main()
 				//.... choose what to play
 				type=MOVE_UP;
 				val=0;
-				finished = sendMove(type, val);
+				//finished = sendMove(type, val);
 				playMove( &lab, type, val);
 			}
 			/* display the labyrinth */
