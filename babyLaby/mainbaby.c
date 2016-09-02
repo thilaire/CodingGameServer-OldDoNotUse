@@ -115,23 +115,25 @@ int main()
 		//lab.player = getWhoStarts();
 		
 		do {
-			if (lab.player==1)	/* The opponent plays */
-			{
-				//finished = getMove( &type, &val);
-				playMove( &lab, type, val);
-			}
-			else
-			{
-				//.... choose what to play
-				type=MOVE_UP;
-				val=0;
-				//finished = sendMove(type, val);
-				playMove( &lab, type, val);
-			}
-			/* display the labyrinth */
-			printLabyrinth();
-			/* change player */
-			lab.player = !lab.player;
+			finished=0;
+//			if (lab.player==1)	/* The opponent plays */
+//			{
+//				//finished = getMove( &type, &val);
+//				playMove( &lab, type, val);
+//			}
+//			else
+//			{
+//				//.... choose what to play
+//				type=MOVE_UP;
+//				val=0;
+//				//finished = sendMove(type, val);
+//				playMove( &lab, type, val);
+//			}
+//			/* display the labyrinth */
+//			printLabyrinth();
+//			/* change player */
+//			lab.player = !lab.player;
+
 		} while (!finished);
 	
 

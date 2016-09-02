@@ -47,8 +47,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 					pass
 				elif data.startswith("DISP_LAB:"):
 					# ask for display
-					self.request.sendall("OK")
-					self.request.sendall( "TOOTOTOOTOOOOT\n")
+					self.request.sendall(b"OK")
+					self.request.sendall( b"TOOTOTOOTOOOOT\n")
 				else:
 					raise connectionError("Bad protocol, command should not start with '"+data+"'")
 
@@ -79,6 +79,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 		print( "Receive: '"+data+"'" )
 		if not data.startswith("CLIENT_NAME: "):
 			raise connectionError( "Bad protocol, should start with CLIENT_NAME: ")
+
+		#TODO: créer le joueur ICI et vérifier que tout marche
+
 		# just send back the same data, but upper-cased
 		print( "Send: OK")
 		self.request.sendall(b"OK")
@@ -94,8 +97,8 @@ view = partial(jinja2_view, template_lookup=['templates'])
 @route('/')
 @view("index.html")
 def index():
-	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+"</li>\n" for p in Player.allPlayers.itervalues()])
-	print( "HTMList="+HTMLlist )
+	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+"</li>\n" for p in Player.allPlayers.values()])
+
 	return {"ListOfPlayers":HTMLlist}
 
 
@@ -107,7 +110,7 @@ PLAYER_PORT = 1234
 WEB_PORT = 8000
 
 # Start the web server
-#threading.Thread(target=run, kwargs={'server':'paste', 'host':HOST, 'port':WEB_PORT}).start()
+threading.Thread(target=run, kwargs={ 'server':'paste', 'host':HOST, 'port':WEB_PORT}).start()
 
 
 # Start Socket server (connection to players)

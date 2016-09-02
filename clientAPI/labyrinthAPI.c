@@ -27,6 +27,7 @@
 int sockfd = -1;	/* socket descriptor -1 when we are not yet connected */
 char buffer[1000];	/* global buffer used to send message (global so that it is not allocated/desallocated for each message; useful?) */
 
+char dispbuffer[1000];	/* global buffer used to display error message  */
 
 
 /* Display Error message
@@ -39,10 +40,10 @@ void dispError(const char* fct, const char* msg, ...)
 {
 	va_list args;
 	va_start (args, msg);
-	sprintf(buffer,"\e[5m\e[31m\u2327\e[2m (%s):\e[0m ", fct);
-	vsprintf(buffer+strlen(buffer), msg, args);
+	sprintf(dispbuffer,"\e[5m\e[31m\u2327\e[2m (%s):\e[0m ", fct);
+	vsprintf(dispbuffer+strlen(dispbuffer), msg, args);
 	va_end (args);
-	perror(buffer);
+	perror(dispbuffer);
 	exit(EXIT_FAILURE);
 }
 
@@ -137,6 +138,8 @@ void connectToServer( char* serverName, char* name)
 
 	/* Sending a request with our name */
 	sendString( "connectToServer", "CLIENT_NAME: %s",name);
+
+	dispDebug("connectToServer", "Succeeded");
 }
 
 
@@ -215,7 +218,7 @@ void printLabyrinth()
 	dispDebug("printLabyrinth", "Try to get string to display labyrinth");
 
 	/* send command */
-	sendString( "printLabyrinth", "DISP_LAB");
+	sendString( "printLabyrinth", "DISP_LAB:");
 
 	/* get string to print */
 	char buffer[10000];
