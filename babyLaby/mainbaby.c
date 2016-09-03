@@ -109,6 +109,7 @@ int main()
 
 		/* wait for a game, and retrieve informations about it */
 		//getLabyrinth( labName, &lab);
+	  waitForLabyrinth( labName,&(lab.sizeX), &(lab.sizeY));
 		printf("On commence!\n");
 			
 		/* who's start ? */

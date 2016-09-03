@@ -160,9 +160,10 @@ Parameters:
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 {
-	strcpy( labyrinthName, "FakeName");
-	*sizeX = 10;
-	*sizeY = 10;
+  sendString( __FUNCTION__,"WAIT_ROOM:");
+  strcpy( labyrinthName, "FakeName");
+  *sizeX = 10;
+  *sizeY = 10;
 }
 
 

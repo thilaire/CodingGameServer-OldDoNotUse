@@ -26,31 +26,36 @@ class PlayerSocketHandler(BaseRequestHandler):
 		try:
 			name = self.getPlayerName()
 			self._player = Player( name )
-
+			
 			while True:
-				data = str( self.request.recv(1024).strip(), "utf-8" )
-				if data.startswith("GET_LAB:"):
-					#retrieve data command
-					print("Not yet implemented...")
-					pass
-				elif data.startswith("GET_MOVE:"):
-					# get move of the opponent
-					print("Not yet implemented...")
-					pass
-				elif data.startswith("PLAY_MOVE:"):
-					# play move
-					print("Not yet implemented...")
-					pass
-				elif data.startswith("WAIT_START:"):
-					# wait start
-					print("Not yet implemented...")
-					pass
-				elif data.startswith("DISP_LAB:"):
-					# ask for display
-					self.request.sendall(b"OK")
-					self.request.sendall( b"TOOTOTOOTOOOOT\n")
-				else:
-					raise connectionError("Bad protocol, command should not start with '"+data+"'")
+				if self._player._state.startswith("send"):
+					data = str( self.request.recv(1024).strip(), "utf-8" )
+					if data.startswith("GET_LAB:"):
+						#retrieve data command
+						print("Not yet implemented...")
+						pass
+					elif data.startswith("WAIT_ROOM:"):
+						self._player.setstate("rcv:lab")
+						self.request.sendall(b"OK")
+					
+					elif data.startswith("GET_MOVE:"):
+						# get move of the opponent
+						print("Not yet implemented...")
+						pass
+					elif data.startswith("PLAY_MOVE:"):
+						# play move
+						print("Not yet implemented...")
+						pass
+					elif data.startswith("WAIT_START:"):
+						# wait start
+						print("Not yet implemented...")
+						pass
+					elif data.startswith("DISP_LAB:"):
+						# ask for display
+						self.request.sendall(b"OK")
+						self.request.sendall( b"TOOTOTOOTOOOOT\n")
+					else:
+						raise connectionError("Bad protocol, command should not start with '"+data+"'")
 
 		except connectionError as e:
 
@@ -97,7 +102,7 @@ view = partial(jinja2_view, template_lookup=['templates'])
 @route('/')
 @view("index.html")
 def index():
-	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+"</li>\n" for p in Player.allPlayers.values()])
+	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+ " " + p.HTMLstatus() + "</li>\n" for p in Player.allPlayers.values()])
 
 	return {"ListOfPlayers":HTMLlist}
 
