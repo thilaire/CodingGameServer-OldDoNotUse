@@ -1,126 +1,85 @@
 #coding: utf8
 
-from socketserver import ThreadingTCPServer, BaseRequestHandler
-from bottle import Bottle, route, run, jinja2_view, install
-from functools import partial, wraps
-import threading
-from Player import Player
-
-class connectionError(Exception):
-	def __init__(self, value):
-		self.value = value
-	def __str__(self):
-		return repr(self.value)
 
 
+from socketserver import ThreadingTCPServer						# socket server (with multi-threads capabilities)
+import threading												# to run threads
+from bottle import run, request, response, install				# webserver (bottle)
+import logging													# logging system
+from logging.handlers import RotatingFileHandler
+from colorlog import ColoredFormatter							# logging with colors
+from docopt import docopt										# used to parse the command line
 
-class PlayerSocketHandler(BaseRequestHandler):
-	"""
-	The request handler class for our server.
-
-	It is instantiated once per connection to the server.
-	"""
-	def handle(self):
-
-		self._player = None
-		try:
-			name = self.getPlayerName()
-			self._player = Player( name )
-			
-			while True:
-				if self._player._state.startswith("send"):
-					data = str( self.request.recv(1024).strip(), "utf-8" )
-					if data.startswith("GET_LAB:"):
-						#retrieve data command
-						print("Not yet implemented...")
-						pass
-					elif data.startswith("WAIT_ROOM:"):
-						self._player.setstate("rcv:lab")
-						self.request.sendall(b"OK")
-					
-					elif data.startswith("GET_MOVE:"):
-						# get move of the opponent
-						print("Not yet implemented...")
-						pass
-					elif data.startswith("PLAY_MOVE:"):
-						# play move
-						print("Not yet implemented...")
-						pass
-					elif data.startswith("WAIT_START:"):
-						# wait start
-						print("Not yet implemented...")
-						pass
-					elif data.startswith("DISP_LAB:"):
-						# ask for display
-						self.request.sendall(b"OK")
-						self.request.sendall( b"TOOTOTOOTOOOOT\n")
-					else:
-						raise connectionError("Bad protocol, command should not start with '"+data+"'")
-
-		except connectionError as e:
-
-			print( "Error with %s: '%s'"%(self._player.name if self._player is not None else "None", e) )
+from Player import PlayerSocketHandler,Player
+import webserver
 
 
-	def finish(self):
-		"""
-		Call when the connection is closed
-		"""
-		if self._player is not None:
-			Player.removePlayer(self._player.name)
-			del self._player
+# parse the command line
+usage = """
+Labyrinth Game
+Run the servers (Game server and web server)
 
-			print ("Chéri, ça a coupé...")
+Usage:
+  server.py -h | --help
+  server.py [options] [--debug|--dev|--prod]
+
+Options:
+  -h --help                Show this screen.
+  -p PORT --port=PORT      Game server port [default: 1234].
+  -w PORT --web=PORT       Web server port [default: 8080].
+  -H HOST --host=HOST      Servers host [default: localhost].
+  --debug                  Debug mode (log and display everything).
+  --dev                    Development mode (log everything, display warnings and errors).
+  --prod                   Production mode (log only warnings and errors, display nothing).
+
+"""
+args = docopt(usage)
+if args['--debug'] == args['--dev'] == args['--prod'] == False:
+	args['--dev'] = True
+args['--port'] = int(args['--port'])
+args['--web'] = int(args['--web'])
+
+# setup the logger
+# see http://sametmax.com/ecrire-des-logs-en-python/
+# create and set up the logger
+logger = logging.getLogger()
+logger.setLevel( logging.WARNING if args['--prod'] else logging.DEBUG )
+# add an handler to redirect the log to a file (1Mo max)
+file_handler = RotatingFileHandler('logs/activity.log', 'a', 1000000, 1)
+file_handler.setLevel( logging.WARNING if args['--prod'] else logging.DEBUG )
+file_formatter = logging.Formatter( '%(asctime)s [%(name)s] | %(message)s',"%m/%d %H:%M:%S")
+file_handler.setFormatter( file_formatter )
+logger.addHandler(file_handler)
+# add an other handler to redirect some logs to the console (with colors, depending on the level DEBUG/INFO/WARNING/ERROR/CRITICAL)
+steam_handler = logging.StreamHandler()
+steam_handler.setLevel( logging.DEBUG if args['--debug'] else logging.WARNING if args['--dev'] else logging.CRITICAL )
+LOGFORMAT = "  %(log_color)s[%(name)s]%(reset)s | %(log_color)s%(message)s%(reset)s"
+formatter = ColoredFormatter(LOGFORMAT)
+steam_handler.setFormatter( formatter)
+logger.addHandler(steam_handler)
 
 
-	def getPlayerName(self):
-		"""
-		receive and treat connection to get the player name
-		:return:
-		the player name
-		or raises an exception (connectionError)
-		"""
-		data = str( self.request.recv(1024).strip(), "utf-8" )
-		print( "Receive: '"+data+"'" )
-		if not data.startswith("CLIENT_NAME: "):
-			raise connectionError( "Bad protocol, should start with CLIENT_NAME: ")
-
-		#TODO: créer le joueur ICI et vérifier que tout marche
-
-		# just send back the same data, but upper-cased
-		print( "Send: OK")
-		self.request.sendall(b"OK")
-		return data[13:]
+# start
+logger.critical("#=========================================#")
+logger.critical("# Labyrinth Game server is going to start #")
+logger.critical("#=========================================#")
 
 
 
-view = partial(jinja2_view, template_lookup=['templates'])
+#DEBUG
+p1=Player("toto1")
+p2=Player("toto2")
 
 
-
-
-@route('/')
-@view("index.html")
-def index():
-	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+ " " + p.HTMLstatus() + "</li>\n" for p in Player.allPlayers.values()])
-
-	return {"ListOfPlayers":HTMLlist}
-
-
-
-
-
-HOST = "localhost"
-PLAYER_PORT = 1234
-WEB_PORT = 8000
 
 # Start the web server
-threading.Thread(target=run, kwargs={ 'server':'paste', 'host':HOST, 'port':WEB_PORT}).start()
+#TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads
+threading.Thread(target=run, kwargs={ 'server':'paste', 'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
 
 
-# Start Socket server (connection to players)
-PlayerServer = ThreadingTCPServer((HOST, PLAYER_PORT), PlayerSocketHandler)
-print( "Run the socket server...")
+# Start TCP Socket server (connection to players)
+PlayerServer = ThreadingTCPServer( (args['--host'], args['--port']), PlayerSocketHandler)
+logging.getLogger('Game').info( "Run the game server...")
 threading.Thread( target=PlayerServer.serve_forever() )
 
 
