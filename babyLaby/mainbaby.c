@@ -5,45 +5,15 @@
 
 typedef struct {
 	int sizeX,sizeY;	/* labyrinth size */
-	char* lab;			/* labyrinth data */
+	char* data;			/* labyrinth data */
 	int trX,trY;		/* treasure position */
 	int X,Y;			/* our position */
 	int opX,opY;		/* opponent position */
 	int player;			/* gives who plays (0: us, 1: the opponent) */
+	char name[50];		/* labyrinthe name */
 } t_laby;
 
 
-
-
-/* wait for a labyrinth
- * and fill the t_lab structure from the server
- */
-void getLabyrinth(char* labName, t_laby* laby)
-{
-	int x,y,type;
-	waitForLabyrinth(labName, &laby->sizeX, &laby->sizeY);
-	laby->lab = (char*) calloc( laby->sizeX*laby->sizeY, sizeof(char));
-	do {
-
-		/* get ONE data */
-		retrieveData( &type, &x, &y);
-		/* deal with it */
-		if (type==WALL)
-			laby->lab[ x + y*laby->sizeX ] = 1;
-		else if (type==US) {
-			laby->X = x;
-			laby->Y = y;
-		}
-		else if (type==OPPONENT) {
-			laby->opX = x;
-			laby->opY = y;
-		}
-		else if (type==TREASURE) {
-			laby->trX = x;
-			laby->trY = y;
-		}
-	} while (type != END_OF_DATA);
-}
 
 /* rotate a line of the labyrinth */
 void rotateLine( t_laby* laby, int line, int delta)
@@ -108,8 +78,9 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		//getLabyrinth( labName, &lab);
-	  waitForLabyrinth( labName,&(lab.sizeX), &(lab.sizeY));
+		waitForLabyrinth( lab.name, &(lab.sizeX), &(lab.sizeY));
+		lab.data = (char*) malloc( lab.sizeX * lab.sizeY );
+		getLabyrinth( lab.data);
 		printf("On commence!\n");
 			
 		/* who's start ? */
@@ -139,7 +110,7 @@ int main()
 	
 
 		/* we do not forget to free the allocated array */
-		free(lab.lab);
+		free(lab.data);
 	}
 	
 	/* end the connection, because we are polite */

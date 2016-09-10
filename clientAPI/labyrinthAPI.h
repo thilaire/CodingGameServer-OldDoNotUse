@@ -30,9 +30,11 @@ void closeConnection();
 
 /* wait for a labyrinth, and retrieve its name and size
 Parameters:
-- labyrinthName: char* (max 20 characters), corresponds to the labyrinth name
+- labyrinthName: char* (max 50 characters), corresponds to the labyrinth name
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
+
+
 
 
 #define END_OF_DATA	0
@@ -41,20 +43,25 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 #define OPPONENT	3
 #define TREASURE	4
 
-/* retrieve the labyrinth datas,
-	0 if there is no more data to retrieve 
+
+
+/* fill the char* data with the data of the labyrinth
+ * 	0 if there is no more data to retrieve
 	1 for a wall
 	2 for your position
 	3 for the opponent
 	4 for the treasure
-*/
-void retrieveData( int* type, int* x, int* y);
+
+the pointer data MUST HAVE allocated with the right size !! */
+void getLabyrinth( char* data);
+
 
 
 /* returns 0 if it's your turn, or 1 if it's the opponent's turn 
 Useful in the beginning, to know who starts
 */
 int getWhoStarts();
+
 
 /* get the move of the opponent / send our move
 A move is a tuple (type,value):

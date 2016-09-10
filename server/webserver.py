@@ -19,7 +19,7 @@ def index():
 	"""
 	Main page (based on index.html template)
 	"""
-	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr()+ " " + p.HTMLstatus() + "</li>\n" for p in Player.allPlayers.values()])
+	HTMLlist = "\n".join([ "<li>"+ p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
 
 	return {"ListOfPlayers":HTMLlist}
 

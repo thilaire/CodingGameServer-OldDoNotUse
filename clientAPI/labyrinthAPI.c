@@ -15,7 +15,7 @@
 #define DEBUG
 
 /* port number to the server */
-#define PORTNO	1234
+#define PORTNO	1237
 
 
 
@@ -85,17 +85,20 @@ void sendString( const char* fct, const char* str, ...) {
 
 	/* send our message */
 	int r = write(sockfd, buffer, strlen(buffer));
+	dispDebug( fct, "Send '%s' to the server", buffer);
 	if (r < 0)
 		dispError( fct, "Cannot write to the socket (%s)",buffer);
 
-	/* get acknowledgment */
+		/* get acknowledgment */
 	bzero(buffer,256);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( fct, "Cannot read acknowldegment from socket (sending:%s)", str);
+		dispError( fct, "Cannot read acknowledgment from socket (sending:%s)", str);
 
 	if (strcmp(buffer,"OK"))
 		dispError( fct, "Server do not acknowledge (send:%s)",buffer);
+
+	dispDebug( fct, "Receive acknowledgment from the server");
 }
 
 
@@ -113,8 +116,6 @@ void connectToServer( char* serverName, char* name)
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 
-	dispDebug("connectToServer", "Try to connect");
-
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
@@ -124,6 +125,7 @@ void connectToServer( char* serverName, char* name)
 	server = gethostbyname(serverName);
 	if (server == NULL)
 		dispError("connectToServer","Unable to find the server by its name");
+	dispDebug("connectToServer", "Open connection with the server %s", serverName);
 
 	/* Allocate sockaddr */
 	bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -135,11 +137,9 @@ void connectToServer( char* serverName, char* name)
 	if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
 		dispError("connectToServer", "Connection to the server impossible (is the server up?)");
 
-
 	/* Sending a request with our name */
 	sendString( "connectToServer", "CLIENT_NAME: %s",name);
 
-	dispDebug("connectToServer", "Succeeded");
 }
 
 
@@ -156,7 +156,7 @@ void closeConnection()
 
 /* wait for a labyrinth, and retrieve its name and size
 Parameters:
-- labyrinthName: char* (max 20 characters), corresponds to the labyrinth name
+- labyrinthName: char* (max 50 characters), corresponds to the labyrinth name
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 {
@@ -167,22 +167,20 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 }
 
 
-#define END_OF_DATA	0
-#define WALL		1
-#define US			2
-#define OPPONENT	3
-#define TREASURE	4
 
-/* retrieve the labyrinth datas,
-	0 if there is no more data to retrieve
+/* fill the char* data with the data of the labyrinth
+ * 	0 if there is no more data to retrieve
 	1 for a wall
 	2 for your position
 	3 for the opponent
 	4 for the treasure
-*/
-void retrieveData( int* type, int* x, int* y)
+
+the pointer data MUST HAVE allocated with the right size !! */
+void getLabyrinth( char* data)
 {
+
 }
+
 
 
 /* returns 0 if it's your turn, or 1 if it's the opponent's turn
@@ -190,7 +188,7 @@ Useful in the beginning, to know who starts
 */
 int getWhoStarts()
 {
-
+	return 0;
 }
 
 /* get the move of the opponent / send our move
@@ -208,9 +206,11 @@ Returns 1 if the game is finished, 0 otherwise */
 #define MOVE_RIGHT			7
 int getMove( int* type, int* val)
 {
+	return 0;
 }
 int sendMove(int type, int val)
 {
+	return 0;
 }
 
 /* display the labyrinth */

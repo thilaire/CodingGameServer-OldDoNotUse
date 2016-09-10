@@ -2,7 +2,7 @@ import logging
 from socketserver import ThreadingTCPServer, BaseRequestHandler
 
 
-logger = logging.getLogger('Game')
+logger = logging.getLogger()
 
 
 class connectionError(Exception):
@@ -83,7 +83,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		or raises an exception (connectionError)
 		"""
 		data = str( self.request.recv(1024).strip(), "utf-8" )
-		logger.debug( "Receive: '"+data+"' from client "+self.client_address )
+		logger.debug( "Receive: '"+data+"' from client "+self.client_address[0] )
 		if not data.startswith("CLIENT_NAME: "):
 			raise connectionError( "Bad protocol, should start with CLIENT_NAME: ")
 
@@ -96,7 +96,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 	@property
 	def playerNameAdress(self):
-		return "%s (%s)"%( self._player.name if self._player is not None else "None", self.client_address)
+		return "%s (%s)"%( self._player.name if self._player is not None else "None", self.client_address[0])
 
 
 
@@ -113,15 +113,17 @@ class Player:
 	def HTMLrepr(self):
 		return "<B>"+self._name+"</B>"
 
-	def HTMLstatus(self):
-		if self._state == "send:setup":
-			return "se connecte..."
-		elif self._state == "rcv:lab":
-			return "attend un adversaire"
+	# def HTMLstatus(self):
+	# 	if self._state == "send:setup":
+	# 		return "se connecte..."
+	# 	elif self._state == "rcv:lab":
+	# 		return "attend un adversaire"
 
-	def __del__(self):
-		logger.debug( self.name +" just log out.")
-		del self.__class__.allPlayers[self.name]
+
+	@classmethod
+	def removePlayer(cls, name):
+		logger.debug( name +" just log out.")
+		del cls.allPlayers[name]
 
 
 	@classmethod
