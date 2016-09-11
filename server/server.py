@@ -75,11 +75,11 @@ p2=Player("toto2")
 # Start the web server
 #TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads
 threading.Thread(target=run, kwargs={ 'server':'paste', 'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
-
+logging.getLogger().info( "Run the web server on port %d..."%args['--web'])
 
 # Start TCP Socket server (connection to players)
 PlayerServer = ThreadingTCPServer( (args['--host'], args['--port']), PlayerSocketHandler)
-logging.getLogger('Game').info( "Run the game server...")
+logging.getLogger().info( "Run the game server on port %d..."%args['--port'])
 threading.Thread( target=PlayerServer.serve_forever() )
 
 

@@ -15,7 +15,7 @@
 #define DEBUG
 
 /* port number to the server */
-#define PORTNO	1237
+#define PORTNO	1230
 
 
 
@@ -27,7 +27,6 @@
 int sockfd = -1;	/* socket descriptor -1 when we are not yet connected */
 char buffer[1000];	/* global buffer used to send message (global so that it is not allocated/desallocated for each message; useful?) */
 
-char dispbuffer[1000];	/* global buffer used to display error message  */
 
 
 /* Display Error message
@@ -40,10 +39,10 @@ void dispError(const char* fct, const char* msg, ...)
 {
 	va_list args;
 	va_start (args, msg);
-	sprintf(dispbuffer,"\e[5m\e[31m\u2327\e[2m (%s):\e[0m ", fct);
-	vsprintf(dispbuffer+strlen(dispbuffer), msg, args);
+	fprintf( stderr, "\e[5m\e[31m\u2327\e[2m (%s)\e[0m ", fct);
+	vfprintf( stderr, msg, args);
+	fprintf( stderr, "\n");
 	va_end (args);
-	perror(dispbuffer);
 	exit(EXIT_FAILURE);
 }
 
@@ -77,6 +76,7 @@ void dispDebug(const char* fct, const char* msg, ...)
 void sendString( const char* fct, const char* str, ...) {
 	va_list args;
 	va_start (args, str);
+	bzero(buffer,1000);
 	vsprintf(buffer, str, args);
 
 	/* check if the socket is open */
@@ -90,13 +90,13 @@ void sendString( const char* fct, const char* str, ...) {
 		dispError( fct, "Cannot write to the socket (%s)",buffer);
 
 		/* get acknowledgment */
-	bzero(buffer,256);
+	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
 		dispError( fct, "Cannot read acknowledgment from socket (sending:%s)", str);
 
 	if (strcmp(buffer,"OK"))
-		dispError( fct, "Server do not acknowledge (send:%s)",buffer);
+		dispError( fct, "Server does not acknowledge (send:%s)",buffer);
 
 	dispDebug( fct, "Receive acknowledgment from the server");
 }
@@ -135,7 +135,7 @@ void connectToServer( char* serverName, char* name)
 
 	/* Now connect to the server */
 	if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-		dispError("connectToServer", "Connection to the server impossible (is the server up?)");
+		dispError("connectToServer", "Connection to the server '%s' on port %d impossible.", serverName, PORTNO);
 
 	/* Sending a request with our name */
 	sendString( "connectToServer", "CLIENT_NAME: %s",name);

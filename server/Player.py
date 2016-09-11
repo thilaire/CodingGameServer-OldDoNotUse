@@ -87,7 +87,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 		if not data.startswith("CLIENT_NAME: "):
 			raise connectionError( "Bad protocol, should start with CLIENT_NAME: ")
 
-		#TODO: créer le joueur ICI et vérifier que tout marche
+		# check if the player doesn't exist yet
+		if data[13:] in Player.allPlayers:
+			self.request.sendall( b"A client with the same name ('" + data[13:].encode() + b"') is already connected!" )
+			logger.debug("A client with the same name is already connected: %s (%s)"%( data[13:], self.client_address[0] ))
+			raise connectionError("A client with the same name is already connected: %s (%s)"%( data[13:], self.client_address[0] ))
 
 		# just send back the same data, but upper-cased
 		self.request.sendall(b"OK")
