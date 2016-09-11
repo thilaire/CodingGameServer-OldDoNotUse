@@ -1,7 +1,7 @@
 #coding: utf-8
 from numpy import full
 from random import shuffle,random, randint
-
+import logging
 
 
 def CreateLaby(sX, sY):
@@ -74,19 +74,34 @@ def CreateLaby(sX, sY):
 
 
 class Game:
+	"""
+	Labyrinth game
+	- players: tuple of the two players
+	- laby: labyrinth (numpy array for the moment)
+	- logger: logger to use to log infos, debug, ...
+	- name of the game
+	"""
 
-
-	def __init__(self):
+	def __init__(self, player1, player2):
+		"""
+		Create a labyrinth
+		:param player1: 1st Player
+		:param player2: 2nd Player
+		"""
+		#TODO: add size of the labyrinth ?
 
 		# players
-		self._players = [ None, None]
+		self._players = (player1, player2)
 
 		# random Labyrinth
 		totalSize = randint(7,11)	# sX + sY is randomly in [7;9]
 		sX = randint(3,5)
 		self._lab = CreateLaby(sX,totalSize-sX)
 
+		# (unique) name (seed + unix date + players name)
 
+		# logger
+		self._logger = logger = logging.getLogger(self.name)
 
 
 
@@ -121,7 +136,3 @@ class Game:
 		return "\n".join(lines)
 
 
-
-
-G = Game()
-print(str(G))

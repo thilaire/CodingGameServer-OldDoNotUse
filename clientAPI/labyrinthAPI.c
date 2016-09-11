@@ -15,7 +15,7 @@
 #define DEBUG
 
 /* port number to the server */
-#define PORTNO	1230
+#define PORTNO	1231
 
 
 

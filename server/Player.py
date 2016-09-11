@@ -37,6 +37,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 					#retrieve data command
 					print("Not yet implemented...")
 					pass
+
 				elif data.startswith("WAIT_ROOM:"):
 					self._player.setstate("rcv:lab")
 					self.request.sendall(b"OK")
@@ -45,14 +46,17 @@ class PlayerSocketHandler(BaseRequestHandler):
 					# get move of the opponent
 					print("Not yet implemented...")
 					pass
+
 				elif data.startswith("PLAY_MOVE:"):
 					# play move
 					print("Not yet implemented...")
 					pass
+
 				elif data.startswith("WAIT_START:"):
 					# wait start
 					print("Not yet implemented...")
 					pass
+
 				elif data.startswith("DISP_LAB:"):
 					# ask for display
 					self.request.sendall(b"OK")
@@ -72,7 +76,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Call when the connection is closed
 		"""
 		if self._player is not None:
-			logger.debug("Connection closed with player "+self.playerNameAdress)
+			self._player.logger.debug("Connection closed with player "+self.playerNameAdress)
 			Player.removePlayer(self._player.name)
 			del self._player
 
@@ -113,13 +117,15 @@ class Player:
 	allPlayers = {}
 
 	def __init__(self, name):
-		# create the logger of the player with an handler to write the log to a file (1Mo max)
+		# create the logger of the player
 		self._logger = logging.getLogger(name)
-		file_handler = RotatingFileHandler('logs/players/'+name+'.log', 'a', 1000000, 1)
-		file_handler.setLevel(logging.WARNING)
-		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
-		file_handler.setFormatter(file_formatter)
-		self._logger.addHandler(file_handler)
+		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
+		if not self._logger.handlers:
+			file_handler = RotatingFileHandler('logs/players/'+name+'.log', 'a', 1000000, 1)
+			file_handler.setLevel(logging.INFO)
+			file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
+			file_handler.setFormatter(file_formatter)
+			self._logger.addHandler(file_handler)
 
 
 		self.logger.warning( "=================================")
@@ -143,7 +149,7 @@ class Player:
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
 		if pl is not None:
-			pl.logger.debug( name +" just log out.")
+			pl.logger.warning( name +" just log out.")
 			del cls.allPlayers[name]
 
 
