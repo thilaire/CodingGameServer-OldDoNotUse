@@ -14,7 +14,7 @@
 Initialize connection with the server
 Parameters:
 - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- - name: (string) name of the bot
+ - name: (string) name of the bot : max 20 characters
 
 Quit the program if the connection to the server cannot be established
 */
@@ -30,7 +30,7 @@ void closeConnection();
 
 /* wait for a labyrinth, and retrieve its name and size
 Parameters:
-- labyrinthName: char* (max 50 characters), corresponds to the labyrinth name
+- labyrinthName: char* (max 100 characters), corresponds to the labyrinth name
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 

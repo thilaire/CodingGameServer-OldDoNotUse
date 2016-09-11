@@ -9,6 +9,7 @@ import logging													# logging system
 from logging.handlers import RotatingFileHandler
 from colorlog import ColoredFormatter							# logging with colors
 from docopt import docopt										# used to parse the command line
+from functools import wraps										# use to wrap a logger for bottle
 
 from Player import PlayerSocketHandler,Player
 import webserver
@@ -39,6 +40,7 @@ if args['--debug'] == args['--dev'] == args['--prod'] == False:
 args['--port'] = int(args['--port'])
 args['--web'] = int(args['--web'])
 
+
 # setup the logger
 # see http://sametmax.com/ecrire-des-logs-en-python/
 # create and set up the logger
@@ -59,6 +61,20 @@ steam_handler.setFormatter( formatter)
 logger.addHandler(steam_handler)
 
 
+# add a logger wrapper for bottle (in order to log its activity)
+# See http://stackoverflow.com/questions/31080214/python-bottle-always-logs-to-console-no-logging-to-file
+weblogger = logging.getLogger('bottle')
+def log_to_logger(fn):
+	'''	Wrap a Bottle request so that a log line is emitted after it's handled.'''
+	@wraps(fn)
+	def _log_to_logger(*args, **kwargs):
+		actual_response = fn(*args, **kwargs)
+		weblogger.info('%s %s %s %s' % (request.remote_addr, request.method, request.url, response.status))
+		return actual_response
+	return _log_to_logger
+
+
+
 # start
 logger.critical("#=========================================#")
 logger.critical("# Labyrinth Game server is going to start #")
@@ -74,12 +90,15 @@ p2=Player("toto2")
 
 # Start the web server
 #TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads
-threading.Thread(target=run, kwargs={ 'server':'paste', 'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
-logging.getLogger().info( "Run the web server on port %d..."%args['--web'])
+threading.Thread(target=run, kwargs={  'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
+#run( host=args['--host'], port=args['--web'], quiet=True)
+install(log_to_logger)
+weblogger.info( "Run the web server on port %d..."%args['--web'])
+
 
 # Start TCP Socket server (connection to players)
 PlayerServer = ThreadingTCPServer( (args['--host'], args['--port']), PlayerSocketHandler)
-logging.getLogger().info( "Run the game server on port %d..."%args['--port'])
+logger.info( "Run the game server on port %d..."%args['--port'])
 threading.Thread( target=PlayerServer.serve_forever() )
 
 

@@ -2,6 +2,9 @@
 from numpy import full
 from random import shuffle,random, randint
 import logging
+from numpy.random import seed as numpy_seed, randint
+from time import time
+
 
 
 def CreateLaby(sX, sY):
@@ -82,11 +85,14 @@ class Game:
 	- name of the game
 	"""
 
-	def __init__(self, player1, player2):
+	allGames = {}
+
+	def __init__(self, player1, player2, seed=None):
 		"""
 		Create a labyrinth
 		:param player1: 1st Player
 		:param player2: 2nd Player
+		:param seed: seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
 		"""
 		#TODO: add size of the labyrinth ?
 
@@ -98,11 +104,30 @@ class Game:
 		sX = randint(3,5)
 		self._lab = CreateLaby(sX,totalSize-sX)
 
-		# (unique) name (seed + unix date + players name)
+		# get a seed if the seed is not given; seed the random numbers generator
+		if seed is None:
+			numpy_seed( None )	# (from doc): If seed is None, then RandomState will try to read data from /dev/urandom (or the Windows analogue) if available or seed from the clock otherwise.
+			seed = randint(0, 1e9)
+		numpy_seed(seed)
 
-		# logger
-		self._logger = logger = logging.getLogger(self.name)
+		# (unique) name (unix date + seed + players name)
+		self._name = str( int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
 
+		# create the logger of the game
+		self._logger = logging.getLogger(self.name)
+		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
+		file_handler = logging.FileHandler('logs/games/'+self.name+'.log')
+		file_handler.setLevel(logging.INFO)
+		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
+		file_handler.setFormatter(file_formatter)
+		self._logger.addHandler(file_handler)
+
+		self.logger.warning( "=================================")
+		self.logger.warning( "Game %s just starts with '%s' and '%s'."% (self.name, self.player1.name, self.player2.name) )
+
+
+		# add itself to the dictionary of games
+		self.allGames[ self.name ] = self
 
 
 	@property
@@ -114,7 +139,37 @@ class Game:
 		return self._name
 
 
+	@classmethod
+	def getFromName(cls, name):
+		"""
+		Get a game form its name (unix date + seed + players name)
+		:param name: (string) name of the game
+		:return: the game (the object) or None if this game doesn't exist
+		"""
+		return cls.allGames.get( name, None)
 
+
+	def HTMLrepr(self):
+		return "<A href='/game/%s'>%s</A>"%(self.name, self.name)
+
+	def HTMLpage(self):
+		#TODO: return a dictionary to fill a html template
+		return "Game %s (with players '%s' and '%s'\n<br><br>%s"%( self.name, self.player1.name, self.player2.name, self)
+
+
+
+	#TODO: useful ????
+	@property
+	def player1(self):
+		return self._players[0]
+
+	@property
+	def player2(self):
+		return self._players[1]
+
+	@property
+	def logger(self):
+		return self._logger
 
 
 	def __str__(self):

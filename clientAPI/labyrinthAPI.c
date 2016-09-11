@@ -15,7 +15,7 @@
 #define DEBUG
 
 /* port number to the server */
-#define PORTNO	1231
+#define PORTNO	1236
 
 
 
@@ -96,7 +96,7 @@ void sendString( const char* fct, const char* str, ...) {
 		dispError( fct, "Cannot read acknowledgment from socket (sending:%s)", str);
 
 	if (strcmp(buffer,"OK"))
-		dispError( fct, "Server does not acknowledge (send:%s)",buffer);
+		dispError( fct, "Error: Server answered: %s",buffer);
 
 	dispDebug( fct, "Receive acknowledgment from the server");
 }
@@ -107,7 +107,7 @@ void sendString( const char* fct, const char* str, ...) {
 Initialize connection with the server
 Parameters:
 - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- - name: (string) name of the bot
+ - name: (string) name of the bot : max 20 characters (checked by the server)
 
 Quit the program if the connection to the server cannot be established
 */

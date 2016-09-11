@@ -1,7 +1,7 @@
 import logging
 from socketserver import ThreadingTCPServer, BaseRequestHandler
 from logging.handlers import RotatingFileHandler
-
+from re import sub
 
 logger = logging.getLogger()		# general logger ('root')
 
@@ -26,6 +26,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		self._player = None
 		try:
+			# get the name from the client and create the player
 			name = self.getPlayerName()
 			self._player = Player( name )
 
@@ -98,13 +99,18 @@ class PlayerSocketHandler(BaseRequestHandler):
 		# check if the player doesn't exist yet
 		if data[13:] in Player.allPlayers:
 			self.request.sendall( b"A client with the same name ('" + data[13:].encode() + b"') is already connected!" )
-			logger.debug("A client with the same name is already connected: %s (%s)"%( data[13:], self.client_address[0] ))
 			raise connectionError("A client with the same name is already connected: %s (%s)"%( data[13:], self.client_address[0] ))
 
-		# just send back the same data, but upper-cased
+		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
+		name = sub( '\W+', '',data[13:])
+		if name != data[13:] or len(name)>20:
+			self.request.sendall( b"The name is invalid (max 20 characters in [a-zA-Z0-9_])" )
+			raise connectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])"%( data[13:], self.client_address[0] ))
+
+		# just send back OK
 		self.request.sendall(b"OK")
-		logger.debug( "Send OK to player " + self.playerNameAdress)
-		return data[13:]
+		logger.debug( "Send OK to player %s (%s)"%( name, self.client_address[0]))
+		return name
 
 	@property
 	def playerNameAdress(self):
@@ -131,19 +137,21 @@ class Player:
 		self.logger.warning( "=================================")
 		self.logger.warning( name + " just log in.")
 
-		self._name = name								# name
+		# name
+		self._name = name
+
+		# add itself to the dictionary of games
 		self.allPlayers[name] = self
-		#self._state = "send:setup"
+
+
 
 	def HTMLrepr(self):
-		return "<B>"+self._name+"</B>"
+		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
 
-	# def HTMLstatus(self):
-	# 	if self._state == "send:setup":
-	# 		return "se connecte..."
-	# 	elif self._state == "rcv:lab":
-	# 		return "attend un adversaire"
 
+	def HTMLpage(self):
+		#TODO: return a dictionary to fill a template
+		return self.HTMLrepr()
 
 	@classmethod
 	def removePlayer(cls, name):

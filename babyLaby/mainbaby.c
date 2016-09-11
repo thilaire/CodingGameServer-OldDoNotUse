@@ -10,7 +10,7 @@ typedef struct {
 	int X,Y;			/* our position */
 	int opX,opY;		/* opponent position */
 	int player;			/* gives who plays (0: us, 1: the opponent) */
-	char name[50];		/* labyrinthe name */
+	char name[100];		/* labyrinthe name */
 } t_laby;
 
 
