@@ -1,8 +1,9 @@
 import logging
 from socketserver import ThreadingTCPServer, BaseRequestHandler
+from logging.handlers import RotatingFileHandler
 
 
-logger = logging.getLogger()
+logger = logging.getLogger()		# general logger ('root')
 
 
 class connectionError(Exception):
@@ -30,7 +31,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 			while True:
 				data = str( self.request.recv(1024).strip(), "utf-8" )
-				logger.debug( "Receive '%s' from player %s (%s)"%( data, self._player.name, self.client_address ))
+				self._player.logger.debug( "Receive '%s' from player %s (%s)"%( data, self._player.name, self.client_address ))
 
 				if data.startswith("GET_LAB:"):
 					#retrieve data command
@@ -60,7 +61,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 					raise connectionError("Bad protocol, command should not start with '"+data+"'")
 
 		except connectionError as e:
-			logger.error( "Error with %s: '%s'"%(self.playerNameAdress, e) )
+			if self._player:
+				self._player.logger.error( "Error with %s: '%s'"%(self.playerNameAdress, e) )
+			else:
+				logger.error("Error with %s: '%s'" % (self.playerNameAdress, e))
 
 
 	def finish(self):
@@ -109,8 +113,19 @@ class Player:
 	allPlayers = {}
 
 	def __init__(self, name):
-		logger.debug( name + " just log in.")
-		self._name = name
+		# create the logger of the player with an handler to write the log to a file (1Mo max)
+		self._logger = logging.getLogger(name)
+		file_handler = RotatingFileHandler('logs/players/'+name+'.log', 'a', 1000000, 1)
+		file_handler.setLevel(logging.WARNING)
+		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
+		file_handler.setFormatter(file_formatter)
+		self._logger.addHandler(file_handler)
+
+
+		self.logger.warning( "=================================")
+		self.logger.warning( name + " just log in.")
+
+		self._name = name								# name
 		self.allPlayers[name] = self
 		#self._state = "send:setup"
 
@@ -126,8 +141,10 @@ class Player:
 
 	@classmethod
 	def removePlayer(cls, name):
-		logger.debug( name +" just log out.")
-		del cls.allPlayers[name]
+		pl = cls.getFromName(name)
+		if pl is not None:
+			pl.logger.debug( name +" just log out.")
+			del cls.allPlayers[name]
 
 
 	@classmethod
@@ -145,7 +162,12 @@ class Player:
 		print(self._name,": new state -> ",newstate)
 		self._state = newstate
 
+
 	@property
 	def name(self):
 		return self._name
 
+
+	@property
+	def logger(self):
+		return self._logger

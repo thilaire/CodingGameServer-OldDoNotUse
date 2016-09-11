@@ -50,8 +50,13 @@ def create_new_game():
 
 
 
+# display the logs
 
 @route('/logs')
 def log():
 	return static_file('activity.log', root='logs/')
+
+@route('/logs/player/<playerName>')
+def log(playerName):
+	return static_file(playerName+'.log', root='logs/players/')
 
