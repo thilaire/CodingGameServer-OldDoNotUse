@@ -52,8 +52,9 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 	3 for the opponent
 	4 for the treasure
 
-the pointer data MUST HAVE allocated with the right size !! */
-void getLabyrinth( char* data);
+the pointer data MUST HAVE allocated with the right size !!
+returns 0 if you begin, or 1 if the opponent begins*/
+int getLabyrinth( char* data);
 
 
 
@@ -82,7 +83,7 @@ int sendMove(int type, int val);
 /* display the labyrinth */
 void printLabyrinth();
 
-/* send a comment */
+/* send a comment, max 100 char. */
 void sendComment(char* comment);
 
 

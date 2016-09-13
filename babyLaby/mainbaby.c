@@ -81,7 +81,7 @@ int main()
 		waitForLabyrinth( lab.name, &(lab.sizeX), &(lab.sizeY));
 		lab.data = (char*) malloc( lab.sizeX * lab.sizeY );
 		getLabyrinth( lab.data);
-		printf("On commence!\n");
+		printf("On commence avec le lab '%s' de taille %d*%d!\n", lab.name, lab.sizeY, lab.sizeY);
 			
 		/* who's start ? */
 		//lab.player = getWhoStarts();

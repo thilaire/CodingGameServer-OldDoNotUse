@@ -96,6 +96,14 @@ class Game:
 		"""
 		#TODO: add size of the labyrinth ?
 
+		# check if we can create the game (are the players available)
+		if player1 is None or player2 is None:
+			return None
+		if player1 is player2:
+			return None
+		if player1.game is not None or player2.game is not None:
+			return None
+
 		# players
 		self._players = (player1, player2)
 
@@ -128,6 +136,10 @@ class Game:
 
 		# add itself to the dictionary of games
 		self.allGames[ self.name ] = self
+
+		# advertise the players that they enter in a game
+		player1.game = self
+		player2.game = self
 
 
 	@property
@@ -191,3 +203,10 @@ class Game:
 		return "\n".join(lines)
 
 
+	@property
+	def sizeX(self):
+		return self.lab.shape[0]
+
+	@property
+	def sizeY(self):
+		return self.lab.shape[1]

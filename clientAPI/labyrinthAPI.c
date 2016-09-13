@@ -15,7 +15,7 @@
 #define DEBUG
 
 /* port number to the server */
-#define PORTNO	1236
+#define PORTNO	1233
 
 
 
@@ -119,13 +119,13 @@ void connectToServer( char* serverName, char* name)
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
-		dispError("connectToServer","Impossible to open socket");
+		dispError(__FUNCTION__,"Impossible to open socket");
 
 	/* Get the server */
 	server = gethostbyname(serverName);
 	if (server == NULL)
-		dispError("connectToServer","Unable to find the server by its name");
-	dispDebug("connectToServer", "Open connection with the server %s", serverName);
+		dispError(__FUNCTION__,"Unable to find the server by its name");
+	dispDebug(__FUNCTION__, "Open connection with the server %s", serverName);
 
 	/* Allocate sockaddr */
 	bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -135,10 +135,10 @@ void connectToServer( char* serverName, char* name)
 
 	/* Now connect to the server */
 	if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-		dispError("connectToServer", "Connection to the server '%s' on port %d impossible.", serverName, PORTNO);
+		dispError(__FUNCTION__, "Connection to the server '%s' on port %d impossible.", serverName, PORTNO);
 
 	/* Sending a request with our name */
-	sendString( "connectToServer", "CLIENT_NAME: %s",name);
+	sendString( __FUNCTION__, "CLIENT_NAME: %s",name);
 
 }
 
@@ -148,7 +148,7 @@ void connectToServer( char* serverName, char* name)
 void closeConnection()
 {
 	if (sockfd<0)
-		dispError("closeConnection","The connection to the server is not established. Call 'connectToServer' before !");
+		dispError(__FUNCTION__,"The connection to the server is not established. Call 'connectToServer' before !");
 	close(sockfd);
 }
 
@@ -160,10 +160,25 @@ Parameters:
 - sizeX and sizeY: int*, size of the labyrinth */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 {
-  sendString( __FUNCTION__,"WAIT_ROOM:");
-  strcpy( labyrinthName, "FakeName");
-  *sizeX = 10;
-  *sizeY = 10;
+	sendString( __FUNCTION__,"WAIT_GAME");
+
+	/* read Labyrinth name */
+	bzero(buffer,1000);
+	int r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive Labyrinth name=%s", buffer);
+	strcpy( labyrinthName, buffer);
+
+	/* read Labyrinth size */
+	bzero(buffer,1000);
+	r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive Labyrinth size=%s", buffer);
+	sscanf( buffer, "%d %d", sizeX, sizeY);
 }
 
 
@@ -175,21 +190,26 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 	3 for the opponent
 	4 for the treasure
 
-the pointer data MUST HAVE allocated with the right size !! */
-void getLabyrinth( char* data)
+the pointer data MUST HAVE allocated with the right size !!
+returns 0 if you begin, or 1 if the opponent begins*/
+int getLabyrinth( char* data)
 {
+	sendString( __FUNCTION__,"GET_LAB");
 
-}
+	/* read Labyrinth name */
+	bzero(buffer,1000);
+	int r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_LAB' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive these data for the labyrinth name=%s", bufferReadable);
 
 
-
-/* returns 0 if it's your turn, or 1 if it's the opponent's turn
-Useful in the beginning, to know who starts
-*/
-int getWhoStarts()
-{
 	return 0;
 }
+
+
+
 
 /* get the move of the opponent / send our move
 A move is a tuple (type,value):
@@ -216,22 +236,22 @@ int sendMove(int type, int val)
 /* display the labyrinth */
 void printLabyrinth()
 {
-	dispDebug("printLabyrinth", "Try to get string to display labyrinth");
+	dispDebug(__FUNCTION__, "Try to get string to display labyrinth");
 
 	/* send command */
-	sendString( "printLabyrinth", "DISP_LAB:");
+	sendString( __FUNCTION__, "DISP_LAB:");
 
 	/* get string to print */
 	char buffer[10000];
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( "printLabyrinth", "Cannot read string from socket");
+		dispError( __FUNCTION__, "Cannot read string from socket");
 
 	/* print it */
 	printf("%s",buffer);
 }
 
-/* send a comment */
+/* send a comment, max 100 char. */
 void sendComment(char* comment)
 {
 }

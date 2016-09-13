@@ -45,10 +45,13 @@ def create_new_game():
 	player1 = Player.getFromName( request.forms.get('player1') )
 	player2 = Player.getFromName( request.forms.get('player2') )
 
-	if player1 and player2 and player1 is not player2:
-		g = Game( player1, player2 )
+	# the constructor will check if player1 and player2 are available to play
+	g = Game( player1, player2 )
 
-	redirect('/')
+	if g is None:
+		return "Erreur. Impossible de créer une partie avec " + request.forms.get('player1') + " and " + request.forms.get('player2')
+	else:
+		redirect('/')
 
 
 

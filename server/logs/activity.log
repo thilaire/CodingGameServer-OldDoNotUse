@@ -2783,3 +2783,123 @@ paste.httpserver.ThreadPool 2016-09-10 18:24:10,009 :: DEBUG :: Started new work
 09/11 18:13:51 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/game/1473610425-674305066-babyLaby-toto2 200 OK
 09/11 18:13:56 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/player/babyLaby 200 OK
 09/11 18:13:57 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/player/babyLaby 200 OK
+09/12 15:41:29 [root] | #=========================================#
+09/12 15:41:29 [root] | # Labyrinth Game server is going to start #
+09/12 15:41:29 [root] | #=========================================#
+09/12 15:41:29 [toto1] | =================================
+09/12 15:41:29 [toto1] | toto1 just log in.
+09/12 15:41:29 [toto2] | =================================
+09/12 15:41:29 [toto2] | toto2 just log in.
+09/12 15:41:29 [bottle] | Run the web server on port 8080...
+09/12 15:41:29 [root] | Run the game server on port 1232...
+09/12 15:41:47 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 15:41:49 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/12 15:41:53 [1473687713-127190850-toto1-toto2] | =================================
+09/12 15:41:53 [1473687713-127190850-toto1-toto2] | Game 1473687713-127190850-toto1-toto2 just starts with 'toto1' and 'toto2'.
+09/12 15:41:53 [toto1] | Enter in game 1473687713-127190850-toto1-toto2
+09/12 15:41:53 [toto2] | Enter in game 1473687713-127190850-toto1-toto2
+09/12 15:41:53 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 21:55:32 [root] | #=========================================#
+09/12 21:55:32 [root] | # Labyrinth Game server is going to start #
+09/12 21:55:32 [root] | #=========================================#
+09/12 21:55:32 [toto1] | =================================
+09/12 21:55:32 [toto1] | toto1 just log in.
+09/12 21:55:32 [toto2] | =================================
+09/12 21:55:32 [toto2] | toto2 just log in.
+09/12 21:55:32 [bottle] | Run the web server on port 8080...
+09/12 21:55:32 [root] | Run the game server on port 1232...
+09/12 21:57:44 [root] | Receive: 'CLIENT_NAME: babyLaby' from client 127.0.0.1
+09/12 21:57:44 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 21:57:44 [babyLaby] | =================================
+09/12 21:57:44 [babyLaby] | babyLaby just log in.
+09/12 21:57:44 [babyLaby] | Receive 'WAIT_GAME' from player babyLaby (('127.0.0.1', 59018))
+09/12 21:57:44 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 21:58:09 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 21:58:11 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/12 21:58:17 [1473710297-567104255-babyLaby-toto2] | =================================
+09/12 21:58:17 [1473710297-567104255-babyLaby-toto2] | Game 1473710297-567104255-babyLaby-toto2 just starts with 'babyLaby' and 'toto2'.
+09/12 21:58:17 [babyLaby] | Enter in game 1473710297-567104255-babyLaby-toto2
+09/12 21:58:17 [babyLaby] | Connection closed with player babyLaby (127.0.0.1)
+09/12 21:58:17 [babyLaby] | babyLaby just log out.
+09/12 21:58:17 [toto2] | Enter in game 1473710297-567104255-babyLaby-toto2
+09/12 21:58:17 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 22:00:21 [root] | #=========================================#
+09/12 22:00:21 [root] | # Labyrinth Game server is going to start #
+09/12 22:00:21 [root] | #=========================================#
+09/12 22:00:21 [toto1] | =================================
+09/12 22:00:21 [toto1] | toto1 just log in.
+09/12 22:00:21 [toto2] | =================================
+09/12 22:00:21 [toto2] | toto2 just log in.
+09/12 22:00:21 [bottle] | Run the web server on port 8080...
+09/12 22:00:28 [root] | #=========================================#
+09/12 22:00:28 [root] | # Labyrinth Game server is going to start #
+09/12 22:00:28 [root] | #=========================================#
+09/12 22:00:28 [toto1] | =================================
+09/12 22:00:28 [toto1] | toto1 just log in.
+09/12 22:00:28 [toto2] | =================================
+09/12 22:00:28 [toto2] | toto2 just log in.
+09/12 22:00:28 [bottle] | Run the web server on port 8080...
+09/12 22:00:31 [root] | #=========================================#
+09/12 22:00:31 [root] | # Labyrinth Game server is going to start #
+09/12 22:00:31 [root] | #=========================================#
+09/12 22:00:31 [toto1] | =================================
+09/12 22:00:31 [toto1] | toto1 just log in.
+09/12 22:00:31 [toto2] | =================================
+09/12 22:00:31 [toto2] | toto2 just log in.
+09/12 22:00:31 [bottle] | Run the web server on port 8080...
+09/12 22:00:57 [root] | #=========================================#
+09/12 22:00:57 [root] | # Labyrinth Game server is going to start #
+09/12 22:00:57 [root] | #=========================================#
+09/12 22:00:57 [toto1] | =================================
+09/12 22:00:57 [toto1] | toto1 just log in.
+09/12 22:00:57 [toto2] | =================================
+09/12 22:00:57 [toto2] | toto2 just log in.
+09/12 22:00:57 [bottle] | Run the web server on port 8080...
+09/12 22:00:57 [root] | Run the game server on port 1233...
+09/12 22:01:15 [root] | Receive: 'CLIENT_NAME: babyLaby' from client 127.0.0.1
+09/12 22:01:15 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 22:01:15 [babyLaby] | =================================
+09/12 22:01:15 [babyLaby] | babyLaby just log in.
+09/12 22:01:15 [babyLaby] | Receive 'WAIT_GAME' from player babyLaby (('127.0.0.1', 59033))
+09/12 22:01:15 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 22:01:35 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 22:01:36 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/12 22:01:42 [1473710502-950418914-babyLaby-toto2] | =================================
+09/12 22:01:42 [1473710502-950418914-babyLaby-toto2] | Game 1473710502-950418914-babyLaby-toto2 just starts with 'babyLaby' and 'toto2'.
+09/12 22:01:42 [babyLaby] | Enter in game 1473710502-950418914-babyLaby-toto2
+09/12 22:01:42 [toto2] | Enter in game 1473710502-950418914-babyLaby-toto2
+09/12 22:01:42 [root] | Send the game name ('1473710502-950418914-babyLaby-toto2') to player babyLaby (127.0.0.1)
+09/12 22:01:42 [root] | Send the game size ('13 9') to player babyLaby (127.0.0.1)
+09/12 22:01:42 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 22:02:03 [babyLaby] | Receive '' from player babyLaby (('127.0.0.1', 59033))
+09/12 22:02:03 [babyLaby] | Error with babyLaby (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/12 22:02:03 [babyLaby] | Connection closed with player babyLaby (127.0.0.1)
+09/12 22:02:03 [babyLaby] | babyLaby just log out.
+09/12 22:18:05 [root] | #=========================================#
+09/12 22:18:05 [root] | # Labyrinth Game server is going to start #
+09/12 22:18:05 [root] | #=========================================#
+09/12 22:18:05 [toto1] | =================================
+09/12 22:18:05 [toto1] | toto1 just log in.
+09/12 22:18:05 [toto2] | =================================
+09/12 22:18:05 [toto2] | toto2 just log in.
+09/12 22:18:05 [bottle] | Run the web server on port 8080...
+09/12 22:18:05 [root] | Run the game server on port 1233...
+09/12 22:18:11 [root] | Receive: 'CLIENT_NAME: babyLaby' from client 127.0.0.1
+09/12 22:18:11 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 22:18:11 [babyLaby] | =================================
+09/12 22:18:11 [babyLaby] | babyLaby just log in.
+09/12 22:18:11 [babyLaby] | Receive 'WAIT_GAME' from player babyLaby (('127.0.0.1', 59329))
+09/12 22:18:11 [root] | Send OK to player babyLaby (127.0.0.1)
+09/12 22:20:08 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 22:20:10 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/12 22:20:24 [1473711624-244436674-babyLaby-toto1] | =================================
+09/12 22:20:24 [1473711624-244436674-babyLaby-toto1] | Game 1473711624-244436674-babyLaby-toto1 just starts with 'babyLaby' and 'toto1'.
+09/12 22:20:24 [babyLaby] | Enter in game 1473711624-244436674-babyLaby-toto1
+09/12 22:20:24 [toto1] | Enter in game 1473711624-244436674-babyLaby-toto1
+09/12 22:20:24 [root] | Send the game name ('1473711624-244436674-babyLaby-toto1') to player babyLaby (127.0.0.1)
+09/12 22:20:24 [root] | Send the game size ('13 13') to player babyLaby (127.0.0.1)
+09/12 22:20:24 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/12 22:21:03 [babyLaby] | Receive '' from player babyLaby (('127.0.0.1', 59329))
+09/12 22:21:03 [babyLaby] | Error with babyLaby (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/12 22:21:03 [babyLaby] | Connection closed with player babyLaby (127.0.0.1)
+09/12 22:21:03 [babyLaby] | babyLaby just log out.
