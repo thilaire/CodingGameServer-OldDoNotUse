@@ -2,7 +2,7 @@
 from numpy import full
 from random import shuffle,random, randint
 import logging
-from numpy.random import seed as numpy_seed, randint
+from numpy.random import seed as numpy_seed, randint, choice
 from time import time
 
 
@@ -141,6 +141,9 @@ class Game:
 		player1.game = self
 		player2.game = self
 
+		# determine who starts
+		self.whoPlays = choice( (player1, player2) )
+		self.whoPlays.plays()
 
 	@property
 	def lab(self):

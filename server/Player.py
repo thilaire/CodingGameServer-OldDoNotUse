@@ -45,7 +45,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 				elif data.startswith("GET_MOVE:"):
 					# get move of the opponent
-					print("Not yet implemented...")
+					self._player.opponent.plays()
+					self._player.doesnotplay()
+					self._player._
 					pass
 
 				elif data.startswith("PLAY_MOVE:"):
@@ -135,7 +137,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		logger.debug("Send OK to player "+self.playerNameAdress )
 
 		# wait for the Game
-		self._player._waitingGame.wait()
+		self._player._waitingGame.wait()	# WAIT until the event _waitingGame is set by the game.setter of the player (so when the game assigned itself to the game property of a player)
 		self._player._waitingGame.clear()	# clear it for the next game...
 
 		# now send the game name
@@ -155,12 +157,14 @@ class Player:
 	- _logger: a logger, used to log info/debug/errors
 	- _name: its name
 	- _game: the game it is involved with
+	- _waitingGame: an Event used to wait for the game to start (set when a game is set)
+	- _wePlay: an Event used to wait for the other, or to play (set=> we play, clear=> we don't play)
 
 	3 possibles states:
 	- not in a game (_game is None)
 	- his turn (_game.whoPlays == self)
 	- opponent's turn (game.whoPlays != self)
-
+	the Event _eventPlay is used for that purpuse
 	"""
 	allPlayers = {}
 
@@ -192,6 +196,10 @@ class Player:
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
+		# weplay event
+		self._wePlay = Event()
+		self._wePlay.clear()
+
 
 	def HTMLrepr(self):
 		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
@@ -219,6 +227,32 @@ class Player:
 		"""
 		return cls.allPlayers.get( name, None)
 
+
+
+	def plays(self):
+		"""
+		call when it's our turn (called by the opponent)
+		"""
+		self._wePlay.set()
+
+	def doesnotplay(self):
+		"""
+		call when it's the opponent's turn
+		"""
+		self._wePlay.clear()
+
+
+	@property
+	def opponent(self):
+		"""
+		Return our opponent in the game
+		"""
+		if self._game is None
+			return None
+		elif self._game.player1 is self:
+			return self._game.player2
+		else:
+			return self._game.player1
 
 
 
