@@ -5,6 +5,12 @@ import logging
 from numpy.random import seed as numpy_seed, randint, choice
 from time import time
 
+from threading import Event
+
+
+
+#TODO: mettre la constante quelque part (config/args?)
+TIMEOUT_TURN = 10		# in seconds
 
 
 def CreateLaby(sX, sY):
@@ -142,8 +148,10 @@ class Game:
 		player2.game = self
 
 		# determine who starts
-		self.whoPlays = choice( (player1, player2) )
-		self.whoPlays.plays()
+		self._whoPlays = choice( (player1, player2) )
+		self._waitingPlayer = Event()
+		self._waitingPlayer.clear()		# we're waiting for whoPlays to play its move
+
 
 	@property
 	def lab(self):
@@ -186,6 +194,10 @@ class Game:
 	def logger(self):
 		return self._logger
 
+	@property
+	def whoPlays(self):
+		return self._whoPlays
+
 
 	def __str__(self):
 		"""
@@ -213,3 +225,39 @@ class Game:
 	@property
 	def sizeY(self):
 		return self.lab.shape[1]
+
+
+
+	def getLastMove(self):
+		"""
+		Wait for the move of the player whoPlays
+		If it doesn't answer in TIMEOUT_TURN seconds, then he losts
+		"""
+
+		if self._waitingPlayer.wait( TIMEOUT_TURN ):
+			self._waitingPlayer.clear()
+			return self._lastMove
+		else:
+			# Timeout !!
+			# the opponent has lost the game
+			self._waitingPlayer.clear()
+			#TODO: lk
+			pass
+
+
+	def playMove(self, move):
+		"""
+		Play a move
+		- move: a string "%d %d"
+		Return True if everything is ok, False if the move is invalid
+		"""
+		# play that move
+		self.logger.info( "'%s' plays %s"%(self.whoPlays.name, move))
+		#.....
+
+		# and then set the Event
+		self._waitingPlayer.set()
+		self._whoPlays = self.whoPlays.opponent
+
+
+		return True

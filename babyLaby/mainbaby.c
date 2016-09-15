@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include "../clientAPI/labyrinthAPI.h"
 
+
+extern int debug;	/* hack to enable debug messages */
+
 typedef struct {
 	int sizeX,sizeY;	/* labyrinth size */
 	char* data;			/* labyrinth data */
@@ -30,9 +33,9 @@ void rotateColumn( t_laby* laby, int column, int delta)
 /* Play a move (change the labyrinth and coordinate accordingly */
 void playMove( t_laby* laby, int type, int val)
 {
-	if (type==ROTATE_LINE_UP)
+	if (type==ROTATE_LINE_RIGHT)
 		rotateLine(laby, val, 1);
-	else if (type==ROTATE_LINE_DOWN)
+	else if (type==ROTATE_LINE_LEFT)
 		rotateLine(laby, val, -1);
 	else if (type==ROTATE_COLUMN_UP)
 		rotateColumn(laby, val, 1);
@@ -66,9 +69,10 @@ int main()
 	int finished;		/* indicates if the game is over */
 	int type, val;		/* used for a move */
 
+	debug=1;	/* enable debug */
 
 	/* connection to the server */
-	connectToServer( "localhost", "babyLaby");
+	connectToServer( "localhost", 1234, "babyLaby");
 	printf("Youhou, connecté au serveur !\n");
 
 

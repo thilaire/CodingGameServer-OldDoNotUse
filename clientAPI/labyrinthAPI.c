@@ -12,28 +12,30 @@
 #include <unistd.h>
 #include <stdarg.h>
 
-#define DEBUG
-
-/* port number to the server */
-#define PORTNO	1233
-
-
 
 
 /* global variables about the connection
  * we use them just to hide all the connection details to the user
- * so no need to knwo about them, or give them when we use the functions of this API
+ * so no need to know about them, or give them when we use the functions of this API
 */
-int sockfd = -1;	/* socket descriptor -1 when we are not yet connected */
-char buffer[1000];	/* global buffer used to send message (global so that it is not allocated/desallocated for each message; useful?) */
+
+
+int sockfd = -1;		/* socket descriptor, equal to -1 when we are not yet connected */
+char buffer[1000];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message; TODO: is it useful?) */
+int debug=0;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
+
+unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again */
 
 
 
-/* Display Error message
+
+
+/* Display Error message and exit
+ *
  * Parameters:
- * fct: function where the error raises
- * msg: message to display
- * ...: extra parameters to give to printf...
+ * - fct: name of the function where the error raises (__FUNCTION__ can be used)
+ * - msg: message to display
+ * - ...: extra parameters to give to printf...
 */
 void dispError(const char* fct, const char* msg, ...)
 {
@@ -46,32 +48,38 @@ void dispError(const char* fct, const char* msg, ...)
 	exit(EXIT_FAILURE);
 }
 
-/* Display Debug message (only if DEBUG constant is defined)
+
+/* Display Debug message (only if `debug` constant is set to 1)
+ *
  * Parameters:
- * fct: function where the error raises
- * msg: message to display
- * ...: extra parameters to give to printf...
+ * - fct: name of the function where the error raises (__FUNCTION__ can be used)
+ * - msg: message to display
+ * - ...: extra parameters to give to printf...
 */
 void dispDebug(const char* fct, const char* msg, ...)
 {
-#ifdef DEBUG
-	printf("\e[35m\u26A0\e[0m (%s) ", fct);
+	if (debug)
+	{
+		printf("\e[35m\u26A0\e[0m (%s) ", fct);
 
-	/* print the msg, using the varying number of parameters */
-	va_list args;
-	va_start (args, msg);
-	vprintf(msg, args);
-	va_end (args);
+		/* print the msg, using the varying number of parameters */
+		va_list args;
+		va_start (args, msg);
+		vprintf(msg, args);
+		va_end (args);
 
-	printf("\n");
-#endif
+		printf("\n");
+	}
 }
 
 
-/* Write str in the socket and get acknowledgment
- * accept extra parameters to give to sprintf...
- *
+/* Send a string through the open socket and get acknowledgment (OK)
  * Manage connection problems
+ *
+ * Parameters:
+ * - fct: name of the function that calls sendString (used for the logging)
+ * - str: string to send
+ * - ...:  accept extra parameters for str (string expansion)
  */
 void sendString( const char* fct, const char* str, ...) {
 	va_list args;
@@ -96,25 +104,28 @@ void sendString( const char* fct, const char* str, ...) {
 		dispError( fct, "Cannot read acknowledgment from socket (sending:%s)", str);
 
 	if (strcmp(buffer,"OK"))
-		dispError( fct, "Error: Server answered: %s",buffer);
+		dispError( fct, "Error: The server does not acknowledge, but answered: %s",buffer);
 
 	dispDebug( fct, "Receive acknowledgment from the server");
 }
 
 
 
-/*
-Initialize connection with the server
-Parameters:
-- serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- - name: (string) name of the bot : max 20 characters (checked by the server)
-
-Quit the program if the connection to the server cannot be established
-*/
-void connectToServer( char* serverName, char* name)
+/* -------------------------------------
+ * Initialize connection with the server
+ * Quit the program if the connection to the server cannot be established
+ *
+ * Parameters:
+ * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
+ * - port: (int) port number used for the connection	TODO: should we fix it ?
+ * - name: (string) name of the bot : max 20 characters (checked by the server)
+ */
+void connectToServer( char* serverName, int port, char* name)
 {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
+
+	dispDebug( __FUNCTION__, "Initiate connection with %s (port: %d", serverName, port);
 
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -131,19 +142,23 @@ void connectToServer( char* serverName, char* name)
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	serv_addr.sin_family = AF_INET;
 	bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-	serv_addr.sin_port = htons(PORTNO);
+	serv_addr.sin_port = htons(port);
 
 	/* Now connect to the server */
 	if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-		dispError(__FUNCTION__, "Connection to the server '%s' on port %d impossible.", serverName, PORTNO);
+		dispError(__FUNCTION__, "Connection to the server '%s' on port %d impossible.", serverName, port);
 
-	/* Sending a request with our name */
+	/* Sending our name */
 	sendString( __FUNCTION__, "CLIENT_NAME: %s",name);
-
 }
 
 
-/* close the connection
+/* ----------------------------------
+ * Close the connection to the server
+ * to do, because we are polite
+ *
+ * Parameters:
+ * None
 */
 void closeConnection()
 {
@@ -154,10 +169,13 @@ void closeConnection()
 
 
 
-/* wait for a labyrinth, and retrieve its name and size
-Parameters:
-- labyrinthName: char* (max 50 characters), corresponds to the labyrinth name
-- sizeX and sizeY: int*, size of the labyrinth */
+/* ----------------------------------------------------
+ * Wait for a labyrinth, and retrieve its name and size
+ *
+ * Parameters:
+ * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
+ * - sizeX, sizeY: sizes of the labyrinth
+ */
 void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 {
 	sendString( __FUNCTION__,"WAIT_GAME");
@@ -177,21 +195,26 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive Labyrinth size=%s", buffer);
+	dispDebug(__FUNCTION__, "Receive Labyrinth sizes=%s", buffer);
 	sscanf( buffer, "%d %d", sizeX, sizeY);
+
+	/* store the size, to be reused in getLabyrinth (so, no need to ask them again) */
+	nX = *sizeX;
+	nY = *sizeY;
 }
 
 
 
-/* fill the char* data with the data of the labyrinth
- * 	0 if there is no more data to retrieve
-	1 for a wall
-	2 for your position
-	3 for the opponent
-	4 for the treasure
-
-the pointer data MUST HAVE allocated with the right size !!
-returns 0 if you begin, or 1 if the opponent begins*/
+/*
+ * Get the labyrinth and tell who starts
+ * It fills the char* data with the data of the labyrinth
+ * 1 if there's a wall, 0 for nothing
+ *
+ * Parameters:
+ * - data: the array of date (the pointer data MUST HAVE allocated with the right size !!
+ *
+ * Returns 0 if you begin, or 1 if the opponent begins
+ */
 int getLabyrinth( char* data)
 {
 	sendString( __FUNCTION__,"GET_LAB");
@@ -202,10 +225,24 @@ int getLabyrinth( char* data)
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'GET_LAB' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive these data for the labyrinth name=%s", bufferReadable);
+	dispDebug(__FUNCTION__, "Receive these data for the labyrinth:%s", buffer);
 
+	/* copy the data in the array lab
+	 * the buffer is a readable string of char '0' and '1'
+	 * */
+	char *p = buffer;
+	for( int i=0; i<nX*nY; i++)
+		*data++ = *p++ - '0';
 
-	return 0;
+	/* read if we begin (0) or if the opponent begins (1) */
+	bzero(buffer,1000);
+	r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_LAB' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive these player who begins=%s", buffer);
+
+	return buffer[0]-'0';
 }
 
 

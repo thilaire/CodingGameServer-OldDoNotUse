@@ -12,7 +12,7 @@ from docopt import docopt										# used to parse the command line
 from functools import wraps										# use to wrap a logger for bottle
 
 from Player import PlayerSocketHandler,Player
-import webserver
+import webserver												# import all the routes of the webserver
 
 
 # parse the command line
@@ -83,13 +83,14 @@ logger.critical("#=========================================#")
 
 
 #DEBUG
+#TODO: remove them
 p1=Player("toto1")
 p2=Player("toto2")
 
 
 
 # Start the web server
-#TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads
+#TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads ??
 threading.Thread(target=run, kwargs={  'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
 #run( host=args['--host'], port=args['--web'], quiet=True)
 install(log_to_logger)
