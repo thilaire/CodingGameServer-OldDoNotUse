@@ -2,6 +2,7 @@
 from numpy import full
 from random import shuffle, random, randint
 from numpy.random import randint
+from Game import Game
 
 
 def CreateLaby(sX, sY):
@@ -76,9 +77,12 @@ class Labyrinth(Game):
 	"""
 	Labyrinth game
 	Inherits from Game
-	- players: tuple of the two players
-	- logger: logger to use to log infos, debug, ...
-	- name of the game
+	- _players: tuple of the two players
+	- _logger: logger to use to log infos, debug, ...
+	- _name: name of the game
+	- _whoPlays: player who should play now
+	- _waitingPlayer: Event used to wait for the player
+	- _lastMove: string corresponding to the last move
 
 	Add some properties
 	- lab: numpy array representing the labyrinth

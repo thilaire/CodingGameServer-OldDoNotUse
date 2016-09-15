@@ -21,7 +21,7 @@ def index():
 	Main page (based on index.html template)
 	"""
 	HTMLPlayerList = "\n".join([ "<li>"+ p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
-	HTMLGameList = "\n".join(["<li>" + g.HTMLrepr() + "</li>\n" for g in Player.allGames.values()])
+	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Labyrinth.allGames.values()])
 	return {"ListOfPlayers":HTMLPlayerList, "ListOfGames": HTMLGameList}
 
 

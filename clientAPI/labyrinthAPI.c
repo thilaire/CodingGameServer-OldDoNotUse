@@ -125,7 +125,7 @@ void connectToServer( char* serverName, int port, char* name)
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 
-	dispDebug( __FUNCTION__, "Initiate connection with %s (port: %d", serverName, port);
+	dispDebug( __FUNCTION__, "Initiate connection with %s (port: %d)", serverName, port);
 
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -217,13 +217,13 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
  */
 int getLabyrinth( char* data)
 {
-	sendString( __FUNCTION__,"GET_LAB");
+	sendString( __FUNCTION__,"GET_GAME_DATA");
 
 	/* read Labyrinth name */
 	bzero(buffer,1000);
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_LAB' command (sending:%s)");
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
 
 	dispDebug(__FUNCTION__, "Receive these data for the labyrinth:%s", buffer);
 
@@ -238,7 +238,7 @@ int getLabyrinth( char* data)
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_LAB' command (sending:%s)");
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
 
 	dispDebug(__FUNCTION__, "Receive these player who begins=%s", buffer);
 

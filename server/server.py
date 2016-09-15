@@ -11,7 +11,8 @@ from colorlog import ColoredFormatter							# logging with colors
 from docopt import docopt										# used to parse the command line
 from functools import wraps										# use to wrap a logger for bottle
 
-from Player import PlayerSocketHandler,Player
+from Player import Player   #TODO: remove, used only for 'toto*' players
+from socketPlayer import PlayerSocketHandler
 import webserver												# import all the routes of the webserver
 
 
@@ -30,8 +31,8 @@ Options:
   -w PORT --web=PORT       Web server port [default: 8080].
   -H HOST --host=HOST      Servers host [default: localhost].
   --debug                  Debug mode (log and display everything).
-  --dev                    Development mode (log everything, display warnings and errors).
-  --prod                   Production mode (log only warnings and errors, display nothing).
+  --dev                    Development mode (log everything, display infos, warnings and errors).
+  --prod                   Production mode (log only infos, warnings and errors, display nothing).
 
 """
 args = docopt(usage)
@@ -45,16 +46,16 @@ args['--web'] = int(args['--web'])
 # see http://sametmax.com/ecrire-des-logs-en-python/
 # create and set up the logger
 logger = logging.getLogger()
-logger.setLevel( logging.WARNING if args['--prod'] else logging.DEBUG )
+logger.setLevel( logging.INFO if args['--prod'] else logging.DEBUG )
 # add an handler to redirect the log to a file (1Mo max)
 file_handler = RotatingFileHandler('logs/activity.log', 'a', 1000000, 1)
-file_handler.setLevel( logging.WARNING if args['--prod'] else logging.DEBUG )
+file_handler.setLevel( logging.INFO if args['--prod'] else logging.DEBUG )
 file_formatter = logging.Formatter( '%(asctime)s [%(name)s] | %(message)s',"%m/%d %H:%M:%S")
 file_handler.setFormatter( file_formatter )
 logger.addHandler(file_handler)
 # add an other handler to redirect some logs to the console (with colors, depending on the level DEBUG/INFO/WARNING/ERROR/CRITICAL)
 steam_handler = logging.StreamHandler()
-steam_handler.setLevel( logging.DEBUG if args['--debug'] else logging.WARNING if args['--dev'] else logging.CRITICAL )
+steam_handler.setLevel( logging.DEBUG if args['--debug'] else logging.INFO if args['--dev'] else logging.CRITICAL )
 LOGFORMAT = "  %(log_color)s[%(name)s]%(reset)s | %(log_color)s%(message)s%(reset)s"
 formatter = ColoredFormatter(LOGFORMAT)
 steam_handler.setFormatter( formatter)
@@ -76,10 +77,9 @@ def log_to_logger(fn):
 
 
 # start
-logger.critical("#=========================================#")
-logger.critical("# Labyrinth Game server is going to start #")
-logger.critical("#=========================================#")
-
+logger.info("#=========================================#")
+logger.info("# Labyrinth Game server is going to start #")
+logger.info("#=========================================#")
 
 
 #DEBUG
@@ -94,12 +94,12 @@ p2=Player("toto2")
 threading.Thread(target=run, kwargs={  'host':args['--host'], 'port':args['--web'], 'quiet':True}).start()
 #run( host=args['--host'], port=args['--web'], quiet=True)
 install(log_to_logger)
-weblogger.info( "Run the web server on port %d..."%args['--web'])
+weblogger.info( "Run the web server on port %d...", args['--web'])
 
 
 # Start TCP Socket server (connection to players)
 PlayerServer = ThreadingTCPServer( (args['--host'], args['--port']), PlayerSocketHandler)
-logger.info( "Run the game server on port %d..."%args['--port'])
+logger.info( "Run the game server on port %d...", args['--port'])
 threading.Thread( target=PlayerServer.serve_forever() )
 
 

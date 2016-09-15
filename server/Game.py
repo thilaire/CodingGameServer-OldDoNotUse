@@ -64,8 +64,8 @@ class Game:
 		file_handler.setFormatter(file_formatter)
 		self._logger.addHandler(file_handler)
 
-		self.logger.warning( "=================================")
-		self.logger.warning( "Game %s just starts with '%s' and '%s'."% (self.name, player1.name, player2.name) )
+		self.logger.info( "=================================")
+		self.logger.info( "Game %s just starts with '%s' and '%s'.", self.name, player1.name, player2.name)
 
 
 		# add itself to the dictionary of games
@@ -136,7 +136,7 @@ class Game:
 		Return True if everything is ok, False if the move is invalid
 		"""
 		# play that move
-		self.logger.info( "'%s' plays %s"%(self.whoPlays.name, move))
+		self.logger.debug( "'%s' plays %s"%(self.whoPlays.name, move))
 		#TODO:
 		valid = self.playMove(self, move)
 

@@ -2930,3 +2930,64 @@ paste.httpserver.ThreadPool 2016-09-10 18:24:10,009 :: DEBUG :: Started new work
 09/13 17:51:53 [root] | Send '13 13' to babyLaby (127.0.0.1) 
 09/13 17:51:53 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
 09/13 17:53:05 [root] | Receive: '' from babyLaby (127.0.0.1) 
+09/15 15:07:37 [root] | #=========================================#
+09/15 15:07:37 [root] | # Labyrinth Game server is going to start #
+09/15 15:07:37 [root] | #=========================================#
+09/15 15:08:15 [root] | #=========================================#
+09/15 15:08:15 [root] | # Labyrinth Game server is going to start #
+09/15 15:08:15 [root] | #=========================================#
+09/15 15:08:15 [toto1] | =================================
+09/15 15:08:15 [toto1] | toto1 just log in.
+09/15 15:08:15 [toto2] | =================================
+09/15 15:08:15 [toto2] | toto2 just log in.
+09/15 15:08:15 [bottle] | Run the web server on port 8080...
+09/15 15:08:15 [root] | Run the game server on port 1233...
+09/15 15:08:57 [root] | #=========================================#
+09/15 15:08:57 [root] | # Labyrinth Game server is going to start #
+09/15 15:08:57 [root] | #=========================================#
+09/15 15:08:57 [toto1] | =================================
+09/15 15:08:57 [toto1] | toto1 just log in.
+09/15 15:08:57 [toto2] | =================================
+09/15 15:08:57 [toto2] | toto2 just log in.
+09/15 15:08:57 [bottle] | Run the web server on port 8080...
+09/15 15:08:57 [root] | Run the game server on port 1233...
+09/15 15:09:29 [root] | #=========================================#
+09/15 15:09:29 [root] | # Labyrinth Game server is going to start #
+09/15 15:09:29 [root] | #=========================================#
+09/15 15:09:29 [toto1] | =================================
+09/15 15:09:29 [toto1] | toto1 just log in.
+09/15 15:09:29 [toto2] | =================================
+09/15 15:09:29 [toto2] | toto2 just log in.
+09/15 15:09:29 [bottle] | Run the web server on port 8080...
+09/15 15:09:29 [root] | Run the game server on port 1233...
+09/15 15:09:40 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/15 15:11:38 [root] | Receive: 'CLIENT_NAME babyLaby' from 127.0.0.1 
+09/15 15:11:38 [root] | Send 'OK' to 127.0.0.1
+09/15 15:11:38 [abyLaby] | =================================
+09/15 15:11:38 [abyLaby] | abyLaby just log in.
+09/15 15:11:38 [root] | Receive: 'WAIT_GAME' from abyLaby (127.0.0.1) 
+09/15 15:11:38 [root] | Send 'OK' to abyLaby (127.0.0.1) 
+09/15 15:13:57 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/15 15:14:00 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/player/abyLaby 200 OK
+09/15 15:14:16 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/15 15:14:23 [1473945263-838447143-toto2-abyLaby] | =================================
+09/15 15:14:23 [1473945263-838447143-toto2-abyLaby] | Game 1473945263-838447143-toto2-abyLaby just starts with 'toto2' and 'abyLaby'.
+09/15 15:14:23 [toto2] | Enter in game 1473945263-838447143-toto2-abyLaby
+09/15 15:14:23 [abyLaby] | Enter in game 1473945263-838447143-toto2-abyLaby
+09/15 15:14:23 [root] | Send '1473945263-838447143-toto2-abyLaby' to abyLaby (127.0.0.1) 
+09/15 15:14:23 [root] | Send '17 7' to abyLaby (127.0.0.1) 
+09/15 15:14:23 [root] | Receive: 'GET_LAB' from abyLaby (127.0.0.1) 
+09/15 15:14:23 [root] | Send 'Bad protocol, should send 'GET_GAME_DATA' command' to abyLaby (127.0.0.1) 
+09/15 15:14:23 [abyLaby] | Connection closed with player abyLaby (127.0.0.1)
+09/15 15:14:23 [abyLaby] | abyLaby just log out.
+09/15 15:14:23 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/15 15:18:06 [root] | #=========================================#
+09/15 15:18:06 [root] | # Labyrinth Game server is going to start #
+09/15 15:18:06 [root] | #=========================================#
+09/15 15:18:06 [root] | This is a putain test qui a l'air de marcher
+09/15 15:18:06 [toto1] | =================================
+09/15 15:18:06 [toto1] | toto1 just log in.
+09/15 15:18:06 [toto2] | =================================
+09/15 15:18:06 [toto2] | toto2 just log in.
+09/15 15:18:06 [bottle] | Run the web server on port 8080...
+09/15 15:18:06 [root] | Run the game server on port 1233...

@@ -73,8 +73,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 					self.sendData("OK")
 					self.request.sendall(str(
 						self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
-					logger.debug("Send the labyrinth to display to player %s (%s)" % (
-					self._player.nanme, self.client_address[0]))
+					logger.debug("Send the labyrinth to display to player %s (%s)", self._player.nanme, self.client_address[0])
 
 				elif data.startswith("SEND_COMMENT "):
 					# return the labyrinth
@@ -88,11 +87,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		except connectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...
-
-			if self._player:
-				self._player.logger.error("Error with %s: '%s'" % (self._player.name, self.client_address[0], e))
-			else:
-				logger.error("Error with %s (%s): '%s'" % (self._player.name, self.client_address[0], e))
+			aLogger = self.logger if self._player is None else self._player.logger
+			aLogger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], e)
 
 
 
@@ -101,8 +97,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Call when the connection is closed
 		"""
 		if self._player is not None:
-			self._player.logger.debug(
-				"Connection closed with player %s (%s)" % (self._player.name, self.client_address[0]))
+			self._player.logger.debug( "Connection closed with player %s (%s)", self._player.name, self.client_address[0])
 			Player.removePlayer(self._player.name)
 			del self._player
 
@@ -113,9 +108,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		data = str(self.request.recv(size).strip(), "utf-8")
 		if self._player:
-			logger.debug("Receive: '%s' from %s (%s) " % (data, self._player.name, self.client_address[0]))
+			logger.debug( "Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug("Receive: '%s' from %s " % (data, self.client_address[0]))
+			logger.debug( "Receive: '%s' from %s ", data, self.client_address[0])
 		return data
 
 	def sendData(self, data):
@@ -123,11 +118,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Send data (with self.request.sendall) and log it
 		:param data: (str) data to send
 		"""
-		self.request.sendall(data.encode('utf-8'))
+		self.request.sendall( data.encode('utf-8'))
 		if self._player:
-			logger.debug("Send '%s' to %s (%s) " % (data, self._player.name, self.client_address[0]))
+			logger.debug( "Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug("Send '%s' to %s" % (data, self.client_address[0]))
+			logger.debug( "Send '%s' to %s", data, self.client_address[0])
 
 
 	@property
@@ -152,6 +147,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("CLIENT_NAME "):
 			raise connectionError("Bad protocol, should start with CLIENT_NAME ")
+
+		data[:13]=""
 
 		# check if the player doesn't exist yet
 		if data[13:] in Player.allPlayers:

@@ -34,8 +34,8 @@ class Player:
 			self._logger.addHandler(file_handler)
 
 
-		self.logger.warning( "=================================")
-		self.logger.warning( name + " just log in.")
+		self.logger.info( "=================================")
+		self.logger.info( name + " just log in.")
 
 		# name
 		self._name = name
@@ -64,7 +64,7 @@ class Player:
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
 		if pl is not None:
-			pl.logger.warning( name +" just log out.")
+			pl.logger.info( name +" just log out.")
 			del cls.allPlayers[name]
 
 
@@ -110,7 +110,7 @@ class Player:
 	@game.setter
 	def game(self,g):
 		self._game = g
-		self.logger.warning("Enter in game "+g.name)
+		self.logger.info("Enter in game "+g.name)
 		# since we have a game, then we can set the Event
 		self._waitingGame.set()
 
