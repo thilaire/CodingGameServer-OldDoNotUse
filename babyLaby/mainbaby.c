@@ -72,7 +72,7 @@ int main()
 	debug=1;	/* enable debug */
 
 	/* connection to the server */
-	connectToServer( "localhost", 1233, "babyLaby");
+	connectToServer( "localhost", 1234, "babyLaby");
 	printf("Youhou, connecté au serveur !\n");
 
 

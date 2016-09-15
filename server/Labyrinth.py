@@ -165,3 +165,14 @@ class Labyrinth(Game):
 		# play that move
 
 		return True
+
+	def getData(self):
+		"""
+		Return the datas of the labyrinth (when ask with the GET_GAME_DATA message)
+		"""
+		msg = []
+		L, H = self.lab.shape
+		for y in range(H):
+			for x in range(L):
+				msg.append( "1" if self.lab[x, y] else "0")
+		return "".join(msg)

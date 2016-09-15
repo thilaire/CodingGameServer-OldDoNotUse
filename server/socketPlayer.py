@@ -148,21 +148,19 @@ class PlayerSocketHandler(BaseRequestHandler):
 		if not data.startswith("CLIENT_NAME "):
 			raise connectionError("Bad protocol, should start with CLIENT_NAME ")
 
-		data[:13]=""
+		data = data[12:]
 
 		# check if the player doesn't exist yet
-		if data[13:] in Player.allPlayers:
-			self.sendData("A client with the same name ('" + data[13:] + "') is already connected!")
-			raise connectionError(
-				"A client with the same name is already connected: %s (%s)" % (data[13:], self.client_address[0]))
+		if data in Player.allPlayers:
+			self.sendData("A client with the same name ('" + data + "') is already connected!")
+			raise connectionError( "A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 
 
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
-		name = sub('\W+', '', data[13:])
-		if name != data[13:] or len(name) > 20:
+		name = sub('\W+', '', data)
+		if name != data or len(name) > 20:
 			self.sendData("The name is invalid (max 20 characters in [a-zA-Z0-9_])")
-			raise connectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (
-			data[13:], self.client_address[0]))
+			raise connectionError( "The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (data, self.client_address[0]))
 
 
 		# just send back OK
@@ -212,7 +210,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# Get the labyrinth
 		self.sendData("OK")
-		self.sendData( self.game.Data() )
+		self.sendData( self.game.getData() )
 		self.sendData( '0' if self.game.whoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 
