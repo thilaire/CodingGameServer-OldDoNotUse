@@ -6,7 +6,7 @@ Webserver functions
 from bottle import route,  jinja2_view, request, redirect, static_file, template, TEMPLATE_PATH, response, error
 from functools import partial
 from Player import Player
-from Game import Game
+from Labyrinth import Labyrinth
 
 #configure the web server template engine
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -21,7 +21,7 @@ def index():
 	Main page (based on index.html template)
 	"""
 	HTMLPlayerList = "\n".join([ "<li>"+ p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
-	HTMLGameList = "\n".join(["<li>" + g.HTMLrepr() + "</li>\n" for g in Game.allGames.values()])
+	HTMLGameList = "\n".join(["<li>" + g.HTMLrepr() + "</li>\n" for g in Player.allGames.values()])
 	return {"ListOfPlayers":HTMLPlayerList, "ListOfGames": HTMLGameList}
 
 
@@ -46,9 +46,10 @@ def create_new_game():
 	player2 = Player.getFromName( request.forms.get('player2') )
 
 	# the constructor will check if player1 and player2 are available to play
-	g = Game( player1, player2 )
+	g = Labyrinth( player1, player2 )
 
 	if g is None:
+		#TODO: redirect to an error page
 		return "Erreur. Impossible de créer une partie avec " + request.forms.get('player1') + " and " + request.forms.get('player2')
 	else:
 		redirect('/')
@@ -58,8 +59,9 @@ def create_new_game():
 
 @route('/game/<gameName>')
 def game(gameName):
-	g = Game.getFromName( gameName)
+	g = Labyrinth.getFromName( gameName)
 	if g:
+		#TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
 		return g.HTMLpage()
 	else:
 		return template('noGame.html', player=gameName)
@@ -69,6 +71,7 @@ def game(gameName):
 def player(playerName):
 	pl = Player.getFromName( playerName)
 	if pl:
+		#TODO: use a template
 		return pl.HTMLpage()
 	else:
 		return template('noPlayer.html', player=playerName)

@@ -149,7 +149,7 @@ void connectToServer( char* serverName, int port, char* name)
 		dispError(__FUNCTION__, "Connection to the server '%s' on port %d impossible.", serverName, port);
 
 	/* Sending our name */
-	sendString( __FUNCTION__, "CLIENT_NAME: %s",name);
+	sendString( __FUNCTION__, "CLIENT_NAME %s",name);
 }
 
 
@@ -276,7 +276,7 @@ void printLabyrinth()
 	dispDebug(__FUNCTION__, "Try to get string to display labyrinth");
 
 	/* send command */
-	sendString( __FUNCTION__, "DISP_LAB:");
+	sendString( __FUNCTION__, "DISP_GAME");
 
 	/* get string to print */
 	char buffer[10000];

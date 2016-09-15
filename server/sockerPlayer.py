@@ -43,17 +43,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 			# and finally send the data for the game
 			self.sendGameData()
+
 			while True:
 				data = self.receiveData()
 
-				if data.startswith("GET_LAB:"):
-					# Get the labyrinth
-					self.sendData("OK")
-					self.sendData("blabla")
-					self.sendData(
-						'0' if self.game.whoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
-
-				elif data.startswith("GET_MOVE:"):
+				if data.startswith("GET_MOVE"):
 					# get move of the opponent
 					if self._player is not self.game.whoPlays:
 						self.sendData("OK")
@@ -64,19 +58,17 @@ class PlayerSocketHandler(BaseRequestHandler):
 						# we cannot ask for a move, since it's our turn to play
 						self.sendData("It's our turn to play, so we cannot ask for a move!")
 
-
-				elif data.startswith("PLAY_MOVE:"):
+				elif data.startswith("PLAY_MOVE "):
 					# play move
 					if self._player is self.game.whoPlays:
-						if self.game.playMove(move):
+						if self.game.receiveMove(move):
 							self.sendData("OK")
 						else:
 							self.sendData("The move is not valid!")
 					else:
 						self.sendData("It's not our turn to play, so we cannot play a move!")
 
-
-				elif data.startswith("DISP_LAB:"):
+				elif data.startswith("DISP_GAME"):
 					# return the labyrinth
 					self.sendData("OK")
 					self.request.sendall(str(
@@ -84,14 +76,15 @@ class PlayerSocketHandler(BaseRequestHandler):
 					logger.debug("Send the labyrinth to display to player %s (%s)" % (
 					self._player.nanme, self.client_address[0]))
 
-				elif data.startswith("SEND_COMMENT:"):
+				elif data.startswith("SEND_COMMENT "):
 					# return the labyrinth
 					self.sendData("OK")
-				# TODO: send a comment to the game
-				# self.game.sendComment(data[13:])
+					# TODO: send a comment to the game
+					# self.game.sendComment(data[13:])
 
 				else:
 					raise connectionError("Bad protocol, command should not start with '" + data + "'")
+
 
 		except connectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...
@@ -100,6 +93,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				self._player.logger.error("Error with %s: '%s'" % (self._player.name, self.client_address[0], e))
 			else:
 				logger.error("Error with %s (%s): '%s'" % (self._player.name, self.client_address[0], e))
+
+
 
 	def finish(self):
 		"""
@@ -134,22 +129,36 @@ class PlayerSocketHandler(BaseRequestHandler):
 		else:
 			logger.debug("Send '%s' to %s" % (data, self.client_address[0]))
 
+
+	@property
+	def game(self):
+		"""
+		Returns the game of the player (self.game is a shortcup for self.game)
+		"""
+		return self._player.game
+
+
+
+
+
 	def getPlayerName(self):
 		"""
-		receive and treat connection to get the player name
-		:return:
-		the player name
-		or raises an exception (connectionError)
+		Waits for a message "CLIENT_NAME" and treat it
+		Returns the player name
+		or raises an exception (connectionError) if the request is not valid
 		"""
+
+		# get data
 		data = self.receiveData()
-		if not data.startswith("CLIENT_NAME: "):
-			raise connectionError("Bad protocol, should start with CLIENT_NAME: ")
+		if not data.startswith("CLIENT_NAME "):
+			raise connectionError("Bad protocol, should start with CLIENT_NAME ")
 
 		# check if the player doesn't exist yet
 		if data[13:] in Player.allPlayers:
 			self.sendData("A client with the same name ('" + data[13:] + "') is already connected!")
 			raise connectionError(
 				"A client with the same name is already connected: %s (%s)" % (data[13:], self.client_address[0]))
+
 
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
 		name = sub('\W+', '', data[13:])
@@ -158,11 +167,19 @@ class PlayerSocketHandler(BaseRequestHandler):
 			raise connectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (
 			data[13:], self.client_address[0]))
 
+
 		# just send back OK
 		self.sendData("OK")
 		return name
 
+
+
 	def waitForGame(self):
+		"""
+		Waits for a message "WAIT_GAME" and then wait for a game (with an Event)
+		Returns nothing
+		"""
+
 		# get the WAIT_GAME message
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME"):
@@ -182,12 +199,23 @@ class PlayerSocketHandler(BaseRequestHandler):
 		# now send the game sizes
 		self.sendData("%d %d" % (self.game.sizeX, self.game.sizeY))
 
-	@property
-	def game(self):
-		"""
-		Returns the game of the player (self.game is a shortcup for self.game)
-		"""
-		return self._player.game
 
+
+	def sendGameData(self):
+		"""
+		Waits for a message "GET_GAME_DATA", and then send back the game datas
+		Returns nothing
+		"""
+
+		# receive data from the socket
+		data = self.receiveData()
+		if not data.startswith("GET_GAME_DATA"):
+			self.sendData("Bad protocol, should send 'GET_GAME_DATA' command")
+			raise connectionError("Bad protocol, should send 'GET_GAME_DATA' command")
+
+		# Get the labyrinth
+		self.sendData("OK")
+		self.sendData( self.game.Data() )
+		self.sendData( '0' if self.game.whoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 
