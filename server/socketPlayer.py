@@ -71,9 +71,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				elif data.startswith("DISP_GAME"):
 					# return the labyrinth
 					self.sendData("OK")
-					self.request.sendall(str(
-						self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
-					logger.debug("Send the labyrinth to display to player %s (%s)", self._player.nanme, self.client_address[0])
+					self.request.sendall( str(self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
+					logger.debug("Send the labyrinth to display to player %s (%s)", self._player.name, self.client_address[0])
 
 				elif data.startswith("SEND_COMMENT "):
 					# return the labyrinth
@@ -87,8 +86,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		except connectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...
-			aLogger = self.logger if self._player is None else self._player.logger
-			aLogger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], e)
+			if self._player is None:
+				logger.error("Error with client (%s): '%s'", self.client_address[0], e)
+			else:
+				self._player.logger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], e)
 
 
 

@@ -64,7 +64,7 @@ def game(gameName):
 		#TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
 		return g.HTMLpage()
 	else:
-		return template('noGame.html', player=gameName)
+		return template('noGame.html', gameName=gameName)
 
 
 @route('/player/<playerName>')

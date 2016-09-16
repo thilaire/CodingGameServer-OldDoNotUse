@@ -3,6 +3,7 @@ from numpy import full
 from random import shuffle, random, randint
 from numpy.random import randint
 from Game import Game
+from colorama import Fore
 
 
 def CreateLaby(sX, sY):
@@ -110,6 +111,18 @@ class Labyrinth(Game):
 		sX = randint(3, 5)
 		self._lab = CreateLaby(sX, totalSize - sX)
 
+		# add treasor and players
+		L,H = self.lab.shape
+		self._treasure = (L // 2, H // 2)
+		self._lab[ self._treasure] = False
+
+		self._player1 = (0, H // 2)
+		self._lab[ self._player1] = False
+
+		self._player2 = (L - 1, H // 2)
+		self._lab[ self._player2] = False
+
+
 
 
 	@property
@@ -122,8 +135,7 @@ class Labyrinth(Game):
 
 	def HTMLpage(self):
 		# TODO: return a dictionary to fill a html template
-		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
-		self.name, self.player1.name, self.player2.name, self)
+		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (self.name, self._player1.name, self._player2.name, self)
 
 
 
@@ -139,11 +151,32 @@ class Labyrinth(Game):
 		lines = []
 		L, H = self.lab.shape
 		for y in range(H):
-			st = ""
+			st = []
 			for x in range(L):
-				st = st + (" " if self.lab[x, y] else u"\u2589")
-			lines.append(st)
-		return "\n".join(lines)
+				# add treasor
+				if (x,y) == self._treasure:
+					st.append( Fore.GREEN + u"\u2691" + Fore.RESET)
+				# add player1
+				elif (x,y) == self._player1:
+					st.append( Fore.BLUE + u"\u265F" + Fore.RESET)
+				# add player2
+				elif (x,y) == self._player2:
+					st.append( Fore.RED + u"\u265F" + Fore.RESET)
+				# add empty
+				elif self.lab[x,y]:
+					st.append( " ")
+				# or add wall
+				else:
+					st.append( u"\u2589")
+			lines.append( "|" + ".".join(st) + "|" )
+
+		# add player names
+		#TODO: add points
+		lines[H//2] = lines[H//2] + "\t\t" + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name
+		lines[H//2 + 2] = lines[H//2 + 2] + "\t\t" + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name
+
+		head = "+"+"-"*3*L+"+\n"
+		return head + "\n".join(lines) + "\n" + head
 
 
 	@property

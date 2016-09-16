@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../clientAPI/labyrinthAPI.h"
-
+#include <unistd.h>
 
 extern int debug;	/* hack to enable debug messages */
 
@@ -59,7 +59,28 @@ void playMove( t_laby* laby, int type, int val)
 }
 
 
-
+void myPrintLaby( t_laby* l)
+{
+	printf("\nLaby:\n");
+	for( int i=0; i<l->sizeX; i++) {
+		for (int j = 0; j < l->sizeY; j++) {
+			/* treasor */
+			if ((i == l->trX) && (j == l->trY))
+				printf("X");
+			/* opponent */
+			else if ((i == l->opX) && (j == l->opY))
+				printf("O");
+			/* me */
+			else if ((i == l->X) && (j == l->Y))
+				printf("M");
+			else if (l->data[j*l->sizeX+i])
+				printf("\u2589");
+			else
+				printf(" ");
+		}
+		printf("\n");
+	}
+}
 
 
 int main()
@@ -72,7 +93,9 @@ int main()
 	debug=1;	/* enable debug */
 
 	/* connection to the server */
-	connectToServer( "localhost", 1234, "babyLaby");
+	char nom[50];
+	sprintf(nom,"ProgTest_%d",getpid());
+	connectToServer( "localhost", 1234, nom);
 	printf("Youhou, connecté au serveur !\n");
 
 
@@ -84,8 +107,21 @@ int main()
 		/* wait for a game, and retrieve informations about it */
 		waitForLabyrinth( lab.name, &(lab.sizeX), &(lab.sizeY));
 		lab.data = (char*) malloc( lab.sizeX * lab.sizeY );
-		getLabyrinth( lab.data);
-		printf("On commence avec le lab '%s' de taille %d*%d!\n", lab.name, lab.sizeY, lab.sizeY);
+		lab.player = getLabyrinth( lab.data);
+
+		lab.trX = lab.sizeX/2;
+		lab.trY = lab.sizeY/2;
+		if (lab.player) {
+			lab.opX = 1;
+			lab.X = lab.sizeX - 2;
+		}
+		lab.opY = lab.sizeY/2;
+		lab.X = lab.sizeY/2;
+
+		printf("Voici le labyrinthe\n");
+		myPrintLaby( &lab);
+
+		printLabyrinth();
 			
 		/* who's start ? */
 		//lab.player = getWhoStarts();

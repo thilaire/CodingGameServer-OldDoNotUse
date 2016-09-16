@@ -279,8 +279,8 @@ void printLabyrinth()
 	sendString( __FUNCTION__, "DISP_GAME");
 
 	/* get string to print */
-	char buffer[10000];
-	int r = read(sockfd, buffer, 255);
+	char buffer[1000];
+	int r = read(sockfd, buffer, 1000);
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read string from socket");
 
