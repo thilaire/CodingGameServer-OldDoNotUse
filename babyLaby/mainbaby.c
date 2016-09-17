@@ -4,6 +4,7 @@
 #include "../clientAPI/labyrinthAPI.h"
 #include <unistd.h>
 
+
 extern int debug;	/* hack to enable debug messages */
 
 typedef struct {
@@ -90,12 +91,14 @@ int main()
 	int finished;		/* indicates if the game is over */
 	int type, val;		/* used for a move */
 
+	int x;
+
 	debug=1;	/* enable debug */
 
 	/* connection to the server */
 	char nom[50];
 	sprintf(nom,"ProgTest_%d",getpid());
-	connectToServer( "localhost", 1234, nom);
+	connectToServer( "localhost", 1235, nom);
 	printf("Youhou, connecté au serveur !\n");
 
 
@@ -118,33 +121,38 @@ int main()
 		lab.opY = lab.sizeY/2;
 		lab.X = lab.sizeY/2;
 
-		printf("Voici le labyrinthe\n");
-		myPrintLaby( &lab);
+		//printf("Voici le labyrinthe\n");
+		//myPrintLaby( &lab);
 
 		printLabyrinth();
 			
-		/* who's start ? */
-		//lab.player = getWhoStarts();
-		
+
 		do {
 			finished=0;
-//			if (lab.player==1)	/* The opponent plays */
-//			{
-//				//finished = getMove( &type, &val);
-//				playMove( &lab, type, val);
-//			}
-//			else
-//			{
-//				//.... choose what to play
-//				type=MOVE_UP;
-//				val=0;
-//				//finished = sendMove(type, val);
-//				playMove( &lab, type, val);
-//			}
-//			/* display the labyrinth */
-//			printLabyrinth();
-//			/* change player */
-//			lab.player = !lab.player;
+			if (lab.player==1)	/* The opponent plays */
+			{
+				finished = getMove( &type, &val);
+				//playMove( &lab, type, val);
+			}
+			else
+			{
+				//.... choose what to play
+				type=MOVE_UP;
+				val=0;
+				finished = sendMove(type, val);
+				//playMove( &lab, type, val);
+			}
+			/* display the labyrinth */
+			printLabyrinth();
+			/* change player */
+			lab.player = !lab.player;
+
+/*
+ */
+x=rand()*7/RAND_MAX + 1;
+sleep(x);
+/*
+ */
 
 		} while (!finished);
 	

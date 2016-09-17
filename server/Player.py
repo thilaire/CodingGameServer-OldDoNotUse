@@ -79,21 +79,6 @@ class Player:
 
 
 
-
-	@property
-	def opponent(self):
-		"""
-		Return our opponent in the game
-		"""
-		if self._game is None:
-			return None
-		elif self._game.player1 is self:
-			return self._game.player2
-		else:
-			return self._game.player1
-
-
-
 	@property
 	def name(self):
 		return self._name

@@ -261,14 +261,58 @@ Returns 1 if the game is finished, 0 otherwise */
 #define MOVE_DOWN			5
 #define MOVE_LEFT			6
 #define MOVE_RIGHT			7
+
+//TODO: une structure pour le move !
+//TODO: docstring pour getMove et sendMove
 int getMove( int* type, int* val)
 {
-	return 0;
+	int result;
+	sendString( __FUNCTION__, "GET_MOVE");
+
+	/* read move */
+	bzero(buffer,1000);
+	int r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive that move:%s", buffer);
+
+	/* extract move */
+	sscanf( buffer, "%d %d", type, val);
+
+	/* read result of the move */
+	bzero(buffer,1000);
+	r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive that result for the move:%s", buffer);
+
+	/* extract result */
+	sscanf( buffer, "%d", &result);
+	return result;
 }
+
+
 int sendMove(int type, int val)
 {
-	return 0;
+	int result;
+	sendString( __FUNCTION__, "PLAY_MOVE %d %d", type, val);
+
+
+	/* read result of the move */
+	bzero(buffer,1000);
+	int r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive that result for the move:%s", buffer);
+
+	/* extract result */
+	sscanf( buffer, "%d", &result);
+	return result;
 }
+
 
 /* display the labyrinth */
 void printLabyrinth()

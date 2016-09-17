@@ -4,7 +4,7 @@
 
 from socketserver import ThreadingTCPServer						# socket server (with multi-threads capabilities)
 import threading												# to run threads
-from bottle import run, request, response, install				# webserver (bottle)
+from bottle import run, request, response, install			# webserver (bottle)
 import logging													# logging system
 from logging.handlers import RotatingFileHandler
 from colorlog import ColoredFormatter							# logging with colors

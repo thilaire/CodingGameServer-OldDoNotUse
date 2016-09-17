@@ -77,8 +77,12 @@ class Game:
 
 		# determine who starts
 		self._whoPlays = choice( (player1, player2) )
-		self._waitingPlayer = Event()
-		self._waitingPlayer.clear()		# we're waiting for whoPlays to play its move
+
+		# Event to manage payMove and getMove from the players
+		self._getMoveEvent = Event()
+		self._getMoveEvent.clear()
+		self._playMoveEvent = Event()
+		self._playMoveEvent.clear()
 
 
 	@property
@@ -118,13 +122,19 @@ class Game:
 		If it doesn't answer in TIMEOUT_TURN seconds, then he losts
 		"""
 
-		if self._waitingPlayer.is_set() or self._waitingPlayer.wait( TIMEOUT_TURN ):
-			self._waitingPlayer.clear()
+		# wait for the move of the opponent
+		self.logger.debug("Wait for playMove event")
+		if self._playMoveEvent.is_set() or self._playMoveEvent.wait(TIMEOUT_TURN):
+			self.logger.debug("Receive playMove event")
+			self._playMoveEvent.clear()
+
+			self._getMoveEvent.set()
+
 			return self._lastMove
 		else:
 			# Timeout !!
 			# the opponent has lost the game
-			self._waitingPlayer.clear()
+			self._playMoveEvent.clear()
 			#TODO: lk
 			pass
 
@@ -138,20 +148,32 @@ class Game:
 		# play that move
 		self.logger.debug( "'%s' plays %s"%(self.whoPlays.name, move))
 		#TODO:
-		valid = self.playMove(self, move)
+		valid = self.playMove(move)
 
 		if valid:
 
 			# keep the last move
 			self._lastMove = move
 
-			# and then set the Event
-			self._waitingPlayer.set()
-			self._whoPlays = self.whoPlays.opponent
+			# set the playMove Event
+			self._playMoveEvent.set()
+
+			# and then wait that the opponent get the move
+			self.logger.debug("Wait for getMove event")
+			self._getMoveEvent.wait()
+			self._getMoveEvent.clear()
+			self.logger.debug("Receive getMove event")
+
+			# change who plays
+			if self.whoPlays == self._players[0]:
+				self._whoPlays = self._players[1]
+			else:
+				self._whoPlays = self._players[0]
 
 			return True
 
 
 		else:
 			#TODO: something to do, here?
+
 			return False

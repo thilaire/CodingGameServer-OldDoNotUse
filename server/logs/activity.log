@@ -3526,3 +3526,1713 @@ paste.httpserver.ThreadPool 2016-09-10 18:24:10,009 :: DEBUG :: Started new work
 09/16 11:01:39 [root] | Receive: '' from ProgTest_18023 (127.0.0.1) 
 09/16 11:01:39 [ProgTest_18023] | Connection closed with player ProgTest_18023 (127.0.0.1)
 09/16 11:01:39 [ProgTest_18023] | ProgTest_18023 just log out.
+09/16 11:05:57 [root] | #=========================================#
+09/16 11:05:57 [root] | # Labyrinth Game server is going to start #
+09/16 11:05:57 [root] | #=========================================#
+09/16 11:05:57 [toto1] | =================================
+09/16 11:05:57 [toto1] | toto1 just log in.
+09/16 11:05:57 [toto2] | =================================
+09/16 11:05:57 [toto2] | toto2 just log in.
+09/16 11:05:57 [bottle] | Run the web server on port 8080...
+09/16 11:05:57 [root] | Run the game server on port 1234...
+09/16 11:06:00 [root] | Receive: 'CLIENT_NAME ProgTest_18122' from 127.0.0.1 
+09/16 11:06:00 [root] | Send 'OK' to 127.0.0.1
+09/16 11:06:00 [ProgTest_18122] | =================================
+09/16 11:06:00 [ProgTest_18122] | ProgTest_18122 just log in.
+09/16 11:06:00 [root] | Receive: 'WAIT_GAME' from ProgTest_18122 (127.0.0.1) 
+09/16 11:06:00 [root] | Send 'OK' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:01 [root] | Receive: 'CLIENT_NAME ProgTest_18123' from 127.0.0.1 
+09/16 11:06:01 [root] | Send 'OK' to 127.0.0.1
+09/16 11:06:01 [ProgTest_18123] | =================================
+09/16 11:06:01 [ProgTest_18123] | ProgTest_18123 just log in.
+09/16 11:06:01 [root] | Receive: 'WAIT_GAME' from ProgTest_18123 (127.0.0.1) 
+09/16 11:06:01 [root] | Send 'OK' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:08 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:06:12 [1474016772-941667735-ProgTest_18122-ProgTest_18123] | =================================
+09/16 11:06:12 [1474016772-941667735-ProgTest_18122-ProgTest_18123] | Game 1474016772-941667735-ProgTest_18122-ProgTest_18123 just starts with 'ProgTest_18122' and 'ProgTest_18123'.
+09/16 11:06:12 [ProgTest_18122] | Enter in game 1474016772-941667735-ProgTest_18122-ProgTest_18123
+09/16 11:06:12 [ProgTest_18123] | Enter in game 1474016772-941667735-ProgTest_18122-ProgTest_18123
+09/16 11:06:12 [root] | Send '1474016772-941667735-ProgTest_18122-ProgTest_18123' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '1474016772-941667735-ProgTest_18122-ProgTest_18123' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '13 11' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '13 11' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send 'OK' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send 'OK' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '11111111111110000011100000111011111011111111101111111010111110101001010001010010101010101011010011100101111011111011111011111110111111111111111' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '11111111111110000011100000111011111011111111101111111010111110101001010001010010101010101011010011100101111011111011111011111110111111111111111' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '0' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send '1' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Receive: 'DISP_GAME' from ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Receive: 'DISP_GAME' from ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send 'OK' to ProgTest_18122 (127.0.0.1) 
+09/16 11:06:12 [root] | Send 'OK' to ProgTest_18123 (127.0.0.1) 
+09/16 11:06:12 [root] | Send the labyrinth to display to player ProgTest_18122 (127.0.0.1)
+09/16 11:06:12 [root] | Send the labyrinth to display to player ProgTest_18123 (127.0.0.1)
+09/16 11:06:12 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:09:15 [root] | Receive: '' from ProgTest_18122 (127.0.0.1) 
+09/16 11:09:15 [ProgTest_18122] | Error with ProgTest_18122 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:09:15 [ProgTest_18122] | Connection closed with player ProgTest_18122 (127.0.0.1)
+09/16 11:09:15 [ProgTest_18122] | ProgTest_18122 just log out.
+09/16 11:10:07 [root] | Receive: '' from ProgTest_18123 (127.0.0.1) 
+09/16 11:10:07 [ProgTest_18123] | Error with ProgTest_18123 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:10:07 [ProgTest_18123] | Connection closed with player ProgTest_18123 (127.0.0.1)
+09/16 11:10:07 [ProgTest_18123] | ProgTest_18123 just log out.
+09/16 11:13:06 [root] | #=========================================#
+09/16 11:13:06 [root] | # Labyrinth Game server is going to start #
+09/16 11:13:06 [root] | #=========================================#
+09/16 11:13:06 [toto1] | =================================
+09/16 11:13:06 [toto1] | toto1 just log in.
+09/16 11:13:06 [toto2] | =================================
+09/16 11:13:06 [toto2] | toto2 just log in.
+09/16 11:13:06 [bottle] | Run the web server on port 8080...
+09/16 11:13:06 [root] | Run the game server on port 1234...
+09/16 11:13:10 [root] | Receive: 'CLIENT_NAME ProgTest_18192' from 127.0.0.1 
+09/16 11:13:10 [root] | Send 'OK' to 127.0.0.1
+09/16 11:13:10 [ProgTest_18192] | =================================
+09/16 11:13:10 [ProgTest_18192] | ProgTest_18192 just log in.
+09/16 11:13:10 [root] | Receive: 'WAIT_GAME' from ProgTest_18192 (127.0.0.1) 
+09/16 11:13:10 [root] | Send 'OK' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:11 [root] | Receive: 'CLIENT_NAME ProgTest_18193' from 127.0.0.1 
+09/16 11:13:11 [root] | Send 'OK' to 127.0.0.1
+09/16 11:13:11 [ProgTest_18193] | =================================
+09/16 11:13:11 [ProgTest_18193] | ProgTest_18193 just log in.
+09/16 11:13:11 [root] | Receive: 'WAIT_GAME' from ProgTest_18193 (127.0.0.1) 
+09/16 11:13:11 [root] | Send 'OK' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:16 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:13:17 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:13:21 [1474017201-813491460-ProgTest_18192-ProgTest_18193] | =================================
+09/16 11:13:21 [1474017201-813491460-ProgTest_18192-ProgTest_18193] | Game 1474017201-813491460-ProgTest_18192-ProgTest_18193 just starts with 'ProgTest_18192' and 'ProgTest_18193'.
+09/16 11:13:21 [ProgTest_18192] | Enter in game 1474017201-813491460-ProgTest_18192-ProgTest_18193
+09/16 11:13:21 [ProgTest_18193] | Enter in game 1474017201-813491460-ProgTest_18192-ProgTest_18193
+09/16 11:13:21 [root] | Send '1474017201-813491460-ProgTest_18192-ProgTest_18193' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '1474017201-813491460-ProgTest_18192-ProgTest_18193' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '13 9' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '13 9' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send 'OK' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '111011111011111101111101111110101010111100011011000100111101111001100011100011101110101110110101010101011111111111111' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '1' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send 'OK' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Receive: 'DISP_GAME' from ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '111011111011111101111101111110101010111100011011000100111101111001100011100011101110101110110101010101011111111111111' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send 'OK' to ProgTest_18192 (127.0.0.1) 
+09/16 11:13:21 [root] | Send '0' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send the labyrinth to display to player ProgTest_18192 (127.0.0.1)
+09/16 11:13:21 [root] | Receive: 'DISP_GAME' from ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send 'OK' to ProgTest_18193 (127.0.0.1) 
+09/16 11:13:21 [root] | Send the labyrinth to display to player ProgTest_18193 (127.0.0.1)
+09/16 11:13:21 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:14:02 [root] | Receive: '' from ProgTest_18193 (127.0.0.1) 
+09/16 11:14:02 [ProgTest_18193] | Error with ProgTest_18193 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:14:02 [ProgTest_18193] | Connection closed with player ProgTest_18193 (127.0.0.1)
+09/16 11:14:02 [ProgTest_18193] | ProgTest_18193 just log out.
+09/16 11:14:04 [root] | Receive: '' from ProgTest_18192 (127.0.0.1) 
+09/16 11:14:04 [ProgTest_18192] | Error with ProgTest_18192 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:14:04 [ProgTest_18192] | Connection closed with player ProgTest_18192 (127.0.0.1)
+09/16 11:14:04 [ProgTest_18192] | ProgTest_18192 just log out.
+09/16 11:16:03 [root] | #=========================================#
+09/16 11:16:03 [root] | # Labyrinth Game server is going to start #
+09/16 11:16:03 [root] | #=========================================#
+09/16 11:16:03 [toto1] | =================================
+09/16 11:16:03 [toto1] | toto1 just log in.
+09/16 11:16:03 [toto2] | =================================
+09/16 11:16:03 [toto2] | toto2 just log in.
+09/16 11:16:03 [bottle] | Run the web server on port 8080...
+09/16 11:16:03 [root] | Run the game server on port 1234...
+09/16 11:16:07 [root] | Receive: 'CLIENT_NAME ProgTest_18236' from 127.0.0.1 
+09/16 11:16:07 [root] | Send 'OK' to 127.0.0.1
+09/16 11:16:07 [ProgTest_18236] | =================================
+09/16 11:16:07 [ProgTest_18236] | ProgTest_18236 just log in.
+09/16 11:16:07 [root] | Receive: 'WAIT_GAME' from ProgTest_18236 (127.0.0.1) 
+09/16 11:16:07 [root] | Send 'OK' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:08 [root] | Receive: 'CLIENT_NAME ProgTest_18237' from 127.0.0.1 
+09/16 11:16:08 [root] | Send 'OK' to 127.0.0.1
+09/16 11:16:08 [ProgTest_18237] | =================================
+09/16 11:16:08 [ProgTest_18237] | ProgTest_18237 just log in.
+09/16 11:16:08 [root] | Receive: 'WAIT_GAME' from ProgTest_18237 (127.0.0.1) 
+09/16 11:16:08 [root] | Send 'OK' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:13 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:16:16 [1474017376-374737664-ProgTest_18237-ProgTest_18236] | =================================
+09/16 11:16:16 [1474017376-374737664-ProgTest_18237-ProgTest_18236] | Game 1474017376-374737664-ProgTest_18237-ProgTest_18236 just starts with 'ProgTest_18237' and 'ProgTest_18236'.
+09/16 11:16:16 [ProgTest_18237] | Enter in game 1474017376-374737664-ProgTest_18237-ProgTest_18236
+09/16 11:16:16 [ProgTest_18236] | Enter in game 1474017376-374737664-ProgTest_18237-ProgTest_18236
+09/16 11:16:16 [root] | Send '1474017376-374737664-ProgTest_18237-ProgTest_18236' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '1474017376-374737664-ProgTest_18237-ProgTest_18236' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '13 13' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '13 13' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send 'OK' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '1110111110111101000100010110111111111011100011100011111110101111110001111100010110100010110001010101010010101010101011010111110101101011111010111100101001111111111111111' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Send 'OK' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '1110111110111101000100010110111111111011100011100011111110101111110001111100010110100010110001010101010010101010101011010111110101101011111010111100101001111111111111111' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '1' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Receive: 'DISP_GAME' from ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Send '0' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send 'OK' to ProgTest_18237 (127.0.0.1) 
+09/16 11:16:16 [root] | Receive: 'DISP_GAME' from ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send the labyrinth to display to player ProgTest_18237 (127.0.0.1)
+09/16 11:16:16 [root] | Send 'OK' to ProgTest_18236 (127.0.0.1) 
+09/16 11:16:16 [root] | Send the labyrinth to display to player ProgTest_18236 (127.0.0.1)
+09/16 11:16:16 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:16:49 [root] | #=========================================#
+09/16 11:16:49 [root] | # Labyrinth Game server is going to start #
+09/16 11:16:49 [root] | #=========================================#
+09/16 11:16:49 [toto1] | =================================
+09/16 11:16:49 [toto1] | toto1 just log in.
+09/16 11:16:49 [toto2] | =================================
+09/16 11:16:49 [toto2] | toto2 just log in.
+09/16 11:16:49 [bottle] | Run the web server on port 8080...
+09/16 11:16:56 [root] | #=========================================#
+09/16 11:16:56 [root] | # Labyrinth Game server is going to start #
+09/16 11:16:56 [root] | #=========================================#
+09/16 11:16:56 [toto1] | =================================
+09/16 11:16:56 [toto1] | toto1 just log in.
+09/16 11:16:56 [toto2] | =================================
+09/16 11:16:56 [toto2] | toto2 just log in.
+09/16 11:16:56 [bottle] | Run the web server on port 8080...
+09/16 11:16:59 [root] | #=========================================#
+09/16 11:16:59 [root] | # Labyrinth Game server is going to start #
+09/16 11:16:59 [root] | #=========================================#
+09/16 11:16:59 [toto1] | =================================
+09/16 11:16:59 [toto1] | toto1 just log in.
+09/16 11:16:59 [toto2] | =================================
+09/16 11:16:59 [toto2] | toto2 just log in.
+09/16 11:16:59 [bottle] | Run the web server on port 8080...
+09/16 11:23:33 [root] | #=========================================#
+09/16 11:23:33 [root] | # Labyrinth Game server is going to start #
+09/16 11:23:33 [root] | #=========================================#
+09/16 11:23:33 [toto1] | =================================
+09/16 11:23:33 [toto1] | toto1 just log in.
+09/16 11:23:33 [toto2] | =================================
+09/16 11:23:33 [toto2] | toto2 just log in.
+09/16 11:23:33 [bottle] | Run the web server on port 8080...
+09/16 11:23:33 [root] | Run the game server on port 1234...
+09/16 11:23:45 [root] | Receive: 'CLIENT_NAME ProgTest_18334' from 127.0.0.1 
+09/16 11:23:45 [root] | Send 'OK' to 127.0.0.1
+09/16 11:23:45 [ProgTest_18334] | =================================
+09/16 11:23:45 [ProgTest_18334] | ProgTest_18334 just log in.
+09/16 11:23:45 [root] | Receive: 'WAIT_GAME' from ProgTest_18334 (127.0.0.1) 
+09/16 11:23:45 [root] | Send 'OK' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:47 [root] | Receive: 'CLIENT_NAME ProgTest_18337' from 127.0.0.1 
+09/16 11:23:47 [root] | Send 'OK' to 127.0.0.1
+09/16 11:23:47 [ProgTest_18337] | =================================
+09/16 11:23:47 [ProgTest_18337] | ProgTest_18337 just log in.
+09/16 11:23:47 [root] | Receive: 'WAIT_GAME' from ProgTest_18337 (127.0.0.1) 
+09/16 11:23:47 [root] | Send 'OK' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:53 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:23:56 [1474017836-821318878-ProgTest_18334-ProgTest_18337] | =================================
+09/16 11:23:56 [1474017836-821318878-ProgTest_18334-ProgTest_18337] | Game 1474017836-821318878-ProgTest_18334-ProgTest_18337 just starts with 'ProgTest_18334' and 'ProgTest_18337'.
+09/16 11:23:56 [ProgTest_18334] | Enter in game 1474017836-821318878-ProgTest_18334-ProgTest_18337
+09/16 11:23:56 [ProgTest_18337] | Enter in game 1474017836-821318878-ProgTest_18334-ProgTest_18337
+09/16 11:23:56 [root] | Send '1474017836-821318878-ProgTest_18334-ProgTest_18337' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '17 13' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '1474017836-821318878-ProgTest_18334-ProgTest_18337' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '17 13' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Send 'OK' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send 'OK' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '11111011111011111111010001000101111010111010111010111100011111000111111011101011101110000100111001000001111011011011110100100111110010011010111010111010110111000100011101101110111110111011000001111100000111111110101111111' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '1' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '11111011111011111111010001000101111010111010111010111100011111000111111011101011101110000100111001000001111011011011110100100111110010011010111010111010110111000100011101101110111110111011000001111100000111111110101111111' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Receive: 'DISP_GAME' from ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send '0' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Receive: 'DISP_GAME' from ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Send 'OK' to ProgTest_18334 (127.0.0.1) 
+09/16 11:23:56 [root] | Send the labyrinth to display to player ProgTest_18334 (127.0.0.1)
+09/16 11:23:56 [root] | Send 'OK' to ProgTest_18337 (127.0.0.1) 
+09/16 11:23:56 [root] | Send the labyrinth to display to player ProgTest_18337 (127.0.0.1)
+09/16 11:23:56 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:28:12 [root] | Receive: '' from ProgTest_18337 (127.0.0.1) 
+09/16 11:28:12 [ProgTest_18337] | Error with ProgTest_18337 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:28:12 [ProgTest_18337] | Connection closed with player ProgTest_18337 (127.0.0.1)
+09/16 11:28:12 [ProgTest_18337] | ProgTest_18337 just log out.
+09/16 11:28:13 [root] | Receive: '' from ProgTest_18334 (127.0.0.1) 
+09/16 11:28:13 [ProgTest_18334] | Error with ProgTest_18334 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:28:13 [ProgTest_18334] | Connection closed with player ProgTest_18334 (127.0.0.1)
+09/16 11:28:13 [ProgTest_18334] | ProgTest_18334 just log out.
+09/16 11:29:04 [root] | #=========================================#
+09/16 11:29:04 [root] | # Labyrinth Game server is going to start #
+09/16 11:29:04 [root] | #=========================================#
+09/16 11:29:04 [toto1] | =================================
+09/16 11:29:04 [toto1] | toto1 just log in.
+09/16 11:29:04 [toto2] | =================================
+09/16 11:29:04 [toto2] | toto2 just log in.
+09/16 11:29:04 [bottle] | Run the web server on port 8080...
+09/16 11:29:04 [root] | Run the game server on port 1234...
+09/16 11:29:12 [root] | #=========================================#
+09/16 11:29:12 [root] | # Labyrinth Game server is going to start #
+09/16 11:29:12 [root] | #=========================================#
+09/16 11:29:12 [toto1] | =================================
+09/16 11:29:12 [toto1] | toto1 just log in.
+09/16 11:29:12 [toto2] | =================================
+09/16 11:29:12 [toto2] | toto2 just log in.
+09/16 11:29:12 [bottle] | Run the web server on port 8080...
+09/16 11:35:07 [root] | Receive: 'CLIENT_NAME ProgTest_18424' from 127.0.0.1 
+09/16 11:35:07 [root] | Send 'OK' to 127.0.0.1
+09/16 11:35:07 [ProgTest_18424] | =================================
+09/16 11:35:07 [ProgTest_18424] | ProgTest_18424 just log in.
+09/16 11:35:07 [root] | Receive: 'WAIT_GAME' from ProgTest_18424 (127.0.0.1) 
+09/16 11:35:07 [root] | Send 'OK' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:08 [root] | Receive: 'CLIENT_NAME ProgTest_18425' from 127.0.0.1 
+09/16 11:35:08 [root] | Send 'OK' to 127.0.0.1
+09/16 11:35:08 [ProgTest_18425] | =================================
+09/16 11:35:08 [ProgTest_18425] | ProgTest_18425 just log in.
+09/16 11:35:08 [root] | Receive: 'WAIT_GAME' from ProgTest_18425 (127.0.0.1) 
+09/16 11:35:08 [root] | Send 'OK' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:13 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:35:18 [1474018518-998917721-ProgTest_18425-ProgTest_18424] | =================================
+09/16 11:35:18 [1474018518-998917721-ProgTest_18425-ProgTest_18424] | Game 1474018518-998917721-ProgTest_18425-ProgTest_18424 just starts with 'ProgTest_18425' and 'ProgTest_18424'.
+09/16 11:35:18 [ProgTest_18425] | Enter in game 1474018518-998917721-ProgTest_18425-ProgTest_18424
+09/16 11:35:18 [ProgTest_18424] | Enter in game 1474018518-998917721-ProgTest_18425-ProgTest_18424
+09/16 11:35:18 [root] | Send '1474018518-998917721-ProgTest_18425-ProgTest_18424' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '17 7' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '1474018518-998917721-ProgTest_18425-ProgTest_18424' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '17 7' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send 'OK' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '11101111111110111111011001001101111011101111101110100010010001001000111110111110111111001100010001100111101111111110111' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send 'OK' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '0' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '11101111111110111111011001001101111011101111101110100010010001001000111110111110111111001100010001100111101111111110111' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:35:18 [root] | Receive: 'DISP_GAME' from ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Send '1' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send 'OK' to ProgTest_18425 (127.0.0.1) 
+09/16 11:35:18 [root] | Receive: 'DISP_GAME' from ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send the labyrinth to display to player ProgTest_18425 (127.0.0.1)
+09/16 11:35:18 [root] | Send 'OK' to ProgTest_18424 (127.0.0.1) 
+09/16 11:35:18 [root] | Send the labyrinth to display to player ProgTest_18424 (127.0.0.1)
+09/16 11:38:07 [root] | #=========================================#
+09/16 11:38:07 [root] | # Labyrinth Game server is going to start #
+09/16 11:38:07 [root] | #=========================================#
+09/16 11:38:07 [toto1] | =================================
+09/16 11:38:07 [toto1] | toto1 just log in.
+09/16 11:38:07 [toto2] | =================================
+09/16 11:38:07 [toto2] | toto2 just log in.
+09/16 11:38:07 [bottle] | Run the web server on port 8080...
+09/16 11:38:36 [root] | #=========================================#
+09/16 11:38:36 [root] | # Labyrinth Game server is going to start #
+09/16 11:38:36 [root] | #=========================================#
+09/16 11:38:36 [toto1] | =================================
+09/16 11:38:36 [toto1] | toto1 just log in.
+09/16 11:38:36 [toto2] | =================================
+09/16 11:38:36 [toto2] | toto2 just log in.
+09/16 11:38:36 [bottle] | Run the web server on port 8080...
+09/16 11:40:45 [root] | #=========================================#
+09/16 11:40:45 [root] | # Labyrinth Game server is going to start #
+09/16 11:40:45 [root] | #=========================================#
+09/16 11:40:45 [toto1] | =================================
+09/16 11:40:45 [toto1] | toto1 just log in.
+09/16 11:40:45 [toto2] | =================================
+09/16 11:40:45 [toto2] | toto2 just log in.
+09/16 11:40:45 [bottle] | Run the web server on port 8080...
+09/16 11:40:45 [root] | Run the game server on port 1234...
+09/16 11:40:52 [root] | #=========================================#
+09/16 11:40:52 [root] | # Labyrinth Game server is going to start #
+09/16 11:40:52 [root] | #=========================================#
+09/16 11:40:52 [toto1] | =================================
+09/16 11:40:52 [toto1] | toto1 just log in.
+09/16 11:40:52 [toto2] | =================================
+09/16 11:40:52 [toto2] | toto2 just log in.
+09/16 11:40:52 [bottle] | Run the web server on port 8080...
+09/16 11:41:41 [root] | #=========================================#
+09/16 11:41:41 [root] | # Labyrinth Game server is going to start #
+09/16 11:41:41 [root] | #=========================================#
+09/16 11:41:41 [toto1] | =================================
+09/16 11:41:41 [toto1] | toto1 just log in.
+09/16 11:41:41 [toto2] | =================================
+09/16 11:41:41 [toto2] | toto2 just log in.
+09/16 11:41:41 [bottle] | Run the web server on port 8080...
+09/16 11:41:41 [root] | Run the game server on port 1234...
+09/16 11:41:47 [root] | Receive: 'CLIENT_NAME ProgTest_18525' from 127.0.0.1 
+09/16 11:41:47 [root] | Send 'OK' to 127.0.0.1
+09/16 11:41:47 [ProgTest_18525] | =================================
+09/16 11:41:47 [ProgTest_18525] | ProgTest_18525 just log in.
+09/16 11:41:47 [root] | Receive: 'WAIT_GAME' from ProgTest_18525 (127.0.0.1) 
+09/16 11:41:47 [root] | Send 'OK' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:50 [root] | Receive: 'CLIENT_NAME ProgTest_18526' from 127.0.0.1 
+09/16 11:41:50 [root] | Send 'OK' to 127.0.0.1
+09/16 11:41:50 [ProgTest_18526] | =================================
+09/16 11:41:50 [ProgTest_18526] | ProgTest_18526 just log in.
+09/16 11:41:50 [root] | Receive: 'WAIT_GAME' from ProgTest_18526 (127.0.0.1) 
+09/16 11:41:50 [root] | Send 'OK' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:55 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:41:58 [1474018918-921293909-ProgTest_18525-ProgTest_18526] | =================================
+09/16 11:41:58 [1474018918-921293909-ProgTest_18525-ProgTest_18526] | Game 1474018918-921293909-ProgTest_18525-ProgTest_18526 just starts with 'ProgTest_18525' and 'ProgTest_18526'.
+09/16 11:41:58 [ProgTest_18525] | Enter in game 1474018918-921293909-ProgTest_18525-ProgTest_18526
+09/16 11:41:58 [ProgTest_18526] | Enter in game 1474018918-921293909-ProgTest_18525-ProgTest_18526
+09/16 11:41:58 [root] | Send '1474018918-921293909-ProgTest_18525-ProgTest_18526' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '1474018918-921293909-ProgTest_18525-ProgTest_18526' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '17 9' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '17 9' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Send 'OK' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Send 'OK' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '111011111111101111000111101111000111101011111010111111010001000101110010101000101010010101011111010101101111101011111011000010010010000111111111111111111' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '111011111111101111000111101111000111101011111010111111010001000101110010101000101010010101011111010101101111101011111011000010010010000111111111111111111' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '0' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Send '1' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Receive: 'DISP_GAME' from ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [root] | Receive: 'DISP_GAME' from ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [root] | Send 'OK' to ProgTest_18526 (127.0.0.1) 
+09/16 11:41:58 [ProgTest_18526] | Connection closed with player ProgTest_18526 (127.0.0.1)
+09/16 11:41:58 [root] | Send 'OK' to ProgTest_18525 (127.0.0.1) 
+09/16 11:41:58 [ProgTest_18526] | ProgTest_18526 just log out.
+09/16 11:41:58 [ProgTest_18525] | Connection closed with player ProgTest_18525 (127.0.0.1)
+09/16 11:41:58 [ProgTest_18525] | ProgTest_18525 just log out.
+09/16 11:41:58 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:49:04 [root] | #=========================================#
+09/16 11:49:04 [root] | # Labyrinth Game server is going to start #
+09/16 11:49:04 [root] | #=========================================#
+09/16 11:49:04 [toto1] | =================================
+09/16 11:49:04 [toto1] | toto1 just log in.
+09/16 11:49:04 [toto2] | =================================
+09/16 11:49:04 [toto2] | toto2 just log in.
+09/16 11:49:04 [bottle] | Run the web server on port 8080...
+09/16 11:49:04 [root] | Run the game server on port 1234...
+09/16 11:49:14 [root] | Receive: 'CLIENT_NAME ProgTest_18597' from 127.0.0.1 
+09/16 11:49:14 [root] | Send 'OK' to 127.0.0.1
+09/16 11:49:14 [ProgTest_18597] | =================================
+09/16 11:49:14 [ProgTest_18597] | ProgTest_18597 just log in.
+09/16 11:49:14 [root] | Receive: 'WAIT_GAME' from ProgTest_18597 (127.0.0.1) 
+09/16 11:49:14 [root] | Send 'OK' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:19 [root] | Receive: 'CLIENT_NAME ProgTest_18598' from 127.0.0.1 
+09/16 11:49:19 [root] | Send 'OK' to 127.0.0.1
+09/16 11:49:19 [ProgTest_18598] | =================================
+09/16 11:49:19 [ProgTest_18598] | ProgTest_18598 just log in.
+09/16 11:49:19 [root] | Receive: 'WAIT_GAME' from ProgTest_18598 (127.0.0.1) 
+09/16 11:49:19 [root] | Send 'OK' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:24 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/16 11:49:27 [1474019367-48632085-ProgTest_18597-ProgTest_18598] | =================================
+09/16 11:49:27 [1474019367-48632085-ProgTest_18597-ProgTest_18598] | Game 1474019367-48632085-ProgTest_18597-ProgTest_18598 just starts with 'ProgTest_18597' and 'ProgTest_18598'.
+09/16 11:49:27 [ProgTest_18597] | Enter in game 1474019367-48632085-ProgTest_18597-ProgTest_18598
+09/16 11:49:27 [ProgTest_18598] | Enter in game 1474019367-48632085-ProgTest_18597-ProgTest_18598
+09/16 11:49:27 [root] | Send '1474019367-48632085-ProgTest_18597-ProgTest_18598' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '13 13' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '1474019367-48632085-ProgTest_18597-ProgTest_18598' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send 'OK' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '13 13' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '1111101011111100011111000111101111101111010010100101101011111010110101010101010011100011100110101110101111111010111111011001001101101110101110110011111110011110111110111' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '0' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Receive: 'DISP_GAME' from ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send 'OK' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send 'OK' to ProgTest_18597 (127.0.0.1) 
+09/16 11:49:27 [root] | Send the labyrinth to display to player ProgTest_18597 (127.0.0.1)
+09/16 11:49:27 [root] | Send '1111101011111100011111000111101111101111010010100101101011111010110101010101010011100011100110101110101111111010111111011001001101101110101110110011111110011110111110111' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send '1' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/16 11:49:27 [root] | Receive: 'DISP_GAME' from ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send 'OK' to ProgTest_18598 (127.0.0.1) 
+09/16 11:49:27 [root] | Send the labyrinth to display to player ProgTest_18598 (127.0.0.1)
+09/16 11:49:59 [root] | Receive: '' from ProgTest_18598 (127.0.0.1) 
+09/16 11:49:59 [ProgTest_18598] | Error with ProgTest_18598 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:49:59 [ProgTest_18598] | Connection closed with player ProgTest_18598 (127.0.0.1)
+09/16 11:49:59 [ProgTest_18598] | ProgTest_18598 just log out.
+09/16 11:50:03 [root] | Receive: '' from ProgTest_18597 (127.0.0.1) 
+09/16 11:50:03 [ProgTest_18597] | Error with ProgTest_18597 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/16 11:50:03 [ProgTest_18597] | Connection closed with player ProgTest_18597 (127.0.0.1)
+09/16 11:50:03 [ProgTest_18597] | ProgTest_18597 just log out.
+09/17 23:12:34 [root] | #=========================================#
+09/17 23:12:34 [root] | # Labyrinth Game server is going to start #
+09/17 23:12:34 [root] | #=========================================#
+09/17 23:12:34 [toto1] | =================================
+09/17 23:12:34 [toto1] | toto1 just log in.
+09/17 23:12:34 [toto2] | =================================
+09/17 23:12:34 [toto2] | toto2 just log in.
+09/17 23:12:34 [bottle] | Run the web server on port 8080...
+09/17 23:12:34 [root] | Run the game server on port 1234...
+09/17 23:12:39 [root] | Receive: 'CLIENT_NAME ProgTest_23968' from 127.0.0.1 
+09/17 23:12:39 [root] | Send 'OK' to 127.0.0.1
+09/17 23:12:39 [ProgTest_23968] | =================================
+09/17 23:12:39 [ProgTest_23968] | ProgTest_23968 just log in.
+09/17 23:12:39 [root] | Receive: 'WAIT_GAME' from ProgTest_23968 (127.0.0.1) 
+09/17 23:12:39 [root] | Send 'OK' to ProgTest_23968 (127.0.0.1) 
+09/17 23:12:42 [root] | Receive: 'CLIENT_NAME ProgTest_23969' from 127.0.0.1 
+09/17 23:12:42 [root] | Send 'OK' to 127.0.0.1
+09/17 23:12:42 [ProgTest_23969] | =================================
+09/17 23:12:42 [ProgTest_23969] | ProgTest_23969 just log in.
+09/17 23:12:42 [root] | Receive: 'WAIT_GAME' from ProgTest_23969 (127.0.0.1) 
+09/17 23:12:42 [root] | Send 'OK' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:30 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:17:32 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:17:36 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:17:41 [1474147061-521097722-ProgTest_23968-ProgTest_23969] | =================================
+09/17 23:17:41 [1474147061-521097722-ProgTest_23968-ProgTest_23969] | Game 1474147061-521097722-ProgTest_23968-ProgTest_23969 just starts with 'ProgTest_23968' and 'ProgTest_23969'.
+09/17 23:17:41 [ProgTest_23968] | Enter in game 1474147061-521097722-ProgTest_23968-ProgTest_23969
+09/17 23:17:41 [ProgTest_23969] | Enter in game 1474147061-521097722-ProgTest_23968-ProgTest_23969
+09/17 23:17:41 [root] | Send '1474147061-521097722-ProgTest_23968-ProgTest_23969' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '1474147061-521097722-ProgTest_23968-ProgTest_23969' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '13 11' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '13 11' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Receive: 'GET_GAME_DATA' from ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Receive: 'GET_GAME_DATA' from ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Send 'OK' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Send 'OK' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '10111111111011010011100101111010101011100001010100001111101011111010010001001011101111101110010000000100111011111011110011010110011111101011111' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '10111111111011010011100101111010101011100001010100001111101011111010010001001011101111101110010000000100111011111011110011010110011111101011111' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '0' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Send '1' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Receive: 'DISP_GAME' from ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [root] | Receive: 'DISP_GAME' from ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [root] | Send 'OK' to ProgTest_23968 (127.0.0.1) 
+09/17 23:17:41 [ProgTest_23968] | Connection closed with player ProgTest_23968 (127.0.0.1)
+09/17 23:17:41 [ProgTest_23968] | ProgTest_23968 just log out.
+09/17 23:17:41 [root] | Send 'OK' to ProgTest_23969 (127.0.0.1) 
+09/17 23:17:41 [ProgTest_23969] | Connection closed with player ProgTest_23969 (127.0.0.1)
+09/17 23:17:41 [ProgTest_23969] | ProgTest_23969 just log out.
+09/17 23:17:41 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:19:13 [root] | #=========================================#
+09/17 23:19:13 [root] | # Labyrinth Game server is going to start #
+09/17 23:19:13 [root] | #=========================================#
+09/17 23:19:13 [toto1] | =================================
+09/17 23:19:13 [toto1] | toto1 just log in.
+09/17 23:19:13 [toto2] | =================================
+09/17 23:19:13 [toto2] | toto2 just log in.
+09/17 23:19:13 [bottle] | Run the web server on port 8080...
+09/17 23:19:13 [root] | Run the game server on port 1234...
+09/17 23:19:18 [root] | Receive: 'CLIENT_NAME ProgTest_24021' from 127.0.0.1 
+09/17 23:19:18 [root] | Send 'OK' to 127.0.0.1
+09/17 23:19:18 [ProgTest_24021] | =================================
+09/17 23:19:18 [ProgTest_24021] | ProgTest_24021 just log in.
+09/17 23:19:18 [root] | Receive: 'WAIT_GAME' from ProgTest_24021 (127.0.0.1) 
+09/17 23:19:18 [root] | Send 'OK' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:19 [root] | Receive: 'CLIENT_NAME ProgTest_24022' from 127.0.0.1 
+09/17 23:19:19 [root] | Send 'OK' to 127.0.0.1
+09/17 23:19:19 [ProgTest_24022] | =================================
+09/17 23:19:19 [ProgTest_24022] | ProgTest_24022 just log in.
+09/17 23:19:19 [root] | Receive: 'WAIT_GAME' from ProgTest_24022 (127.0.0.1) 
+09/17 23:19:19 [root] | Send 'OK' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:23 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:19:27 [1474147167-901293899-ProgTest_24022-ProgTest_24021] | =================================
+09/17 23:19:27 [1474147167-901293899-ProgTest_24022-ProgTest_24021] | Game 1474147167-901293899-ProgTest_24022-ProgTest_24021 just starts with 'ProgTest_24022' and 'ProgTest_24021'.
+09/17 23:19:27 [ProgTest_24022] | Enter in game 1474147167-901293899-ProgTest_24022-ProgTest_24021
+09/17 23:19:27 [ProgTest_24021] | Enter in game 1474147167-901293899-ProgTest_24022-ProgTest_24021
+09/17 23:19:27 [root] | Send '1474147167-901293899-ProgTest_24022-ProgTest_24021' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '1474147167-901293899-ProgTest_24022-ProgTest_24021' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '13 13' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '13 13' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Send 'OK' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '1011101011101101011111010111101111101110000001000000111110101111111000010000110111110111110100001010000110101111101011010101010101101110101110111010010010111111111111111' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send 'OK' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '0' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '1011101011101101011111010111101111101110000001000000111110101111111000010000110111110111110100001010000110101111101011010101010101101110101110111010010010111111111111111' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Receive: 'DISP_GAME' from ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send 'OK' to ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send '1' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:19:27 [root] | Send the labyrinth to display to player ProgTest_24021 (127.0.0.1)
+09/17 23:19:27 [root] | Receive: 'DISP_GAME' from ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24021 (127.0.0.1) 
+09/17 23:19:27 [root] | Send 'OK' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [1474147167-901293899-ProgTest_24022-ProgTest_24021] | 'ProgTest_24021' plays 4 0
+09/17 23:19:27 [ProgTest_24021] | Connection closed with player ProgTest_24021 (127.0.0.1)
+09/17 23:19:27 [root] | Send the labyrinth to display to player ProgTest_24022 (127.0.0.1)
+09/17 23:19:27 [ProgTest_24021] | ProgTest_24021 just log out.
+09/17 23:19:27 [root] | Receive: 'GET_MOVE' from ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [root] | Send 'OK' to ProgTest_24022 (127.0.0.1) 
+09/17 23:19:27 [1474147167-901293899-ProgTest_24022-ProgTest_24021] | Wait for playMove event
+09/17 23:19:37 [ProgTest_24022] | Connection closed with player ProgTest_24022 (127.0.0.1)
+09/17 23:19:37 [ProgTest_24022] | ProgTest_24022 just log out.
+09/17 23:22:17 [root] | #=========================================#
+09/17 23:22:17 [root] | # Labyrinth Game server is going to start #
+09/17 23:22:17 [root] | #=========================================#
+09/17 23:22:17 [toto1] | =================================
+09/17 23:22:17 [toto1] | toto1 just log in.
+09/17 23:22:17 [toto2] | =================================
+09/17 23:22:17 [toto2] | toto2 just log in.
+09/17 23:22:17 [bottle] | Run the web server on port 8080...
+09/17 23:22:17 [root] | Run the game server on port 1234...
+09/17 23:22:19 [root] | Receive: 'CLIENT_NAME ProgTest_24060' from 127.0.0.1 
+09/17 23:22:19 [root] | Send 'OK' to 127.0.0.1
+09/17 23:22:19 [ProgTest_24060] | =================================
+09/17 23:22:19 [ProgTest_24060] | ProgTest_24060 just log in.
+09/17 23:22:19 [root] | Receive: 'WAIT_GAME' from ProgTest_24060 (127.0.0.1) 
+09/17 23:22:19 [root] | Send 'OK' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:20 [root] | Receive: 'CLIENT_NAME ProgTest_24061' from 127.0.0.1 
+09/17 23:22:20 [root] | Send 'OK' to 127.0.0.1
+09/17 23:22:20 [ProgTest_24061] | =================================
+09/17 23:22:20 [ProgTest_24061] | ProgTest_24061 just log in.
+09/17 23:22:20 [root] | Receive: 'WAIT_GAME' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:20 [root] | Send 'OK' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:24 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:22:27 [1474147347-2354725-ProgTest_24060-ProgTest_24061] | =================================
+09/17 23:22:27 [1474147347-2354725-ProgTest_24060-ProgTest_24061] | Game 1474147347-2354725-ProgTest_24060-ProgTest_24061 just starts with 'ProgTest_24060' and 'ProgTest_24061'.
+09/17 23:22:27 [ProgTest_24060] | Enter in game 1474147347-2354725-ProgTest_24060-ProgTest_24061
+09/17 23:22:27 [ProgTest_24061] | Enter in game 1474147347-2354725-ProgTest_24060-ProgTest_24061
+09/17 23:22:27 [root] | Send '1474147347-2354725-ProgTest_24060-ProgTest_24061' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '1474147347-2354725-ProgTest_24060-ProgTest_24061' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '13 15' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '13 15' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '111111111111111000000000111111111111111111101110111110101111101011000101010001111010101011101101000101101110101010111100110101100111101010101110010101010100101010101010110101010101011111111111111' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '111111111111111000000000111111111111111111101110111110101111101011000101010001111010101011101101000101101110101010111100110101100111101010101110010101010100101010101010110101010101011111111111111' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '0' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'DISP_GAME' from ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '1' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'DISP_GAME' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send the labyrinth to display to player ProgTest_24060 (127.0.0.1)
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24060 (127.0.0.1) 
+09/17 23:22:27 [1474147347-2354725-ProgTest_24060-ProgTest_24061] | 'ProgTest_24060' plays 4 0
+09/17 23:22:27 [root] | Send the labyrinth to display to player ProgTest_24061 (127.0.0.1)
+09/17 23:22:27 [ProgTest_24060] | Connection closed with player ProgTest_24060 (127.0.0.1)
+09/17 23:22:27 [ProgTest_24060] | ProgTest_24060 just log out.
+09/17 23:22:27 [root] | Receive: 'GET_MOVE' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [1474147347-2354725-ProgTest_24060-ProgTest_24061] | Wait for playMove event
+09/17 23:22:27 [1474147347-2354725-ProgTest_24060-ProgTest_24061] | Receive playMove event
+09/17 23:22:27 [root] | Send '4 0' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send '0' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Receive: 'DISP_GAME' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send 'OK' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:27 [root] | Send the labyrinth to display to player ProgTest_24061 (127.0.0.1)
+09/17 23:22:28 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:28 [root] | Send 'It's not our turn to play, so we cannot play a move!' to ProgTest_24061 (127.0.0.1) 
+09/17 23:22:28 [root] | Receive: '' from ProgTest_24061 (127.0.0.1) 
+09/17 23:22:28 [ProgTest_24061] | Error with ProgTest_24061 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/17 23:22:28 [ProgTest_24061] | Connection closed with player ProgTest_24061 (127.0.0.1)
+09/17 23:22:28 [ProgTest_24061] | ProgTest_24061 just log out.
+09/17 23:26:38 [root] | #=========================================#
+09/17 23:26:38 [root] | # Labyrinth Game server is going to start #
+09/17 23:26:38 [root] | #=========================================#
+09/17 23:26:38 [toto1] | =================================
+09/17 23:26:38 [toto1] | toto1 just log in.
+09/17 23:26:38 [toto2] | =================================
+09/17 23:26:38 [toto2] | toto2 just log in.
+09/17 23:26:38 [bottle] | Run the web server on port 8080...
+09/17 23:26:38 [root] | Run the game server on port 1234...
+09/17 23:26:45 [root] | Receive: 'CLIENT_NAME ProgTest_24113' from 127.0.0.1 
+09/17 23:26:45 [root] | Send 'OK' to 127.0.0.1
+09/17 23:26:45 [ProgTest_24113] | =================================
+09/17 23:26:45 [ProgTest_24113] | ProgTest_24113 just log in.
+09/17 23:26:45 [root] | Receive: 'WAIT_GAME' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:45 [root] | Send 'OK' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:47 [root] | Receive: 'CLIENT_NAME ProgTest_24114' from 127.0.0.1 
+09/17 23:26:47 [root] | Send 'OK' to 127.0.0.1
+09/17 23:26:47 [ProgTest_24114] | =================================
+09/17 23:26:47 [ProgTest_24114] | ProgTest_24114 just log in.
+09/17 23:26:47 [root] | Receive: 'WAIT_GAME' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:47 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:51 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | =================================
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Game 1474147614-338187926-ProgTest_24113-ProgTest_24114 just starts with 'ProgTest_24113' and 'ProgTest_24114'.
+09/17 23:26:54 [ProgTest_24113] | Enter in game 1474147614-338187926-ProgTest_24113-ProgTest_24114
+09/17 23:26:54 [ProgTest_24114] | Enter in game 1474147614-338187926-ProgTest_24113-ProgTest_24114
+09/17 23:26:54 [root] | Send '1474147614-338187926-ProgTest_24113-ProgTest_24114' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '1474147614-338187926-ProgTest_24113-ProgTest_24114' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '17 11' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '17 11' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '1011111111111110111110000100001111111111101011111111000011111110000111101110101110111001000010100001001110111111111011110001001110010001111110101010111110000001111100000011111111111111111' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '1' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Receive: 'DISP_GAME' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '1011111111111110111110000100001111111111101011111111000011111110000111101110101110111001000010100001001110111111111011110001001110010001111110101010111110000001111100000011111111111111111' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '0' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send the labyrinth to display to player ProgTest_24113 (127.0.0.1)
+09/17 23:26:54 [root] | Receive: 'DISP_GAME' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:26:54 [root] | Receive: 'GET_MOVE' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send the labyrinth to display to player ProgTest_24114 (127.0.0.1)
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Wait for playMove event
+09/17 23:26:54 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | 'ProgTest_24114' plays 4 0
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Wait for getMove event
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Receive playMove event
+09/17 23:26:54 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Receive getMove event
+09/17 23:26:54 [root] | Send '4 0' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '0' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send '0' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Receive: 'DISP_GAME' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Receive: 'DISP_GAME' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24113 (127.0.0.1) 
+09/17 23:26:54 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:54 [root] | Send the labyrinth to display to player ProgTest_24113 (127.0.0.1)
+09/17 23:26:54 [root] | Send the labyrinth to display to player ProgTest_24114 (127.0.0.1)
+09/17 23:26:55 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24113 (127.0.0.1) 
+09/17 23:26:55 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | 'ProgTest_24113' plays 4 0
+09/17 23:26:55 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Wait for getMove event
+09/17 23:26:55 [root] | Receive: 'GET_MOVE' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Wait for playMove event
+09/17 23:26:55 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Receive playMove event
+09/17 23:26:55 [1474147614-338187926-ProgTest_24113-ProgTest_24114] | Receive getMove event
+09/17 23:26:55 [root] | Send '4 0' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [ProgTest_24113] | Connection closed with player ProgTest_24113 (127.0.0.1)
+09/17 23:26:55 [ProgTest_24113] | ProgTest_24113 just log out.
+09/17 23:26:55 [root] | Send '0' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [root] | Receive: 'DISP_GAME' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [root] | Send 'OK' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:55 [root] | Send the labyrinth to display to player ProgTest_24114 (127.0.0.1)
+09/17 23:26:56 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:56 [root] | Send 'It's not our turn to play, so we cannot play a move!' to ProgTest_24114 (127.0.0.1) 
+09/17 23:26:56 [root] | Receive: '' from ProgTest_24114 (127.0.0.1) 
+09/17 23:26:56 [ProgTest_24114] | Error with ProgTest_24114 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/17 23:26:56 [ProgTest_24114] | Connection closed with player ProgTest_24114 (127.0.0.1)
+09/17 23:26:56 [ProgTest_24114] | ProgTest_24114 just log out.
+09/17 23:27:17 [root] | #=========================================#
+09/17 23:27:17 [root] | # Labyrinth Game server is going to start #
+09/17 23:27:17 [root] | #=========================================#
+09/17 23:27:17 [toto1] | =================================
+09/17 23:27:17 [toto1] | toto1 just log in.
+09/17 23:27:17 [toto2] | =================================
+09/17 23:27:17 [toto2] | toto2 just log in.
+09/17 23:27:17 [bottle] | Run the web server on port 8080...
+09/17 23:27:46 [root] | #=========================================#
+09/17 23:27:46 [root] | # Labyrinth Game server is going to start #
+09/17 23:27:46 [root] | #=========================================#
+09/17 23:27:46 [toto1] | =================================
+09/17 23:27:46 [toto1] | toto1 just log in.
+09/17 23:27:46 [toto2] | =================================
+09/17 23:27:46 [toto2] | toto2 just log in.
+09/17 23:27:46 [bottle] | Run the web server on port 8080...
+09/17 23:27:46 [root] | Run the game server on port 1235...
+09/17 23:27:48 [root] | Receive: 'CLIENT_NAME ProgTest_24171' from 127.0.0.1 
+09/17 23:27:48 [root] | Send 'OK' to 127.0.0.1
+09/17 23:27:48 [ProgTest_24171] | =================================
+09/17 23:27:48 [ProgTest_24171] | ProgTest_24171 just log in.
+09/17 23:27:48 [root] | Receive: 'WAIT_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:48 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:50 [root] | Receive: 'CLIENT_NAME ProgTest_24172' from 127.0.0.1 
+09/17 23:27:50 [root] | Send 'OK' to 127.0.0.1
+09/17 23:27:50 [ProgTest_24172] | =================================
+09/17 23:27:50 [ProgTest_24172] | ProgTest_24172 just log in.
+09/17 23:27:50 [root] | Receive: 'WAIT_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:50 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:54 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | =================================
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Game 1474147678-715743213-ProgTest_24172-ProgTest_24171 just starts with 'ProgTest_24172' and 'ProgTest_24171'.
+09/17 23:27:58 [ProgTest_24172] | Enter in game 1474147678-715743213-ProgTest_24172-ProgTest_24171
+09/17 23:27:58 [ProgTest_24171] | Enter in game 1474147678-715743213-ProgTest_24172-ProgTest_24171
+09/17 23:27:58 [root] | Send '1474147678-715743213-ProgTest_24172-ProgTest_24171' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '1474147678-715743213-ProgTest_24172-ProgTest_24171' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '17 9' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '17 9' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '111111101011111111001011111110100111111011111011111001000011100001000110111000111011010001010101010001111110111110111111000000101000000111111111111111111' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '111111101011111111001011111110100111111011111011111001000011100001000110111000111011010001010101010001111110111110111111000000101000000111111111111111111' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '1' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:27:58 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:27:58 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:27:58 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:58 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:27:58 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:58 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:27:59 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:59 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:27:59 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:27:59 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:27:59 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:27:59 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:27:59 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:59 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:59 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:27:59 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:27:59 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:27:59 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:27:59 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:00 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:00 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:00 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:00 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:00 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:00 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:00 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:00 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:00 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:00 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:00 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:00 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:00 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:01 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:01 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:01 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:01 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:01 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:01 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:01 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:01 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:01 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:01 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:01 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:01 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:01 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:02 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:02 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:02 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:02 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:02 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:02 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:02 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:02 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:02 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:02 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:02 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:02 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:02 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:03 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:03 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:03 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:03 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:03 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:03 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:03 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:03 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:03 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:03 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:03 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:03 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:03 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:04 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:04 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:04 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:04 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:04 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:04 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:04 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:04 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:04 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:04 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:04 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:04 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:04 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:05 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:05 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:05 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:05 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:05 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:05 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:05 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:05 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:05 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:05 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:05 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:05 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:05 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:06 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:06 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:06 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:06 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:06 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:06 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:06 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:06 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:06 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:06 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:06 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:06 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:06 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:07 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:07 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:07 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:07 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:07 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:07 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:07 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:07 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:07 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:07 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:07 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:07 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:07 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:08 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:08 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:08 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:08 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:08 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:08 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:08 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:08 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:08 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:08 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:08 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:08 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:08 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:09 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:09 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:09 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:09 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:09 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:09 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:09 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:09 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:09 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:09 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:09 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:09 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:09 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:10 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:10 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:10 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:10 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:10 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:10 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:10 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:10 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:10 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:10 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:10 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:10 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:10 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:11 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:11 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:11 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:11 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:11 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:11 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:11 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:11 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:11 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:11 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:11 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:11 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:11 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:12 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:12 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:12 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:12 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:12 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:12 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:12 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:12 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:12 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:12 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:12 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:12 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:12 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:13 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:13 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:13 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:13 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:13 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:13 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:13 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:13 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:13 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:13 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:13 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:13 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:13 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:14 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:14 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:14 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:14 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:14 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:14 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:14 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:14 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:14 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:14 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:14 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:14 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:14 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:15 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:15 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:15 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:15 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:15 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:15 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:15 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:15 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:15 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:15 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:15 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:15 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:15 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:16 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:16 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:16 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:16 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:16 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:16 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:16 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:16 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:16 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:16 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:16 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:16 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:16 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:17 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:17 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:17 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:17 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:17 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:17 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:17 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:17 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:17 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:17 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:17 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:17 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:17 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:18 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:18 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:18 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:18 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:18 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:18 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:18 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:18 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:18 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:18 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:18 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:18 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:18 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:19 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:19 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:19 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:19 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:19 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:19 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:19 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:19 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:19 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:19 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:19 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:19 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:19 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:20 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:20 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:20 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:20 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:20 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:20 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:20 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:20 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:20 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:20 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:20 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:20 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:20 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:21 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:21 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:21 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:21 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:21 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:21 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:21 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:21 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:21 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:21 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:21 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:21 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:21 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:22 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:22 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:22 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:22 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:22 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:22 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:22 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:22 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:22 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:22 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:22 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:22 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:22 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:23 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:23 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:23 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:23 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:23 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:23 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:23 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:23 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:23 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:23 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:23 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:23 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:23 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:24 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:24 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:24 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:24 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:24 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:24 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:24 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:24 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:24 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:24 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:25 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:25 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:25 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:25 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:25 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:25 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:25 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:25 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:26 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:26 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:26 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:26 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:26 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:26 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:26 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:26 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:26 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:26 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:26 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:26 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:26 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:27 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:27 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:27 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:27 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:27 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:27 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:27 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:27 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:27 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:27 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:27 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:27 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:27 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:28 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:28 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:28 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:28 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:28 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:28 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:28 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:28 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:28 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:28 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:28 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:28 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:28 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:29 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:29 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:29 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:29 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:29 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:29 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:29 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:29 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:29 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:29 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:29 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:29 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:29 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:30 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:30 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:30 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:30 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:30 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:30 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:30 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:30 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:30 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:30 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:30 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:30 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:30 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:31 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:31 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:31 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:31 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:31 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:31 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:31 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:31 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:31 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:31 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:31 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:31 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:31 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:32 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:32 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:32 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:32 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:32 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:32 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:32 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:32 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:32 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:32 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:32 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:32 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:32 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:33 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:33 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:33 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:33 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:33 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:33 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:33 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:33 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:33 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:33 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:33 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:33 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:33 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:34 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:34 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:34 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:34 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:34 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:34 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:34 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:34 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:34 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:34 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:34 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:34 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:34 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:35 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:35 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:35 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:35 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:35 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:35 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:35 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:35 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:35 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:35 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:35 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:35 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:35 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:36 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:36 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:36 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:36 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:36 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:36 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:36 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:36 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:36 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:36 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:36 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:36 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:36 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:37 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:37 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:37 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:37 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:37 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:37 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:37 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:37 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:37 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:37 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:37 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:37 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:37 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:38 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:38 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:38 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24172' plays 4 0
+09/17 23:28:38 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:38 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:38 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:38 [root] | Send '4 0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:38 [root] | Send '0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:38 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [root] | Receive: 'DISP_GAME' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:38 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:38 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:38 [root] | Send the labyrinth to display to player ProgTest_24172 (127.0.0.1)
+09/17 23:28:38 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:39 [root] | Receive: 'GET_MOVE' from ProgTest_24172 (127.0.0.1) 
+09/17 23:28:39 [root] | Send 'OK' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:39 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:39 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:39 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | 'ProgTest_24171' plays 4 0
+09/17 23:28:39 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for getMove event
+09/17 23:28:39 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive playMove event
+09/17 23:28:39 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Receive getMove event
+09/17 23:28:39 [root] | Send '4 0' to ProgTest_24172 (127.0.0.1) 
+09/17 23:28:39 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:39 [ProgTest_24172] | Connection closed with player ProgTest_24172 (127.0.0.1)
+09/17 23:28:39 [ProgTest_24172] | ProgTest_24172 just log out.
+09/17 23:28:39 [root] | Send '0' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:39 [root] | Receive: 'DISP_GAME' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:39 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:39 [root] | Send the labyrinth to display to player ProgTest_24171 (127.0.0.1)
+09/17 23:28:40 [root] | Receive: 'GET_MOVE' from ProgTest_24171 (127.0.0.1) 
+09/17 23:28:40 [root] | Send 'OK' to ProgTest_24171 (127.0.0.1) 
+09/17 23:28:40 [1474147678-715743213-ProgTest_24172-ProgTest_24171] | Wait for playMove event
+09/17 23:28:50 [ProgTest_24171] | Connection closed with player ProgTest_24171 (127.0.0.1)
+09/17 23:28:50 [ProgTest_24171] | ProgTest_24171 just log out.
+09/17 23:31:17 [root] | #=========================================#
+09/17 23:31:17 [root] | # Labyrinth Game server is going to start #
+09/17 23:31:17 [root] | #=========================================#
+09/17 23:31:17 [toto1] | =================================
+09/17 23:31:17 [toto1] | toto1 just log in.
+09/17 23:31:17 [toto2] | =================================
+09/17 23:31:17 [toto2] | toto2 just log in.
+09/17 23:31:17 [bottle] | Run the web server on port 8080...
+09/17 23:31:17 [root] | Run the game server on port 1235...
+09/17 23:31:20 [root] | Receive: 'CLIENT_NAME ProgTest_24210' from 127.0.0.1 
+09/17 23:31:20 [root] | Send 'OK' to 127.0.0.1
+09/17 23:31:20 [ProgTest_24210] | =================================
+09/17 23:31:20 [ProgTest_24210] | ProgTest_24210 just log in.
+09/17 23:31:20 [root] | Receive: 'WAIT_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:20 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:22 [root] | Receive: 'CLIENT_NAME ProgTest_24211' from 127.0.0.1 
+09/17 23:31:22 [root] | Send 'OK' to 127.0.0.1
+09/17 23:31:22 [ProgTest_24211] | =================================
+09/17 23:31:22 [ProgTest_24211] | ProgTest_24211 just log in.
+09/17 23:31:22 [root] | Receive: 'WAIT_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:22 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:27 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | =================================
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Game 1474147892-5264896-ProgTest_24211-ProgTest_24210 just starts with 'ProgTest_24211' and 'ProgTest_24210'.
+09/17 23:31:32 [ProgTest_24211] | Enter in game 1474147892-5264896-ProgTest_24211-ProgTest_24210
+09/17 23:31:32 [ProgTest_24210] | Enter in game 1474147892-5264896-ProgTest_24211-ProgTest_24210
+09/17 23:31:32 [root] | Send '1474147892-5264896-ProgTest_24211-ProgTest_24210' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '13 9' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '1474147892-5264896-ProgTest_24211-ProgTest_24210' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '13 9' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'GET_GAME_DATA' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '101111111110110100010001011110101010111000010101000000111000111001010111110101111010101011111001111100111110111110111' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '101111111110110100010001011110101010111000010101000000111000111001010111110101111010101011111001111100111110111110111' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '1' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:32 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:32 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:32 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:32 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:32 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:32 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:32 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/17 23:31:32 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:32 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:33 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:33 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:33 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:33 [root] | Receive: 'GET_MOVE' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:33 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:33 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:33 [root] | Send '4 0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:33 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:33 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:33 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:33 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:33 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:33 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:34 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:34 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:34 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:34 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:34 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:34 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:34 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:34 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:34 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:34 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:34 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:34 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:34 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:35 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:35 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:35 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:35 [root] | Receive: 'GET_MOVE' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:35 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:35 [root] | Send '4 0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:35 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:35 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:35 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:35 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:35 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:35 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:35 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:36 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:36 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:36 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:36 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:36 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:36 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:36 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:36 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:36 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:36 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:36 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:36 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:36 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:37 [root] | Receive: 'GET_MOVE' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:37 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:37 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:37 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:37 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:37 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:37 [root] | Send '4 0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:37 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:37 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:37 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:37 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:37 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:37 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:38 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:38 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:38 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:38 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:38 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:38 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:38 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:38 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:38 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:38 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:38 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:38 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:38 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:39 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:39 [root] | Receive: 'GET_MOVE' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:39 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:39 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:39 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:39 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:39 [root] | Send '4 0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:39 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:39 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:39 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:39 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:39 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:39 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:40 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:40 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:40 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:40 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:40 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:40 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:40 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:40 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:40 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:40 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:40 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:40 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:40 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:41 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:41 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:41 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:41 [root] | Receive: 'GET_MOVE' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:41 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:41 [root] | Send '4 0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:41 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:41 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:41 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:41 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:41 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:41 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:41 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:42 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:42 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24211' plays 4 0
+09/17 23:31:42 [root] | Receive: 'GET_MOVE' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/17 23:31:42 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for playMove event
+09/17 23:31:42 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive playMove event
+09/17 23:31:42 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Receive getMove event
+09/17 23:31:42 [root] | Send '4 0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:42 [root] | Send '0' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [root] | Send '0' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:42 [root] | Receive: 'DISP_GAME' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [root] | Receive: 'DISP_GAME' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:42 [root] | Send 'OK' to ProgTest_24210 (127.0.0.1) 
+09/17 23:31:42 [root] | Send 'OK' to ProgTest_24211 (127.0.0.1) 
+09/17 23:31:42 [root] | Send the labyrinth to display to player ProgTest_24210 (127.0.0.1)
+09/17 23:31:42 [root] | Send the labyrinth to display to player ProgTest_24211 (127.0.0.1)
+09/17 23:31:43 [root] | Receive: '' from ProgTest_24211 (127.0.0.1) 
+09/17 23:31:43 [ProgTest_24211] | Error with ProgTest_24211 (127.0.0.1): '"Bad protocol, command should not start with ''"'
+09/17 23:31:43 [ProgTest_24211] | Connection closed with player ProgTest_24211 (127.0.0.1)
+09/17 23:31:43 [ProgTest_24211] | ProgTest_24211 just log out.
+09/17 23:31:43 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
+09/17 23:31:43 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
+09/17 23:31:43 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event

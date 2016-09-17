@@ -168,14 +168,16 @@ class Labyrinth(Game):
 				# or add wall
 				else:
 					st.append( u"\u2589")
-			lines.append( "|" + ".".join(st) + "|" )
+			lines.append( "|" + " ".join(st) + "|" )
 
 		# add player names
 		#TODO: add points
-		lines[H//2] = lines[H//2] + "\t\t" + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name
-		lines[H//2 + 2] = lines[H//2 + 2] + "\t\t" + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name
+		brackets0 = "[]" if self._whoPlays==self._players[0] else "  "
+		brackets1 = "[]" if self._whoPlays == self._players[1] else "  "
+		lines[H//2] = lines[H//2] + "\t\t" + brackets0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + brackets0[1]
+		lines[H//2 + 2] = lines[H//2 + 2] + "\t\t" + brackets1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + brackets1[1]
 
-		head = "+"+"-"*3*L+"+\n"
+		head = "+"+"-"*(2*L-1)+"+\n"
 		return head + "\n".join(lines) + "\n" + head
 
 

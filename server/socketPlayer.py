@@ -52,8 +52,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 					if self._player is not self.game.whoPlays:
 						self.sendData("OK")
 						move = self.game.getLastMove()
-					# send that move
-					# ...
+						# send that move
+						self.sendData(move)
+						# send now the result of the move
+						# TODO:
+						self.sendData("0")
 					else:
 						# we cannot ask for a move, since it's our turn to play
 						self.sendData("It's our turn to play, so we cannot ask for a move!")
@@ -61,8 +64,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 				elif data.startswith("PLAY_MOVE "):
 					# play move
 					if self._player is self.game.whoPlays:
-						if self.game.receiveMove(move):
+						if self.game.receiveMove(data[10:]):
 							self.sendData("OK")
+							# now, send the result of the move
+							#TODO:
+							self.sendData("0")
 						else:
 							self.sendData("The move is not valid!")
 					else:

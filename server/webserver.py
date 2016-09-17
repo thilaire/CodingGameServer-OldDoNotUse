@@ -7,6 +7,9 @@ from bottle import route,  jinja2_view, request, redirect, static_file, template
 from functools import partial
 from Player import Player
 from Labyrinth import Labyrinth
+from logging import getLogger
+
+logger = getLogger('bottle')
 
 #configure the web server template engine
 view = partial(jinja2_view, template_lookup=['templates'])
@@ -50,6 +53,7 @@ def create_new_game():
 
 	if g is None:
 		#TODO: redirect to an error page
+		#TODO: log this
 		return "Erreur. Impossible de créer une partie avec " + request.forms.get('player1') + " and " + request.forms.get('player2')
 	else:
 		redirect('/')
@@ -92,4 +96,11 @@ def log(playerName):
 @error(404)
 @view('error404.html')
 def error404(error):
+	#TODO: log this
 	return {'url':request.url}
+
+
+@error(500)
+def errror500(error):
+	logger.error(error)
+	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"
