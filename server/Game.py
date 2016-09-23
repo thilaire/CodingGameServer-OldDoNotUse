@@ -37,11 +37,11 @@ class Game:
 
 		# check if we can create the game (are the players available)
 		if player1 is None or player2 is None:
-			return None
+			raise ValueError("Players doesn't exist")
 		if player1 is player2:
-			return None
+			raise ValueError("Cannot play against himself")
 		if player1.game is not None or player2.game is not None:
-			return None
+			raise ValueError("Players already play in a game")
 
 		# players
 		self._players = (player1, player2)
@@ -49,7 +49,7 @@ class Game:
 		# get a seed if the seed is not given; seed the random numbers generator
 		if seed is None:
 			numpy_seed( None )	# (from doc): If seed is None, then RandomState will try to read data from /dev/urandom (or the Windows analogue) if available or seed from the clock otherwise.
-			seed = randint(0, 1e9)
+			seed = randint(0, int(1e9) )
 		numpy_seed(seed)
 
 		# (unique) name (unix date + seed + players name)
@@ -83,6 +83,9 @@ class Game:
 		self._getMoveEvent.clear()
 		self._playMoveEvent = Event()
 		self._playMoveEvent.clear()
+
+		# last move
+		self._lastMove = None
 
 
 	@property
@@ -177,3 +180,16 @@ class Game:
 			#TODO: something to do, here?
 
 			return False
+
+
+
+	def playMove ( self, move ):
+		"""
+		Play a move
+		TO BE OVERLOAD BY THE CHILD CLASS
+
+		- move: a string defining the move (from the SocketPlayer)
+		Return True if everything is ok, False if the move is invalid
+		"""
+		# play that move
+		return True

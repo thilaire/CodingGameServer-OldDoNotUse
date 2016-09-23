@@ -66,10 +66,10 @@ logger.addHandler(steam_handler)
 # See http://stackoverflow.com/questions/31080214/python-bottle-always-logs-to-console-no-logging-to-file
 weblogger = logging.getLogger('bottle')
 def log_to_logger(fn):
-	'''	Wrap a Bottle request so that a log line is emitted after it's handled.'''
+	"""	Wrap a Bottle request so that a log line is emitted after it's handled."""
 	@wraps(fn)
-	def _log_to_logger(*args, **kwargs):
-		actual_response = fn(*args, **kwargs)
+	def _log_to_logger(*_args, **_kwargs ):
+		actual_response = fn(*_args, **_kwargs)
 		weblogger.info('%s %s %s %s' % (request.remote_addr, request.method, request.url, response.status))
 		return actual_response
 	return _log_to_logger

@@ -3,11 +3,13 @@ Webserver functions
 
 """
 
-from bottle import route,  jinja2_view, request, redirect, static_file, template, TEMPLATE_PATH, response, error
 from functools import partial
-from Player import Player
-from Labyrinth import Labyrinth
 from logging import getLogger
+
+from bottle import route,  jinja2_view, request, redirect, static_file, template, TEMPLATE_PATH, error
+
+from Labyrinth import Labyrinth
+from Player import Player
 
 logger = getLogger('bottle')
 
@@ -48,13 +50,16 @@ def create_new_game():
 	player1 = Player.getFromName( request.forms.get('player1') )
 	player2 = Player.getFromName( request.forms.get('player2') )
 
-	# the constructor will check if player1 and player2 are available to play
-	g = Labyrinth( player1, player2 )
 
-	if g is None:
+	try:
+		# the constructor will check if player1 and player2 are available to play
+		# no need to store the labyrinth object created here
+		Labyrinth( player1, player2 )
+
+	except ValueError as e:
 		#TODO: redirect to an error page
 		#TODO: log this
-		return "Erreur. Impossible de créer une partie avec " + request.forms.get('player1') + " and " + request.forms.get('player2')
+		return "Error. Impossible to create a game with " + request.forms.get('player1') + " and " + request.forms.get('player2') + ": '" + str(e) + "'"
 	else:
 		redirect('/')
 
@@ -95,12 +100,12 @@ def log(playerName):
 
 @error(404)
 @view('error404.html')
-def error404(error):
+def error404( ):
 	#TODO: log this
 	return {'url':request.url}
 
 
 @error(500)
-def errror500(error):
-	logger.error(error)
+def errror500(err):
+	logger.error(err)
 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"

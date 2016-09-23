@@ -5236,3 +5236,42 @@ paste.httpserver.ThreadPool 2016-09-10 18:24:10,009 :: DEBUG :: Started new work
 09/17 23:31:43 [root] | Receive: 'PLAY_MOVE 4 0' from ProgTest_24210 (127.0.0.1) 
 09/17 23:31:43 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | 'ProgTest_24210' plays 4 0
 09/17 23:31:43 [1474147892-5264896-ProgTest_24211-ProgTest_24210] | Wait for getMove event
+09/23 12:14:25 [root] | #=========================================#
+09/23 12:14:25 [root] | # Labyrinth Game server is going to start #
+09/23 12:14:25 [root] | #=========================================#
+09/23 12:14:25 [toto1] | =================================
+09/23 12:14:25 [toto1] | toto1 just log in.
+09/23 12:14:25 [toto2] | =================================
+09/23 12:14:25 [toto2] | toto2 just log in.
+09/23 12:14:25 [bottle] | Run the web server on port 8080...
+09/23 12:14:25 [root] | Run the game server on port 1234...
+09/23 12:16:31 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/23 12:16:33 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/23 12:17:54 [root] | Receive: 'CLIENT_NAME ProgTest_59520' from 127.0.0.1 
+09/23 12:17:54 [root] | Send 'OK' to 127.0.0.1
+09/23 12:17:54 [ProgTest_59520] | =================================
+09/23 12:17:54 [ProgTest_59520] | ProgTest_59520 just log in.
+09/23 12:17:54 [root] | Receive: 'WAIT_GAME' from ProgTest_59520 (127.0.0.1) 
+09/23 12:17:54 [root] | Send 'OK' to ProgTest_59520 (127.0.0.1) 
+09/23 12:17:59 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/23 12:18:08 [1474625888-407363666-ProgTest_59520-toto2] | =================================
+09/23 12:18:08 [1474625888-407363666-ProgTest_59520-toto2] | Game 1474625888-407363666-ProgTest_59520-toto2 just starts with 'ProgTest_59520' and 'toto2'.
+09/23 12:18:08 [ProgTest_59520] | Enter in game 1474625888-407363666-ProgTest_59520-toto2
+09/23 12:18:08 [toto2] | Enter in game 1474625888-407363666-ProgTest_59520-toto2
+09/23 12:18:08 [root] | Send '1474625888-407363666-ProgTest_59520-toto2' to ProgTest_59520 (127.0.0.1) 
+09/23 12:18:08 [ProgTest_59520] | Connection closed with player ProgTest_59520 (127.0.0.1)
+09/23 12:18:08 [ProgTest_59520] | ProgTest_59520 just log out.
+09/23 12:18:08 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/23 12:18:13 [bottle] | (500, 'Internal Server Error', AttributeError("'tuple' object has no attribute 'name'",), 'Traceback (most recent call last):\n  File "/Users/thib/.virtualenvs/labyrinth/lib/python3.5/site-packages/bottle.py", line 862, in _handle\n    return route.call(**args)\n  File "/Users/thib/.virtualenvs/labyrinth/lib/python3.5/site-packages/bottle.py", line 1732, in wrapper\n    rv = callback(*a, **ka)\n  File "/Users/thib/Progs/Labyrinth/server/server.py", line 72, in _log_to_logger\n    actual_response = fn(*args, **kwargs)\n  File "/Users/thib/Progs/Labyrinth/server/webserver.py", line 70, in game\n    return g.HTMLpage()\n  File "/Users/thib/Progs/Labyrinth/server/Labyrinth.py", line 138, in HTMLpage\n    return "Game %s (with players \'%s\' and \'%s\'\\n<br><br>%s" % (self.name, self._player1.name, self._player2.name, self)\nAttributeError: \'tuple\' object has no attribute \'name\'\n')
+09/23 12:20:22 [root] | #=========================================#
+09/23 12:20:22 [root] | # Labyrinth Game server is going to start #
+09/23 12:20:22 [root] | #=========================================#
+09/23 12:20:22 [toto1] | =================================
+09/23 12:20:22 [toto1] | toto1 just log in.
+09/23 12:20:22 [toto2] | =================================
+09/23 12:20:22 [toto2] | toto2 just log in.
+09/23 12:20:22 [bottle] | Run the web server on port 8080...
+09/23 12:20:22 [root] | Run the game server on port 1234...
+09/23 12:20:29 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/ 200 OK
+09/23 12:20:36 [bottle] | 127.0.0.1 GET http://127.0.0.1:8080/new_game 200 OK
+09/23 12:20:39 [bottle] | 127.0.0.1 POST http://127.0.0.1:8080/create_new_game 200 OK

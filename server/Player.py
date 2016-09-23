@@ -59,7 +59,7 @@ class Player:
 		#TODO: return a dictionary to fill a template
 		return self.HTMLrepr()
 
-
+	# noinspection PyNoneFunctionAssignment
 	@classmethod
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
@@ -99,4 +99,9 @@ class Player:
 		# since we have a game, then we can set the Event
 		self._waitingGame.set()
 
-
+	def waitForGame(self):
+		"""
+		Wait for a new game
+		"""
+		self._waitingGame.wait()  # WAIT until the event _waitingGame is set by the game.setter of the player (so when the game assigned itself to the game property of a player)
+		self._waitingGame.clear()  # clear it for the next game...

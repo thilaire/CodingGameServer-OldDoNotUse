@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Create a new game</title>
+	<meta charset="UTF-8">
+	<title>Create a new game</title>
 </head>
 <body>
 
+	<!--suppress HtmlUnknownTarget -->
     <form action="create_new_game" method="POST">
-    Player 1
-        <select name="player1">
-        {{list_players}}
-        </select>
-    Player 2
-        <select name="player2">
-        {{list_players}}
-        </select>
-    <button name="send">Create Game</button>
+        <label>
+            Player 1:
+            <select name="player1">
+            {{list_players}}
+            </select>
+        </label>
+        <label>
+            Player2:
+            <select name="player2">
+                {{list_players}}
+            </select>
+        </label>
+		<button name="send">Create Game</button>
 
-    </form>
+	</form>
 </body>
 </html>

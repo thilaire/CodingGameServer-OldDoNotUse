@@ -37,11 +37,11 @@ def CreateLaby(sX, sY):
 
 	while stack:
 		# get the position to treat, and the possible directions
-		x, y, dir = stack[-1]
-		dx, dy = dir.pop()  # remove one direction
+		x, y, direction = stack[-1]
+		dx, dy = direction.pop()  # remove one direction
 
 		# if it was the last direction to explore, remove that position to the stack
-		if not dir:
+		if not direction:
 			stack.pop()
 
 		# new cell
@@ -59,13 +59,13 @@ def CreateLaby(sX, sY):
 		# else remove the corresponding wall (if within bounds)
 		if (0 <= (ox - dx) <= (2 * sX + 1)) and (0 <= (oy - dy) <= (2 * sY + 1)):
 			lab[ox - dx, oy - dy] = True
-			lab[4 * sX - ox + dx, oy - dy] = True  # and its symetric
+			lab[4 * sX - ox + dx, oy - dy] = True  # and its symmetric
 		# remove the origin
 		lab[ox, oy] = True
 		lab[4 * sX - ox, oy] = True  # and its symetric
 		if random() > 0.75:
 			lab[ox + 1, oy - 1] = True
-			lab[4 * sX - ox - 1, oy - 1] = True  # and its symetric
+			lab[4 * sX - ox - 1, oy - 1] = True  # and its symmetric
 
 		# add it to the stack
 		shuffle(Directions)
@@ -102,7 +102,7 @@ class Labyrinth(Game):
 		"""
 
 		# call the superclass constructor
-		super(Labyrinth, self).__init__(player1, player2)
+		super(Labyrinth, self).__init__(player1, player2, seed)
 
 		# TODO: add size of the labyrinth ?
 
@@ -111,7 +111,7 @@ class Labyrinth(Game):
 		sX = randint(3, 5)
 		self._lab = CreateLaby(sX, totalSize - sX)
 
-		# add treasor and players
+		# add treasure and players
 		L,H = self.lab.shape
 		self._treasure = (L // 2, H // 2)
 		self._lab[ self._treasure] = False
@@ -135,7 +135,7 @@ class Labyrinth(Game):
 
 	def HTMLpage(self):
 		# TODO: return a dictionary to fill a html template
-		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (self.name, self._player1.name, self._player2.name, self)
+		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (self.name, self._players[0].name, self._players[1].name, self)
 
 
 
@@ -153,7 +153,7 @@ class Labyrinth(Game):
 		for y in range(H):
 			st = []
 			for x in range(L):
-				# add treasor
+				# add treasure
 				if (x,y) == self._treasure:
 					st.append( Fore.GREEN + u"\u2691" + Fore.RESET)
 				# add player1

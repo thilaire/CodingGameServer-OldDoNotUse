@@ -1,8 +1,6 @@
 import logging
-from socketserver import ThreadingTCPServer, BaseRequestHandler
-from logging.handlers import RotatingFileHandler
+from socketserver import BaseRequestHandler
 from re import sub
-from threading import Event
 from Player import Player
 
 
@@ -15,7 +13,7 @@ class connectionError(Exception):
 	"""stupid class to manage the errors due to the connection
 	"""
 
-	# TODO: Usefull ?
+	# TODO: Useful ?
 	def __init__(self, value):
 		self.value = value
 
@@ -30,9 +28,16 @@ class PlayerSocketHandler(BaseRequestHandler):
 	It is instantiated once per connection to the server, ie one per player
 	"""
 
+	def __init__ ( self, request, client_address, server ):
+		"""
+		Call the constructor of the based class, but add an attribute
+		"""
+		super().__init__(request, client_address, server)
+		self._player = None
+
+
 	def handle(self):
 
-		self._player = None
 		try:
 			# get the name from the client and create the player
 			name = self.getPlayerName()
@@ -135,7 +140,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 	@property
 	def game(self):
 		"""
-		Returns the game of the player (self.game is a shortcup for self.game)
+		Returns the game of the player (self.game is a shortcut for self.game)
 		"""
 		return self._player.game
 
@@ -192,8 +197,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData("OK")
 
 		# wait for the Game
-		self._player._waitingGame.wait()  # WAIT until the event _waitingGame is set by the game.setter of the player (so when the game assigned itself to the game property of a player)
-		self._player._waitingGame.clear()  # clear it for the next game...
+		self._player.waitForGame()
 
 		# now send the game name
 		self.sendData(self.game.name)
