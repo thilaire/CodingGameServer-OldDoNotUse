@@ -24,7 +24,7 @@ int main()
 	int player;
 	int sizeX,sizeY;
 
-	debug=1;	/* enable debug */
+	debug=0;	/* enable debug */
 
 	/* connection to the server */
 	char nom[50];
@@ -67,6 +67,10 @@ int main()
 
 		} while (ret==MOVE_OK);
 
+		if ( (player==0 && ret==MOVE_WIN) || (player==1 && ret==MOVE_LOSE) )
+			printf("\n Unfortunately, the opponent wins\n");
+		else
+			printf("\n Héhé, I win!!\n");
 
 		/* we do not forget to free the allocated array */
 		free(labData);

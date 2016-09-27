@@ -95,7 +95,11 @@ class Player:
 		- name: (string) name of the player
 		Returns the player (the object) or None if this player doesn't exist
 		"""
-		return cls.allPlayers.get(name, None)
+		if name in cls.allPlayers:
+			return cls.allPlayers[name]
+		else:
+			return None
+		# return cls.allPlayers.get(name, None)
 
 
 	@property
