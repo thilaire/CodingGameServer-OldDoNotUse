@@ -69,8 +69,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 					elif data.startswith("PLAY_MOVE "):
 						# play move
 						if self._player is self.game.playerWhoPlays:
-							return_code, msg = self.game.receiveMove(data[10:])
 							self.sendData("OK")
+							# play that move to see if it's a winning/losing/normal move
+							return_code, msg = self.game.receiveMove(data[10:])
 							# now, send the result of the move and the associated message
 							self.sendData( str(return_code) )
 							self.sendData( msg )
@@ -127,7 +128,12 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Send data (with self.request.sendall) and log it
 		:param data: (str) data to send
 		"""
-		self.request.sendall( data.encode('utf-8'))
+		if data:
+			self.request.sendall( data.encode('utf-8'))
+		else:
+			# that's a trick when we want to send an empty message...
+			#TODO: change this (do not send any empty message? always send X octets messages?)
+			self.request.sendall('\n'.encode('utf-8'))
 		if self._player:
 			logger.debug( "Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
