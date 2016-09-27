@@ -21,7 +21,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 from threading import Event
 
-
 logger = logging.getLogger()		# general logger ('root')
 
 
@@ -78,7 +77,7 @@ class Player:
 		# TODO: return a dictionary to fill a template
 		return self.HTMLrepr()
 
-	# noinspection PyNoneFunctionAssignment
+
 	@classmethod
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
@@ -92,11 +91,11 @@ class Player:
 	def getFromName(cls, name):
 		"""
 		Get a player form its name
-		:param name: (string) name of the player
-		:return: the player (the object) or None if this player doesn't exist
+		Parameters:
+		- name: (string) name of the player
+		Returns the player (the object) or None if this player doesn't exist
 		"""
 		return cls.allPlayers.get(name, None)
-
 
 
 	@property
@@ -108,20 +107,23 @@ class Player:
 	def logger(self):
 		return self._logger
 
+
 	@property
 	def game(self):
 		return self._game
 
+
 	@game.setter
 	def game(self, g):
 		if g is not None:
-			self.logger.info("Enter in game "+g.name)
+			self.logger.info("Enter in game " + g.name)
 			# since we have a game, then we can set the Event
 			self._waitingGame.set()
 		else:
-			self.logger.info("Leave the game "+self._game.name)
+			self.logger.info("Leave the game " + self._game.name)
 			# since we do not have a game, we can clear the the Event
 			self._waitingGame.clear()
+
 		self._game = g
 
 

@@ -21,7 +21,7 @@ from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
 
-from Constants import MOVE_OK, MOVE_WIN, TIMEOUT_TURN
+from Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
 
 
 class Game:
@@ -105,9 +105,14 @@ class Game:
 		# time out for the move
 		self._timeout = TIMEOUT_TURN  # maybe overloaded by a Game child class
 
+		# is the game over ?
+		self._gameOver = False
+
+
 	@property
 	def name(self):
 		return self._name
+
 
 	@classmethod
 	def getFromName(cls, name):
@@ -118,27 +123,34 @@ class Game:
 		"""
 		return cls.allGames.get(name, None)
 
+
 	def endOfGame(self):
 		"""
 		Manage the end of the game
-		Called when the game is over (after a move or a deconnexion)
+		Called when the game is over (after a move or a deconnection)
 		"""
 		# log it
 		self.logger.info("The game '%s' is now finished", self.name)
 
-		# detach the players and the game
-		for p in self._players:
-			p.game = None
-		self._players = (None, None)
+		self._gameOver = True
+
+
+	@property
+	def isOver(self):
+		return self._gameOver
+
 
 	def __del__(self):
 		# remove from the dictionary of games
 		# TODO: who calls this ?
+		self.logger.debug("Someone call __del__")
 		del self.allGames[self.name]
+
 
 	@property
 	def logger(self):
 		return self._logger
+
 
 	@property
 	def playerWhoPlays(self):
@@ -146,6 +158,7 @@ class Game:
 		Returns the player who Plays
 		"""
 		return self._players[self._whoPlays]
+
 
 	def getLastMove(self):
 		"""
@@ -173,7 +186,10 @@ class Game:
 			# TODO: DO SOMETHING !!
 			# TODO: signifier la fin de partie, etc.
 
-			return self._lastMove, self._lastReturn_code
+			self.endOfGame()
+
+			return self._lastMove, MOVE_LOSE
+
 
 	def receiveMove(self, move):
 		# TODO: changer ce nom !!! (éventuellement playMove, mais il faut renommer le playMove de labyrinth... ReceiveMove traite le move et surtout fait la synchronisation avec l'adversaire, et gère la défaite/victoire). Alors que le playMove de Labyrinth ne fait que jouer le coup et renvoyer le return_code et le message
@@ -183,6 +199,10 @@ class Game:
 		Return a tuple (move_code, msg), where
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
 		- msg: a message to send to the player, explaining why the game is ending"""
+
+		# if we try to play a move, but the game is already over, it means the move arrive *after* the timeout
+		if self._gameOver:
+			return MOVE_LOSE, "Timeout !"
 
 		# play that move
 		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
@@ -216,6 +236,7 @@ class Game:
 
 		return return_code, msg
 
+
 	def sendComment(self, player, comment):
 		"""
 			Called when a player send a comment
@@ -243,6 +264,7 @@ class Game:
 		# play that move
 		return True
 
+
 	def getData(self):
 		"""
 		Return the datas of the game (when ask with the GET_GAME_DATA message)
@@ -251,6 +273,7 @@ class Game:
 
 		"""
 		return ""
+
 
 	def getDataSize(self):
 		"""

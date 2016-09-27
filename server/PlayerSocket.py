@@ -69,7 +69,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 				self.sendGameData()
 
 				# repeat until we play
-				while self.game is not None:
+				while not self.game.isOver:
 					data = self.receiveData()
 
 					if data.startswith("GET_MOVE"):
@@ -112,6 +112,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 					else:
 						raise MyConnectionError("Bad protocol, command should not start with '" + data + "'")
 
+				# now the game is over
+				self._player.game = None    # this also kill the Game
 
 		except MyConnectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...

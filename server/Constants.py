@@ -16,8 +16,7 @@ File: Constants.py
 """
 
 
-# TODO: set timeout to 7 seconds
-TIMEOUT_TURN = 1000		    # time (in seconds) to play a move
+TIMEOUT_TURN = 7		    # time (in seconds) to play a move
 
 
 # return codes
