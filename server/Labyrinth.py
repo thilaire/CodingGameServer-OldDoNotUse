@@ -1,11 +1,10 @@
 """
 
-/* ---------------------
- *
- *   Coding Game Server
- *
- * ---------------------
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
@@ -19,7 +18,8 @@ File: Labyrinth.py
 
 
 from random import shuffle, random, randint
-from Game import Game, MOVE_OK, MOVE_WIN, MOVE_LOSE
+from Game import Game
+from Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
 from colorama import Fore
 from re import compile
 
@@ -27,7 +27,7 @@ regdd = compile("(\d+)\s+(\d+)")    # regex to parse a "%d %d" string
 
 
 
-#TODO: check how to make `pythonic` constants
+# TODO: check how to make `pythonic` constants
 # see http://stackoverflow.com/questions/11111632/python-best-cleanest-way-to-define-constant-lists-or-dictionarys
 # put all these constants in a separate Laby_const.py file ?
 ROTATE_LINE_LEFT = 0
@@ -40,8 +40,8 @@ MOVE_LEFT = 6
 MOVE_RIGHT = 7
 DO_NOTHING = 8
 
-Ddx = { MOVE_UP: 0, MOVE_DOWN: 0, MOVE_LEFT:-1, MOVE_RIGHT:1 }      # simple dictionary of x-offsets
-Ddy = { MOVE_UP: -1, MOVE_DOWN: 1, MOVE_LEFT:0, MOVE_RIGHT:0 }
+Ddx = {MOVE_UP: 0, MOVE_DOWN: 0, MOVE_LEFT: -1, MOVE_RIGHT: 1}      # simple dictionary of x-offsets
+Ddy = {MOVE_UP: -1, MOVE_DOWN: 1, MOVE_LEFT: 0, MOVE_RIGHT: 0}
 
 
 
@@ -59,7 +59,8 @@ def CreateLaby(sX, sY):
 	A cell is a 2x2 array
 	| U X |
 	| o R |
-	where o is the "origin" of the cell, U and R the Up and Right "doors" (to the next cell), and X a wall (the 1st line and 2 column will be the fixed lines/columns of the labyrinth)
+	where o is the "origin" of the cell, U and R the Up and Right "doors" (to the next cell), and X a wall
+	(the 1st line and 2 column will be the fixed lines/columns of the labyrinth)
 
 	The lab is composed of these cells (except that the 1st line of the lab only have the half-bottom of cells)
 	and is symmetric with respect to the middle column
@@ -77,7 +78,7 @@ def CreateLaby(sX, sY):
 	L = 4 * sX + 1
 	H = 2 * sY + 1
 	# create a L*H array of False)
-	lab = [ list( (False,)*H ) for _ in range(L) ]
+	lab = [list((False,)*H) for _ in range(L)]
 
 	shuffle(Directions)
 	stack = [(0, 0, list(Directions))]  # X, Y of the cell( 2x2 cell) and directions
@@ -94,7 +95,8 @@ def CreateLaby(sX, sY):
 		# new cell
 		nx = x + dx
 		ny = y + dy
-		# check if we are out of bounds (ny==-1 is ok, but in that case, we will only consider the last line of the cell -> it will be the line number 0)
+		# check if we are out of bounds (ny==-1 is ok, but in that case, we will only consider
+		# the last line of the cell -> it will be the line number 0)
 		if not (0 <= nx <= sX and -1 <= ny < sY):
 			continue
 		# index of the "origin" of the cell
@@ -159,16 +161,17 @@ class Labyrinth(Game):
 
 		# add treasure and players
 		self._treasure = (self.L // 2, self.H // 2)
-		self._lab[ self._treasure[0] ][ self._treasure[1] ] = True  # no wall here
+		self._lab[self._treasure[0]][self._treasure[1]] = True  # no wall here
 
 		self._playerPos = []            # list of coordinates
-		self._playerPos.append( (0, self.H // 2) )
-		self._playerPos.append( (self.L - 1, self.H // 2) )
+		self._playerPos.append((0, self.H // 2))
+		self._playerPos.append((self.L - 1, self.H // 2))
 
-		for x,y in self._playerPos:
-			self._lab[ x ][ y ] = True  # no wall here
+		for x, y in self._playerPos:
+			self._lab[x][y] = True  # no wall here
 
-		# call the superclass constructor (only at the end, because the superclass constructor launches the players and they will immediately requires some Labyrinth's properties)
+		# call the superclass constructor (only at the end, because the superclass constructor launches
+		# the players and they will immediately requires some Labyrinth's properties)
 		super(Labyrinth, self).__init__(player1, player2, seed)
 
 
@@ -183,7 +186,8 @@ class Labyrinth(Game):
 
 	def HTMLpage(self):
 		# TODO: return a dictionary to fill a html template
-		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (self.name, self._players[0].name, self._players[1].name, self)
+		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
+			self.name, self._players[0].name, self._players[1].name, self)
 
 
 
@@ -201,28 +205,28 @@ class Labyrinth(Game):
 			st = []
 			for x in range(self.L):
 				# add treasure
-				if (x,y) == self._treasure:
-					st.append( Fore.GREEN + u"\u2691" + Fore.RESET)
+				if (x, y) == self._treasure:
+					st.append(Fore.GREEN + u"\u2691" + Fore.RESET)
 				# add player1
-				elif (x,y) == self._playerPos[0]:
-					st.append( Fore.BLUE + u"\u265F" + Fore.RESET)
+				elif (x, y) == self._playerPos[0]:
+					st.append(Fore.BLUE + u"\u265F" + Fore.RESET)
 				# add player2
-				elif (x,y) == self._playerPos[1]:
-					st.append( Fore.RED + u"\u265F" + Fore.RESET)
+				elif (x, y) == self._playerPos[1]:
+					st.append(Fore.RED + u"\u265F" + Fore.RESET)
 				# add empty
 				elif self.lab[x][y]:
-					st.append( " ")
+					st.append(" ")
 				# or add wall
 				else:
-					st.append( u"\u2589")
-			lines.append( "|" + " ".join(st) + "|" )
+					st.append(u"\u2589")
+			lines.append("|" + " ".join(st) + "|")
 
 		# add player names
-		#TODO: add points
-		brackets0 = "[]" if self._whoPlays == 0 else "  "
-		brackets1 = "[]" if self._whoPlays == 1 else "  "
-		lines[self.H//2] = lines[self.H//2] + "\t\t" + brackets0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + brackets0[1]
-		lines[self.H//2 + 2] = lines[self.H//2 + 2] + "\t\t" + brackets1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + brackets1[1]
+		# TODO: add points
+		br0 = "[]" if self._whoPlays == 0 else "  "
+		br1 = "[]" if self._whoPlays == 1 else "  "
+		lines[self.H//2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
+		lines[self.H//2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
 
 		head = "+"+"-"*(2*self.L-1)+"+\n"
 		return head + "\n".join(lines) + "\n" + head
@@ -249,11 +253,11 @@ class Labyrinth(Game):
 		# parse the move
 		result = regdd.match(move)
 		# check if the data receive is valid
-		if 	result is None:
+		if result is None:
 			return MOVE_LOSE, "The move is not in correct form ('%d %d') !"
 		# get the type and the value
-		move_type = int( result.group(1) )
-		value = int( result.group(2) )
+		move_type = int(result.group(1))
+		value = int(result.group(2))
 		# check the possible values
 		if not (ROTATE_LINE_LEFT <= move_type <= DO_NOTHING):
 			return MOVE_LOSE, "The type is not valid !"
@@ -264,22 +268,22 @@ class Labyrinth(Game):
 
 		# move the player
 		if MOVE_UP <= move_type <= MOVE_RIGHT:
-			x,y = self._playerPos[ self._whoPlays ]
+			x, y = self._playerPos[self._whoPlays]
 			x += Ddx[move_type]
 			y += Ddy[move_type]
 
-			#TODO: on rajoute cette règle, ou bien on a droit de cycler ?
-			if not (0 <= x < self.L) or not( 0 <= y < self.H):
+			# TODO: on rajoute cette règle, ou bien on a droit de cycler ?
+			if not (0 <= x < self.L) or not(0 <= y < self.H):
 				return MOVE_LOSE, "Cannot go outside of the labyrinth"
 
 			if not self._lab[x][y]:
 				return MOVE_LOSE, "Outch! There's a wall where you want to move!"
 
 			# play the move (move the player on the lab)
-			self._playerPos[ self._whoPlays ] = (x,y)
+			self._playerPos[self._whoPlays] = (x, y)
 
 			# check if won
-			if (x,y) == self._treasure:
+			if (x, y) == self._treasure:
 				return MOVE_WIN, "You find the treasure, you win!"
 			else:
 				return MOVE_OK, ""
@@ -297,7 +301,7 @@ class Labyrinth(Game):
 		msg = []
 		for y in range(self.H):
 			for x in range(self.L):
-				msg.append( "1" if self.lab[x][y] else "0")
+				msg.append("1" if self.lab[x][y] else "0")
 		return "".join(msg)
 
 

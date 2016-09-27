@@ -1,11 +1,10 @@
 """
 
-/* ---------------------
- *
- *   Coding Game Server
- *
- * ---------------------
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
@@ -54,8 +53,8 @@ class Player:
 			self._logger.addHandler(file_handler)
 
 
-		self.logger.info( "=================================")
-		self.logger.info( name + " just log in.")
+		self.logger.info("=================================")
+		self.logger.info(name + " just log in.")
 
 		# name
 		self._name = name
@@ -76,7 +75,7 @@ class Player:
 
 
 	def HTMLpage(self):
-		#TODO: return a dictionary to fill a template
+		# TODO: return a dictionary to fill a template
 		return self.HTMLrepr()
 
 	# noinspection PyNoneFunctionAssignment
@@ -84,9 +83,9 @@ class Player:
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
 		if pl is not None:
-			pl.logger.info( name +" just log out.")
+			pl.logger.info(name + " just log out.")
 			del cls.allPlayers[name]
-		#TODO: dire au jeu auquel on joue que la partie est finie ? (ou c'est déjà fait)
+		# TODO: dire au jeu auquel on joue que la partie est finie ? (ou c'est déjà fait)
 
 
 	@classmethod
@@ -96,7 +95,7 @@ class Player:
 		:param name: (string) name of the player
 		:return: the player (the object) or None if this player doesn't exist
 		"""
-		return cls.allPlayers.get( name, None)
+		return cls.allPlayers.get(name, None)
 
 
 
@@ -114,7 +113,7 @@ class Player:
 		return self._game
 
 	@game.setter
-	def game(self,g):
+	def game(self, g):
 		if g is not None:
 			self.logger.info("Enter in game "+g.name)
 			# since we have a game, then we can set the Event
@@ -130,5 +129,7 @@ class Player:
 		"""
 		Wait for a new game
 		"""
-		self._waitingGame.wait()  # WAIT until the event _waitingGame is set by the game.setter of the player (so when the game assigned itself to the game property of a player)
+		# WAIT until the event _waitingGame is set by the game.setter of the player
+		# (so when the game assigned itself to the game property of a player)
+		self._waitingGame.wait()
 		self._waitingGame.clear()  # clear it for the next game...

@@ -1,11 +1,10 @@
 """
 
-/* ---------------------
- *
- *   Coding Game Server
- *
- * ---------------------
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
@@ -17,14 +16,12 @@ File: Game.py
 
 """
 
-
-
 import logging
 from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
 
-from Constants import MOVE_OK, MOVE_LOSE, MOVE_WIN, TIMEOUT_TURN
+from Constants import MOVE_OK, MOVE_WIN, TIMEOUT_TURN
 
 
 class Game:
@@ -66,35 +63,34 @@ class Game:
 
 		# get a seed if the seed is not given; seed the random numbers generator
 		if seed is None:
-			set_seed( None )	# (from doc): If seed is None, then RandomState will try to read data from /dev/urandom (or the Windows analogue) if available or seed from the clock otherwise.
-			seed = randint(0, int(1e9) )
+			set_seed(None)  # (from doc):  If seed is omitted or None, current system time is used
+			seed = randint(0, int(1e9))
 		set_seed(seed)
 
 		# (unique) name (unix date + seed + players name)
-		self._name = str( int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
+		self._name = str(int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
 
 		# create the logger of the game
 		self._logger = logging.getLogger(self.name)
 		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
-		file_handler = logging.FileHandler('logs/games/'+self.name+'.log')
+		file_handler = logging.FileHandler('logs/games/' + self.name + '.log')
 		file_handler.setLevel(logging.INFO)
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
 		self._logger.addHandler(file_handler)
 
-		self.logger.info( "=================================")
-		self.logger.info( "Game %s just starts with '%s' and '%s'.", self.name, player1.name, player2.name)
-
+		self.logger.info("=================================")
+		self.logger.info("Game %s just starts with '%s' and '%s'.", self.name, player1.name, player2.name)
 
 		# add itself to the dictionary of games
-		self.allGames[ self.name ] = self
+		self.allGames[self.name] = self
 
 		# advertise the players that they enter in a game
 		player1.game = self
 		player2.game = self
 
 		# determine who starts
-		self._whoPlays = choice( (0,1) )
+		self._whoPlays = choice((0, 1))
 
 		# Event to manage payMove and getMove from the players
 		self._getMoveEvent = Event()
@@ -107,13 +103,11 @@ class Game:
 		self._lastReturn_code = 0
 
 		# time out for the move
-		self._timeout = TIMEOUT_TURN    # maybe overloaded by a Game child class
-
+		self._timeout = TIMEOUT_TURN  # maybe overloaded by a Game child class
 
 	@property
 	def name(self):
 		return self._name
-
 
 	@classmethod
 	def getFromName(cls, name):
@@ -122,8 +116,7 @@ class Game:
 		:param name: (string) name of the game
 		:return: the game (the object) or None if this game doesn't exist
 		"""
-		return cls.allGames.get( name, None)
-
+		return cls.allGames.get(name, None)
 
 	def endOfGame(self):
 		"""
@@ -131,33 +124,28 @@ class Game:
 		Called when the game is over (after a move or a deconnexion)
 		"""
 		# log it
-		self.logger.info( "The game '%s' is now finished", self.name)
+		self.logger.info("The game '%s' is now finished", self.name)
 
 		# detach the players and the game
 		for p in self._players:
 			p.game = None
-		self._players = (None,None)
-
-
+		self._players = (None, None)
 
 	def __del__(self):
 		# remove from the dictionary of games
-		#TODO: who calls this ?
+		# TODO: who calls this ?
 		del self.allGames[self.name]
-
 
 	@property
 	def logger(self):
 		return self._logger
 
-
 	@property
-	def playerWhoPlays(self ):
+	def playerWhoPlays(self):
 		"""
 		Returns the player who Plays
 		"""
-		return self._players[ self._whoPlays ]
-
+		return self._players[self._whoPlays]
 
 	def getLastMove(self):
 		"""
@@ -170,7 +158,7 @@ class Game:
 
 		# wait for the move of the opponent
 		self.logger.debug("Wait for playMove event")
-		if self._playMoveEvent.is_set() or self._playMoveEvent.wait( self._timeout):
+		if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
 			self.logger.debug("Receive playMove event")
 			self._playMoveEvent.clear()
 
@@ -182,14 +170,13 @@ class Game:
 			# the opponent has lost the game
 			self._playMoveEvent.clear()
 
-			#TODO: DO SOMETHING !!
-			#TODO: signifier la fin de partie, etc.
+			# TODO: DO SOMETHING !!
+			# TODO: signifier la fin de partie, etc.
 
 			return self._lastMove, self._lastReturn_code
 
-
 	def receiveMove(self, move):
-		#TODO: changer ce nom !!! (éventuellement playMove, mais il faut renommer le playMove de labyrinth... ReceiveMove traite le move et surtout fait la synchronisation avec l'adversaire, et gère la défaite/victoire). Alors que le playMove de Labyrinth ne fait que jouer le coup et renvoyer le return_code et le message
+		# TODO: changer ce nom !!! (éventuellement playMove, mais il faut renommer le playMove de labyrinth... ReceiveMove traite le move et surtout fait la synchronisation avec l'adversaire, et gère la défaite/victoire). Alors que le playMove de Labyrinth ne fait que jouer le coup et renvoyer le return_code et le message
 		"""
 		Play a move
 		- move: a string corresponding to the move
@@ -198,8 +185,8 @@ class Game:
 		- msg: a message to send to the player, explaining why the game is ending"""
 
 		# play that move
-		self.logger.debug( "'%s' plays %s"%(self.playerWhoPlays.name, move))
-		return_code,msg = self.playMove(move)
+		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
+		return_code, msg = self.playMove(move)
 
 		# keep the last move
 		self._lastMove = move
@@ -216,23 +203,18 @@ class Game:
 			self.logger.debug("Receive getMove event")
 
 			# change who plays
-			self._whoPlays = int( not self._whoPlays)
+			self._whoPlays = int(not self._whoPlays)
 
 		elif return_code == MOVE_WIN:
-			#TODO: signifier la fin de la partie
-			#TODO: congrats, etc.
+			# TODO: signifier la fin de la partie
+			# TODO: congrats, etc.
 			self.endOfGame()
-		else:   # return_code == MOVE_LOSE
+		else:  # return_code == MOVE_LOSE
 
-			#TODO: signifier la fin de partie
+			# TODO: signifier la fin de partie
 			self.endOfGame()
-
-
-
 
 		return return_code, msg
-
-
 
 	def sendComment(self, player, comment):
 		"""
@@ -241,12 +223,13 @@ class Game:
 		- player: player who sends the comment
 		- comment: (string) comment
 		"""
-		self.logger.debug( "Player %s send this comment: '%s", player.name, comment)
-		#TODO: DO SOMETHING WITH THAT COMMENT
+		self.logger.debug("Player %s send this comment: '%s", player.name, comment)
+
+	# TODO: DO SOMETHING WITH THAT COMMENT
 
 
 
-	def playMove ( self, move ):
+	def playMove(self, move):
 		"""
 		Play a move
 		TO BE OVERLOADED BY THE CHILD CLASS
@@ -259,7 +242,6 @@ class Game:
 		"""
 		# play that move
 		return True
-
 
 	def getData(self):
 		"""

@@ -1,11 +1,10 @@
 """
 
-/* ---------------------
- *
- *   Coding Game Server
- *
- * ---------------------
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
@@ -80,8 +79,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 							# get the last move
 							move, return_code = self.game.getLastMove()
 							# send the move and the return code
-							self.sendData( move )
-							self.sendData( str(return_code) )
+							self.sendData(move)
+							self.sendData(str(return_code))
 						else:
 							# we cannot ask for a move, since it's our turn to play
 							self.sendData("It's our turn to play, so we cannot ask for a move!")
@@ -93,21 +92,22 @@ class PlayerSocketHandler(BaseRequestHandler):
 							# play that move to see if it's a winning/losing/normal move
 							return_code, msg = self.game.receiveMove(data[10:])
 							# now, send the result of the move and the associated message
-							self.sendData( str(return_code) )
-							self.sendData( msg )
+							self.sendData(str(return_code))
+							self.sendData(msg)
 						else:
 							self.sendData("It's not our turn to play, so we cannot play a move!")
 
 					elif data.startswith("DISP_GAME"):
 						# return the labyrinth
 						self.sendData("OK")
-						self.request.sendall( str(self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
-						logger.debug("Send the labyrinth to display to player %s (%s)", self._player.name, self.client_address[0])
+						# we do not use sendData here, because we do not want to log the full message...
+						self.request.sendall(str(self.game).encode())
+						logger.debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
 					elif data.startswith("SEND_COMMENT "):
 						# return the labyrinth
 						self.sendData("OK")
-						self.game.sendComment( self._player, data[13:] )
+						self.game.sendComment(self._player, data[13:])
 
 					else:
 						raise MyConnectionError("Bad protocol, command should not start with '" + data + "'")
@@ -127,7 +127,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Call when the connection is closed
 		"""
 		if self._player is not None:
-			self._player.logger.debug( "Connection closed with player %s (%s)", self._player.name, self.client_address[0])
+			self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
 			Player.removePlayer(self._player.name)
 			del self._player
 
@@ -138,9 +138,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		data = str(self.request.recv(size).strip(), "utf-8")
 		if self._player:
-			logger.debug( "Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
+			logger.debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug( "Receive: '%s' from %s ", data, self.client_address[0])
+			logger.debug("Receive: '%s' from %s ", data, self.client_address[0])
 		return data
 
 	def sendData(self, data):
@@ -149,15 +149,15 @@ class PlayerSocketHandler(BaseRequestHandler):
 		:param data: (str) data to send
 		"""
 		if data:
-			self.request.sendall( data.encode('utf-8'))
+			self.request.sendall(data.encode('utf-8'))
 		else:
 			# that's a trick when we want to send an empty message...
-			#TODO: change this (do not send any empty message? always send X octets messages?)
+			# TODO: change this (do not send any empty message? always send X octets messages?)
 			self.request.sendall('\n'.encode('utf-8'))
 		if self._player:
-			logger.debug( "Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
+			logger.debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug( "Send '%s' to %s", data, self.client_address[0])
+			logger.debug("Send '%s' to %s", data, self.client_address[0])
 
 
 	@property
@@ -195,7 +195,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 		name = sub('\W+', '', data)
 		if name != data or len(name) > 20:
 			self.sendData("The name is invalid (max 20 characters in [a-zA-Z0-9_])")
-			raise MyConnectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (data, self.client_address[0]))
+			raise MyConnectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" %
+			                        (data, self.client_address[0]))
 
 
 		# just send back OK
@@ -223,10 +224,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self._player.waitForGame()
 
 		# now send the game name
-		self.sendData( self.game.name )
+		self.sendData(self.game.name)
 
 		# now send the game sizes
-		self.sendData( self.game.getDataSize() )
+		self.sendData(self.game.getDataSize())
 
 
 
@@ -244,7 +245,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# Get the labyrinth
 		self.sendData("OK")
-		self.sendData( self.game.getData() )
-		self.sendData( '0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
+		self.sendData(self.game.getData())
+		self.sendData('0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 

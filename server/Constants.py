@@ -1,11 +1,10 @@
 """
 
-/* ---------------------
- *
- *   Coding Game Server
- *
- * ---------------------
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
@@ -17,7 +16,7 @@ File: Constants.py
 """
 
 
-#TODO: set timeout to 7 seconds
+# TODO: set timeout to 7 seconds
 TIMEOUT_TURN = 1000		    # time (in seconds) to play a move
 
 
@@ -27,4 +26,4 @@ TIMEOUT_TURN = 1000		    # time (in seconds) to play a move
 # <0 for an illegal move
 MOVE_OK = 0
 MOVE_WIN = 1
-MOVE_LOSE = -1       #TODO: find a better constant name
+MOVE_LOSE = -1       # TODO: find a better constant name
