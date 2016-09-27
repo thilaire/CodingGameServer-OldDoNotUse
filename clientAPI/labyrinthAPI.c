@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <stdarg.h>
 
+#include "labyrinthAPI.h"
 
 
 /* global variables about the connection
@@ -205,7 +206,7 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 
 
 
-/*
+/* -------------------------------------
  * Get the labyrinth and tell who starts
  * It fills the char* data with the data of the labyrinth
  * 1 if there's a wall, 0 for nothing
@@ -225,7 +226,7 @@ int getLabyrinth( char* data)
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive these data for the labyrinth:%s", buffer);
+	dispDebug(__FUNCTION__, "Receive labyrinth's data:%s", buffer);
 
 	/* copy the data in the array lab
 	 * the buffer is a readable string of char '0' and '1'
@@ -247,24 +248,16 @@ int getLabyrinth( char* data)
 
 
 
-
-/* get the move of the opponent / send our move
-A move is a tuple (type,value):
-- type can be ROTATE_LINE_UP, ROTATE_LINE_DOWN, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP or MOVE_DOWN
-- in case of rotation, the value indicates the number of the line (or column) to be rotated
-Returns 1 if the game is finished, 0 otherwise */
-#define ROTATE_LINE_UP		0
-#define ROTATE_LINE_DOWN	1
-#define ROTATE_COLUMN_UP	2
-#define ROTATE_COLUMN_DOWN	3
-#define MOVE_UP				4
-#define MOVE_DOWN			5
-#define MOVE_LEFT			6
-#define MOVE_RIGHT			7
-
-//TODO: une structure pour le move !
-//TODO: docstring pour getMove et sendMove
-int getMove( int* type, int* val)
+/* ----------------------
+ * Get the opponent move
+ *
+ * Parameters:
+ * - move: a move
+ *
+ * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
+ * this code is relative to the opponent (+1 if HE wins, ...)
+ */
+t_return_code getMove( t_move *move)
 {
 	int result;
 	sendString( __FUNCTION__, "GET_MOVE");
@@ -274,47 +267,70 @@ int getMove( int* type, int* val)
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
-
 	dispDebug(__FUNCTION__, "Receive that move:%s", buffer);
 
 	/* extract move */
-	sscanf( buffer, "%d %d", type, val);
+	sscanf( buffer, "%d%d", &(move->type), &(move->value));
 
-	/* read result of the move */
+	/* read the return code*/
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
-
-	dispDebug(__FUNCTION__, "Receive that result for the move:%s", buffer);
+	dispDebug(__FUNCTION__, "Receive that return code:%s", buffer);
 
 	/* extract result */
 	sscanf( buffer, "%d", &result);
+
 	return result;
 }
 
 
-int sendMove(int type, int val)
+
+/* -----------
+ * Send a move
+ *
+ * Parameters:
+ * - move: a move
+ *
+ * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move
+ */
+t_return_code sendMove( t_move move)
 {
 	int result;
-	sendString( __FUNCTION__, "PLAY_MOVE %d %d", type, val);
+	sendString( __FUNCTION__, "PLAY_MOVE %d %d", move.type, move.value);
 
 
-	/* read result of the move */
+	/* read return code */
 	bzero(buffer,1000);
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
 		dispError( __FUNCTION__, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive that result for the move:%s", buffer);
+	dispDebug(__FUNCTION__, "Receive that return code: %s", buffer);
 
 	/* extract result */
 	sscanf( buffer, "%d", &result);
+
+	/* read the associated message */
+	bzero(buffer,1000);
+	r = read(sockfd, buffer, 255);
+	if (r<0)
+		dispError( __FUNCTION__, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
+
+	dispDebug(__FUNCTION__, "Receive that message: %s", buffer);
+
+	/*TODO: that message is not handle or given to the user.. Todo ? */
+
 	return result;
 }
 
 
-/* display the labyrinth */
+
+/* ----------------------
+ * Display the labyrinth
+ * in a pretty way (ask the server what to print)
+ */
 void printLabyrinth()
 {
 	dispDebug(__FUNCTION__, "Try to get string to display labyrinth");
@@ -332,7 +348,21 @@ void printLabyrinth()
 	printf("%s",buffer);
 }
 
-/* send a comment, max 100 char. */
-void sendComment(char* comment)
-{
+
+
+/*
+ * Send a comment to the server
+ *
+ * Parameters:
+ * - comment: (string) comment to send to the server (max 100 char.)
+ */
+void sendComment(char* comment) {
+	dispDebug(__FUNCTION__, "Try to send a comment");
+
+	/* max 100. car */
+	if (strlen(comment)>100)
+		dispError( __FUNCTION__, "The Comment is more than 100 characters.");
+
+	/* send command */
+	sendString(__FUNCTION__, "SEND_COMMENT %s", comment);
 }

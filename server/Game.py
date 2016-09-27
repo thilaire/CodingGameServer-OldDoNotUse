@@ -4,9 +4,8 @@ from numpy.random import seed as numpy_seed, randint, choice
 from time import time
 from threading import Event
 
-
-#TODO: mettre la constante quelque part (config/args?)
-TIMEOUT_TURN = 10		# in seconds
+# noinspection PyUnresolvedReferences
+from Constants import MOVE_OK, MOVE_LOSE, MOVE_WIN, TIMEOUT_TURN
 
 
 class Game:
@@ -16,10 +15,10 @@ class Game:
 	allGames: (class property) dictionary of all the games
 
 	An instance of class Game contains:
-	- _players: tuple of the two players
+	- _players: tuple of the two players (player0 and player1)
 	- _logger: logger to use to log infos, debug, ...
 	- _name: name of the game
-	- _whoPlays: player who should play now
+	- _whoPlays: number of the player who should play now (0 or 1)
 	- _waitingPlayer: Event used to wait for the player
 	- _lastMove: string corresponding to the last move
 
@@ -76,7 +75,7 @@ class Game:
 		player2.game = self
 
 		# determine who starts
-		self._whoPlays = choice( (player1, player2) )
+		self._whoPlays = choice( (0,1) )
 
 		# Event to manage payMove and getMove from the players
 		self._getMoveEvent = Event()
@@ -85,7 +84,11 @@ class Game:
 		self._playMoveEvent.clear()
 
 		# last move
-		self._lastMove = None
+		self._lastMove = ""
+		self._lastReturn_code = 0
+
+		# time out for the move
+		self._timeout = TIMEOUT_TURN    # maybe overloaded by a Game child class
 
 
 	@property
@@ -103,10 +106,25 @@ class Game:
 		return cls.allGames.get( name, None)
 
 
-	def __del__(self):
-
+	def endOfGame(self):
+		"""
+		Manage the end of the game
+		Called when the game is over (after a move or a deconnexion)
+		"""
+		# log it
 		self.logger.info( "The game '%s' is now finished", self.name)
-		del self.allGames[ self.name ]
+
+		# detach the players and the game
+		for p in self._players:
+			p.game = None
+		self._players = (None,None)
+
+
+
+	def __del__(self):
+		# remove from the dictionary of games
+		#TODO: who calls this ?
+		del self.allGames[self.name]
 
 
 	@property
@@ -115,49 +133,61 @@ class Game:
 
 
 	@property
-	def whoPlays(self):
-		return self._whoPlays
+	def playerWhoPlays(self ):
+		"""
+		Returns the player who Plays
+		"""
+		return self._players[ self._whoPlays ]
 
 
 	def getLastMove(self):
 		"""
-		Wait for the move of the player whoPlays
+		Wait for the move of the player playerWhoPlays
 		If it doesn't answer in TIMEOUT_TURN seconds, then he losts
+		Returns:
+			- last move: (string) string describing the opponent last move (exactly the string it sends)
+			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
 		"""
 
 		# wait for the move of the opponent
 		self.logger.debug("Wait for playMove event")
-		if self._playMoveEvent.is_set() or self._playMoveEvent.wait(TIMEOUT_TURN):
+		if self._playMoveEvent.is_set() or self._playMoveEvent.wait( self._timeout):
 			self.logger.debug("Receive playMove event")
 			self._playMoveEvent.clear()
 
 			self._getMoveEvent.set()
 
-			return self._lastMove
+			return self._lastMove, self._lastReturn_code
 		else:
 			# Timeout !!
 			# the opponent has lost the game
 			self._playMoveEvent.clear()
-			#TODO: lk
-			pass
+
+			#TODO: DO SOMETHING !!
+			#TODO: signifier la fin de partie, etc.
+
+			return self._lastMove, self._lastReturn_code
 
 
 	def receiveMove(self, move):
+		#TODO: changer ce nom !!! (éventuellement playMove, mais il faut renommer le playMove de labyrinth... ReceiveMove traite le move et surtout fait la synchronisation avec l'adversaire, et gère la défaite/victoire). Alors que le playMove de Labyrinth ne fait que jouer le coup et renvoyer le return_code et le message
 		"""
 		Play a move
 		- move: a string corresponding to the move
-		Return True if everything is ok, False if the move is invalid
-		"""
+		Return a tuple (move_code, msg), where
+		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
+		- msg: a message to send to the player, explaining why the game is ending"""
+
 		# play that move
-		self.logger.debug( "'%s' plays %s"%(self.whoPlays.name, move))
-		#TODO:
-		valid = self.playMove(move)
+		self.logger.debug( "'%s' plays %s"%(self.playerWhoPlays.name, move))
+		return_code,msg = self.playMove(move)
 
-		if valid:
+		# keep the last move
+		self._lastMove = move
+		self._lastMsg = msg
+		self._lastReturn_code = return_code
 
-			# keep the last move
-			self._lastMove = move
-
+		if return_code == MOVE_OK:
 			# set the playMove Event
 			self._playMoveEvent.set()
 
@@ -168,28 +198,65 @@ class Game:
 			self.logger.debug("Receive getMove event")
 
 			# change who plays
-			if self.whoPlays == self._players[0]:
-				self._whoPlays = self._players[1]
-			else:
-				self._whoPlays = self._players[0]
+			self._whoPlays = int( not self._whoPlays)
 
-			return True
+		elif return_code == MOVE_WIN:
+			#TODO: signifier la fin de la partie
+			#TODO: congrats, etc.
+			self.endOfGame()
+		else:   # return_code == MOVE_LOSE
+
+			#TODO: signifier la fin de partie
+			self.endOfGame()
 
 
-		else:
-			#TODO: something to do, here?
 
-			return False
+
+		return return_code, msg
+
+
+
+	def sendComment(self, player, comment):
+		"""
+			Called when a player send a comment
+		Parameters:
+		- player: player who sends the comment
+		- comment: (string) comment
+		"""
+		self.logger.debug( "Player %s send this comment: '%s", player.name, comment)
+		#TODO: DO SOMETHING WITH THAT COMMENT
 
 
 
 	def playMove ( self, move ):
 		"""
 		Play a move
-		TO BE OVERLOAD BY THE CHILD CLASS
+		TO BE OVERLOADED BY THE CHILD CLASS
 
-		- move: a string defining the move (from the SocketPlayer)
-		Return True if everything is ok, False if the move is invalid
+		Play a move
+		- move: a string "%d %d"
+		Return a tuple (move_code, msg), where
+		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
+		- msg: a message to send to the player, explaining why the game is ending
 		"""
 		# play that move
 		return True
+
+
+	def getData(self):
+		"""
+		Return the datas of the game (when ask with the GET_GAME_DATA message)
+
+		TO BE OVERLOADED BY THE CHILD CLASS
+
+		"""
+		return ""
+
+	def getDataSize(self):
+		"""
+		Returns the size of the next incoming data (for example sizes of arrays)
+
+		TO BE OVERLOADED BY THE CHILD CLASS
+
+		"""
+		return ""

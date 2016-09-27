@@ -32,29 +32,28 @@ void rotateColumn( t_laby* laby, int column, int delta)
 
 
 /* Play a move (change the labyrinth and coordinate accordingly */
-void playMove( t_laby* laby, int type, int val)
+void playMove( t_laby* laby, t_move move)
 {
-	if (type==ROTATE_LINE_RIGHT)
-		rotateLine(laby, val, 1);
-	else if (type==ROTATE_LINE_LEFT)
-		rotateLine(laby, val, -1);
-	else if (type==ROTATE_COLUMN_UP)
-		rotateColumn(laby, val, 1);
-	else if (type==ROTATE_COLUMN_DOWN)
-		rotateColumn(laby, val, -1);
+	if (move.type==ROTATE_LINE_RIGHT)
+		rotateLine(laby, move.value, 1);
+	else if (move.type==ROTATE_LINE_LEFT)
+		rotateLine(laby, move.value, -1);
+	else if (move.type==ROTATE_COLUMN_UP)
+		rotateColumn(laby, move.value, 1);
+	else if (move.type==ROTATE_COLUMN_DOWN)
+		rotateColumn(laby, move.value, -1);
 	else {
 		/* pointer to the position of the current player */
 		int *pX = laby->player ? &laby->X : &laby->opX;
 		int *pY = laby->player ? &laby->Y : &laby->opY;
 
-		if (type == MOVE_UP)
+		if (move.type == MOVE_UP)
 			*pY = (*pY + 1) % laby->sizeY;
-		else if (type == MOVE_DOWN)
-			*pY = (*pY + laby->sizeY - 1) %
-				  laby->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
-		else if (type == MOVE_RIGHT)
+		else if (move.type == MOVE_DOWN)
+			*pY = (*pY + laby->sizeY - 1) % laby->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
+		else if (move.type == MOVE_RIGHT)
 			*pX = (*pX + 1) % laby->sizeX;
-		else if (type == MOVE_LEFT)
+		else if (move.type == MOVE_LEFT)
 			*pX = (*pX + laby->sizeX - 1) % laby->sizeX;    // idem
 	}
 }
@@ -86,10 +85,9 @@ void myPrintLaby( t_laby* l)
 
 int main()
 {
-	char labName[50];	/* name of the labyrinth */
 	t_laby lab;
-	int finished;		/* indicates if the game is over */
-	int type, val;		/* used for a move */
+	t_return_code ret;		/* indicates if the game is over */
+	t_move move;		/* used for a move */
 
 	int x;
 
@@ -128,18 +126,19 @@ int main()
 			
 
 		do {
-			finished=0;
 			if (lab.player==1)	/* The opponent plays */
 			{
-				finished = getMove( &type, &val);
-				//playMove( &lab, type, val);
+				ret = getMove( &move);
+				//playMove( &lab, move);
 			}
 			else
 			{
 				//.... choose what to play
-				type=MOVE_UP;
-				val=0;
-				finished = sendMove(type, val);
+				printf("\nIt's your turn to play (4:UP, 5:DOWN, 6:LEFT, 7:RIGHT):");
+				scanf("%d %d", &move.type, &move.value);
+				move.type=MOVE_UP;
+				move.value=0;
+				ret = sendMove(move);
 				//playMove( &lab, type, val);
 			}
 			/* display the labyrinth */
@@ -154,7 +153,7 @@ sleep(x);
 /*
  */
 
-		} while (!finished);
+		} while (!ret);
 	
 
 		/* we do not forget to free the allocated array */

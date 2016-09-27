@@ -17,8 +17,8 @@ class Player:
 
 	3 possibles states:
 	- not in a game (_game is None)
-	- his turn (_game.whoPlays == self)
-	- opponent's turn (game.whoPlays != self)
+	- his turn (_game.playerWhoPlays == self)
+	- opponent's turn (game.playerWhoPlays != self)
 	"""
 	allPlayers = {}
 
@@ -66,6 +66,7 @@ class Player:
 		if pl is not None:
 			pl.logger.info( name +" just log out.")
 			del cls.allPlayers[name]
+		#TODO: dire au jeu auquel on joue que la partie est finie ? (ou c'est déjà fait)
 
 
 	@classmethod
@@ -94,10 +95,16 @@ class Player:
 
 	@game.setter
 	def game(self,g):
+		if g is not None:
+			self.logger.info("Enter in game "+g.name)
+			# since we have a game, then we can set the Event
+			self._waitingGame.set()
+		else:
+			self.logger.info("Leave the game "+self._game.name)
+			# since we do not have a game, we can clear the the Event
+			self._waitingGame.clear()
 		self._game = g
-		self.logger.info("Enter in game "+g.name)
-		# since we have a game, then we can set the Event
-		self._waitingGame.set()
+
 
 	def waitForGame(self):
 		"""

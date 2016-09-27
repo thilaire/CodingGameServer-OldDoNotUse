@@ -3,8 +3,6 @@ from socketserver import BaseRequestHandler
 from re import sub
 from Player import Player
 
-
-
 logger = logging.getLogger()  # general logger ('root')
 
 
@@ -28,7 +26,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 	It is instantiated once per connection to the server, ie one per player
 	"""
 
-	def __init__ ( self, request, client_address, server ):
+	def __init__(self, request, client_address, server):
 		"""
 		Call the constructor of the based class, but add an attribute
 		"""
@@ -40,59 +38,58 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		try:
 			# get the name from the client and create the player
+			self._player = None
 			name = self.getPlayerName()
 			self._player = Player(name)
 
-			# then, wait for a game
-			self.waitForGame()
-
-			# and finally send the data for the game
-			self.sendGameData()
-
 			while True:
-				data = self.receiveData()
+				# then, wait for a (new) game
+				self.waitForGame()
 
-				if data.startswith("GET_MOVE"):
-					# get move of the opponent
-					if self._player is not self.game.whoPlays:
-						self.sendData("OK")
-						move = self.game.getLastMove()
-						# send that move
-						self.sendData(move)
-						# send now the result of the move
-						# TODO:
-						self.sendData("0")
-					else:
-						# we cannot ask for a move, since it's our turn to play
-						self.sendData("It's our turn to play, so we cannot ask for a move!")
+				# and finally send the data for the game
+				self.sendGameData()
 
-				elif data.startswith("PLAY_MOVE "):
-					# play move
-					if self._player is self.game.whoPlays:
-						if self.game.receiveMove(data[10:]):
+				# repeat until we play
+				while self.game is not None:
+					data = self.receiveData()
+
+					if data.startswith("GET_MOVE"):
+						# get move of the opponent
+						if self._player is not self.game.playerWhoPlays:
 							self.sendData("OK")
-							# now, send the result of the move
-							#TODO:
-							self.sendData("0")
+							# get the last move
+							move, return_code = self.game.getLastMove()
+							# send the move and the return code
+							self.sendData( move )
+							self.sendData( str(return_code) )
 						else:
-							self.sendData("The move is not valid!")
+							# we cannot ask for a move, since it's our turn to play
+							self.sendData("It's our turn to play, so we cannot ask for a move!")
+
+					elif data.startswith("PLAY_MOVE "):
+						# play move
+						if self._player is self.game.playerWhoPlays:
+							return_code, msg = self.game.receiveMove(data[10:])
+							self.sendData("OK")
+							# now, send the result of the move and the associated message
+							self.sendData( str(return_code) )
+							self.sendData( msg )
+						else:
+							self.sendData("It's not our turn to play, so we cannot play a move!")
+
+					elif data.startswith("DISP_GAME"):
+						# return the labyrinth
+						self.sendData("OK")
+						self.request.sendall( str(self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
+						logger.debug("Send the labyrinth to display to player %s (%s)", self._player.name, self.client_address[0])
+
+					elif data.startswith("SEND_COMMENT "):
+						# return the labyrinth
+						self.sendData("OK")
+						self.game.sendComment( self._player, data[13:] )
+
 					else:
-						self.sendData("It's not our turn to play, so we cannot play a move!")
-
-				elif data.startswith("DISP_GAME"):
-					# return the labyrinth
-					self.sendData("OK")
-					self.request.sendall( str(self.game).encode())  # we do not use sendData here, because we do not want to log the full message...
-					logger.debug("Send the labyrinth to display to player %s (%s)", self._player.name, self.client_address[0])
-
-				elif data.startswith("SEND_COMMENT "):
-					# return the labyrinth
-					self.sendData("OK")
-					# TODO: send a comment to the game
-					# self.game.sendComment(data[13:])
-
-				else:
-					raise connectionError("Bad protocol, command should not start with '" + data + "'")
+						raise connectionError("Bad protocol, command should not start with '" + data + "'")
 
 
 		except connectionError as e:
@@ -200,10 +197,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self._player.waitForGame()
 
 		# now send the game name
-		self.sendData(self.game.name)
+		self.sendData( self.game.name )
 
 		# now send the game sizes
-		self.sendData("%d %d" % (self.game.sizeX, self.game.sizeY))
+		self.sendData( self.game.getDataSize() )
 
 
 
@@ -222,6 +219,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 		# Get the labyrinth
 		self.sendData("OK")
 		self.sendData( self.game.getData() )
-		self.sendData( '0' if self.game.whoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
+		self.sendData( '0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 

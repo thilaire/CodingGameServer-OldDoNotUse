@@ -1,0 +1,53 @@
+/*
+ * General connection protocol
+ */
+
+1) Client opens TCP connection on server HOST and port PORT         (layrinth.c: connectToServer, socketPlayer.py: handle)
+
+2) Name of the client       (labyrinth.c: connectToServer, socketPlayer.py: getPlayerName)
+2a) Client sends "CLIENT_NAME %s" with its name
+2b) Server acknowledges (send "OK") if the name is valid
+
+3) Waiting for a game       ((labyrinth.c: waitForLabyrinth, socketPlayer.py: waitForGame)
+3a) Client sends "WAIT_GAME"
+3b) Server acknowledges (send "OK")
+3c) Server waits for the game to start
+3d) Server sends "%s" the name of the game
+3e) Server sends "%s" the data of the game (the size of the labyrinth, for example)
+
+4) Get the full datas of the game       (labyrinth.c: getLabyrinth, socketPlayer.py: sendGameData)
+4a) Client sends "GET_GAME_DATA"
+4b) Server acknowledges (send "OK")
+4c) Server sends "%s" the datas of the game (an array for example)
+4d) Server sends "%d" who plays next (0 => it's the client's turn, 1 => it's the opponent's turn)
+
+
+Now the client can send any of the following command (until the end of the game):
+
+    5) Get the opponent's move      (labyrinth.c: getMove, socketPlayer: handle)
+    5a) Client sends "GET_MOVE"
+    5b) Server acknowledges (send "OK") if it's the opponent's turn to play
+    5c) Server waits the opponent's last move (synchronize the two clients)
+    5d) Server plays this move
+    5e) Server sends "%d" the move
+    5f) Server sends "%d" the return_code (0 for move ok, +1 for winning move, -1 for losing move)
+
+    6) Send its move        (labyrinth.c: getMove, socketPlayer: handle)
+    6a) Client sends "PLAY_MOVE %s" with its move
+    6b) Server acknowledge (send "OK") if it's the client's turn to play
+    6c) Server waits for the GET_MOVE of the opponent (synchronize the two clients)
+    6d) Server sends "%d" the return_code (0 for move ok, +1 for winning move, -1 for losing move)
+    6e) Server sends associated message "%s" (gives more indications about the move, to be printed (e.g "move illegal because..."))
+
+    7) Ask string to display the game
+    7a) Client sends "DISP_GAME"
+    7b) Server acknowledge (send "OK")
+    7c) Server sends "%s" a string corresponding to the game
+    7d) Client displays it
+
+    8) Send a comment
+    8a) Client sends "SEND_COMMENT %s"
+    8b) Server acknowledges (send "OK")
+    8c) Server publishs this important comment
+
+When the game ends, the client can go to step 3 (it is already connected, the server already knows its name)

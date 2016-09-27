@@ -7,6 +7,41 @@
 
 */
 
+//TODO: le nom des constantes n'est pas terrible...
+typedef enum
+{
+	MOVE_OK = 0,
+	MOVE_WIN = 1,
+	MOVE_LOSE = -1
+} t_return_code;
+
+
+
+typedef enum
+{
+	ROTATE_LINE_LEFT = 	0,
+	ROTATE_LINE_RIGHT = 1,
+	ROTATE_COLUMN_UP = 2,
+	ROTATE_COLUMN_DOWN = 3,
+	MOVE_UP = 4,
+	MOVE_DOWN = 5,
+	MOVE_LEFT = 6,
+	MOVE_RIGHT = 7,
+	DO_NOTHING = 8
+} t_typeMove;
+
+
+/*
+A move is a tuple (type,value):
+- type can be ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP or MOVE_DOWN
+- in case of rotation, the value indicates the number of the line (or column) to be rotated
+*/
+typedef struct
+{
+	t_typeMove type;		/* type of the move */
+	int value;				/* value associated with the type (number of the line or the column to rotate) */
+} t_move;
+
 
 
 
@@ -45,7 +80,7 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 
 
 
-/*
+/* -------------------------------------
  * Get the labyrinth and tell who starts
  * It fills the char* data with the data of the labyrinth
  * 1 if there's a wall, 0 for nothing
@@ -58,29 +93,46 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 int getLabyrinth( char* data);
 
 
-/* get the move of the opponent / send our move
-A move is a tuple (type,value):
-- type can be ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP or MOVE_DOWN
-- in case of rotation, the value indicates the number of the line (or column) to be rotated
-Returns 1 if the game is finished, 0 otherwise */
-#define ROTATE_LINE_LEFT	0
-#define ROTATE_LINE_RIGHT	1
-#define ROTATE_COLUMN_UP	2
-#define ROTATE_COLUMN_DOWN	3
-#define MOVE_UP				4
-#define MOVE_DOWN			5
-#define MOVE_LEFT			6
-#define MOVE_RIGHT			7
-#define DO_NOTHING			8
 
-/*structure*/
-int getMove( int* type, int* val);
-int sendMove(int type, int val);
+/* ----------------------
+ * Get the opponent move
+ *
+ * Parameters:
+ * - move: a move
+ *
+ * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
+ * this code is relative to the opponent (+1 if HE wins, ...)
+ */
+t_return_code getMove( t_move* move );
 
-/* display the labyrinth */
+
+
+/* -----------
+ * Send a move
+ *
+ * Parameters:
+ * - move: a move
+ *
+ * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move
+ */
+t_return_code sendMove( t_move move );
+
+
+
+/* ----------------------
+ * Display the labyrinth
+ * in a pretty way (ask the server what to print)
+ */
 void printLabyrinth();
 
-/* send a comment, max 100 char. */
+
+
+/*
+ * Send a comment to the server
+ *
+ * Parameters:
+ * - comment: (string) comment to send to the server (max 100 char.)
+ */
 void sendComment(char* comment);
 
 

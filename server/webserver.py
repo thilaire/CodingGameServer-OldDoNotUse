@@ -6,16 +6,45 @@ Webserver functions
 from functools import partial
 from logging import getLogger
 
-from bottle import route,  jinja2_view, request, redirect, static_file, template, TEMPLATE_PATH, error
-
+from bottle import route, request, jinja2_view, redirect, static_file, template, TEMPLATE_PATH, error
+from bottle import run, response, install			    # webserver (bottle)
 from Labyrinth import Labyrinth
 from Player import Player
+from functools import wraps										# use to wrap a logger for bottle
 
-logger = getLogger('bottle')
+weblogger = getLogger('bottle')
 
 #configure the web server template engine
 view = partial(jinja2_view, template_lookup=['templates'])
 TEMPLATE_PATH.append( 'templates' )
+
+
+def runWebserver(host, port, quiet):
+	"""
+	Install the logger and run the webserver
+	"""
+	# add a logger wrapper for bottle (in order to log its activity)
+	# See http://stackoverflow.com/questions/31080214/python-bottle-always-logs-to-console-no-logging-to-file
+	def log_to_logger(fn):
+		"""	Wrap a Bottle request so that a log line is emitted after it's handled."""
+		@wraps(fn)
+		def _log_to_logger(*_args, **_kwargs ):
+			actual_response = fn(*_args, **_kwargs)
+			weblogger.info('%s %s %s %s' % (request.remote_addr, request.method, request.url, response.status))
+			return actual_response
+		return _log_to_logger
+
+	# Start the web server
+	install(log_to_logger)
+	weblogger.info("Run the web server on port %d...", port)
+	run( host=host, port=port, quiet=quiet)
+
+
+
+# some static files
+@route('/favicon.ico')
+def favicon():
+	return static_file('favicon.ico','/')
 
 
 @route('/')
@@ -98,6 +127,8 @@ def log(playerName):
 	return static_file(playerName+'.log', root='logs/players/')
 
 
+
+# handle errors
 @error(404)
 @view('error404.html')
 def error404( ):
@@ -107,5 +138,5 @@ def error404( ):
 
 @error(500)
 def errror500(err):
-	logger.error(err)
+	weblogger.error(err)
 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"
