@@ -1,5 +1,20 @@
 """
-Webserver functions
+
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: webserver.py
+	Contains the webserver routines (based on bottle)
+	-> all the routes are defined here
+	-> the template files used are in templates
 
 """
 

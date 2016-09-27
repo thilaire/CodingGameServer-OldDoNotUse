@@ -1,3 +1,23 @@
+"""
+
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: Player.py
+	Contains the class Player
+	-> defines the generic player's behavior
+
+"""
+
+
 import logging
 from logging.handlers import RotatingFileHandler
 from threading import Event

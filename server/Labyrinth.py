@@ -1,7 +1,24 @@
-# coding: utf-8
+"""
+
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: Labyrinth.py
+	Contains the class Labyrinth
+	-> defines the Labyrinth game (its rules, moves, etc.)
+
+"""
+
 
 from random import shuffle, random, randint
-
 from Game import Game, MOVE_OK, MOVE_WIN, MOVE_LOSE
 from colorama import Fore
 from re import compile

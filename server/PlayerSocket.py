@@ -1,3 +1,23 @@
+"""
+
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: PlayerSocket.py
+	Contains the Socket Handler for the player
+	-> implements the protocol client <-> server
+	-> answers to each request of the client
+
+"""
+
 import logging
 from socketserver import BaseRequestHandler
 from re import sub
@@ -7,7 +27,7 @@ logger = logging.getLogger()  # general logger ('root')
 
 
 
-class connectionError(Exception):
+class MyConnectionError(Exception):
 	"""stupid class to manage the errors due to the connection
 	"""
 
@@ -90,10 +110,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 						self.game.sendComment( self._player, data[13:] )
 
 					else:
-						raise connectionError("Bad protocol, command should not start with '" + data + "'")
+						raise MyConnectionError("Bad protocol, command should not start with '" + data + "'")
 
 
-		except connectionError as e:
+		except MyConnectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...
 			if self._player is None:
 				logger.error("Error with client (%s): '%s'", self.client_address[0], e)
@@ -155,27 +175,27 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		Waits for a message "CLIENT_NAME" and treat it
 		Returns the player name
-		or raises an exception (connectionError) if the request is not valid
+		or raises an exception (MyConnectionError) if the request is not valid
 		"""
 
 		# get data
 		data = self.receiveData()
 		if not data.startswith("CLIENT_NAME "):
-			raise connectionError("Bad protocol, should start with CLIENT_NAME ")
+			raise MyConnectionError("Bad protocol, should start with CLIENT_NAME ")
 
 		data = data[12:]
 
 		# check if the player doesn't exist yet
 		if data in Player.allPlayers:
 			self.sendData("A client with the same name ('" + data + "') is already connected!")
-			raise connectionError( "A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
+			raise MyConnectionError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 
 
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
 		name = sub('\W+', '', data)
 		if name != data or len(name) > 20:
 			self.sendData("The name is invalid (max 20 characters in [a-zA-Z0-9_])")
-			raise connectionError( "The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (data, self.client_address[0]))
+			raise MyConnectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" % (data, self.client_address[0]))
 
 
 		# just send back OK
@@ -194,7 +214,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME"):
 			self.sendData("Bad protocol, should send 'WAIT_GAME' command")
-			raise connectionError("Bad protocol, should send 'WAIT_GAME' command")
+			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME' command")
 
 		# just send back OK
 		self.sendData("OK")
@@ -220,7 +240,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("GET_GAME_DATA"):
 			self.sendData("Bad protocol, should send 'GET_GAME_DATA' command")
-			raise connectionError("Bad protocol, should send 'GET_GAME_DATA' command")
+			raise MyConnectionError("Bad protocol, should send 'GET_GAME_DATA' command")
 
 		# Get the labyrinth
 		self.sendData("OK")

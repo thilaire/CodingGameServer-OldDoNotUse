@@ -1,10 +1,29 @@
-#coding: utf-8
+"""
+
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: Game.py
+	Contains the class Game
+	-> defines the generic Game's behavior (this class will be inherits for each game, like the Labyrinth)
+
+"""
+
+
+
 import logging
-from numpy.random import seed as numpy_seed, randint, choice
+from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
 
-# noinspection PyUnresolvedReferences
 from Constants import MOVE_OK, MOVE_LOSE, MOVE_WIN, TIMEOUT_TURN
 
 
@@ -47,9 +66,9 @@ class Game:
 
 		# get a seed if the seed is not given; seed the random numbers generator
 		if seed is None:
-			numpy_seed( None )	# (from doc): If seed is None, then RandomState will try to read data from /dev/urandom (or the Windows analogue) if available or seed from the clock otherwise.
+			set_seed( None )	# (from doc): If seed is None, then RandomState will try to read data from /dev/urandom (or the Windows analogue) if available or seed from the clock otherwise.
 			seed = randint(0, int(1e9) )
-		numpy_seed(seed)
+		set_seed(seed)
 
 		# (unique) name (unix date + seed + players name)
 		self._name = str( int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
@@ -184,7 +203,6 @@ class Game:
 
 		# keep the last move
 		self._lastMove = move
-		self._lastMsg = msg
 		self._lastReturn_code = return_code
 
 		if return_code == MOVE_OK:

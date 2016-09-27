@@ -29,7 +29,7 @@ int main()
 	/* connection to the server */
 	char nom[50];
 	sprintf(nom,"ProgTest_%d",getpid());
-	connectToServer( "localhost", 1233, nom);
+	connectToServer( "localhost", 1234, nom);
 	printf("Youhou, connecté au serveur !\n");
 
 

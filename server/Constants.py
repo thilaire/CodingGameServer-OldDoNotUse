@@ -1,18 +1,30 @@
-#coding: utf-8
+"""
 
+/* ---------------------
+ *
+ *   Coding Game Server
+ *
+ * ---------------------
+ */
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: Constants.py
+	Contains the constants used in the games
 
 """
-Some constants
 
-"""
+
 #TODO: set timeout to 7 seconds
 TIMEOUT_TURN = 1000		    # time (in seconds) to play a move
+
 
 # return codes
 # 0 is ok
 # >0 for a winning move
 # <0 for an illegal move
-
 MOVE_OK = 0
 MOVE_WIN = 1
-MOVE_LOSE = -1       #TODO: MOVE_ILLEGAL or MOVE_INVALID ??
+MOVE_LOSE = -1       #TODO: find a better constant name
