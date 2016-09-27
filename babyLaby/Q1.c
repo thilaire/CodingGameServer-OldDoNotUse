@@ -43,14 +43,14 @@ int main()
 		labData = (char*) malloc( sizeX * sizeY );
 		player = getLabyrinth( labData);
 
-		printLabyrinth();
-
 		do {
+
+			/* display the labyrinth */
+			printLabyrinth();
+
 			if (player==1)	/* The opponent plays */
 			{
-				printf("\nOn attend le move"),
 				ret = getMove( &move);
-				printf("\nOn a reçu type=%d value%d ret=%d\n",move.type, move.value,ret);
 				//playMove( &lab, move);
 			}
 			else
@@ -59,12 +59,8 @@ int main()
 				printf("\nIt's your turn to play (0:ROT_LEFT, 1:ROT_RIGHT, 2:ROT_UP, 3:ROT_DOWN, 4:UP, 5:DOWN, 6:LEFT, 7:RIGHT):");
 				scanf("%d %d", &move.type, &move.value);
 				ret = sendMove(move);
-				printf("\nOn a reçuret=%d",ret);
-				//playMove( &lab, type, val);
+				//playMove( &lab, move);
 			}
-
-			/* display the labyrinth */
-			printLabyrinth();
 
 			/* change player */
 			player = ! player;

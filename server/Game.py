@@ -192,16 +192,16 @@ class Game:
 		self._lastMove = move
 		self._lastReturn_code = return_code
 
+		# set the playMove Event
+		self._playMoveEvent.set()
+
+		# and then wait that the opponent get the move
+		self.logger.debug("Wait for getMove event")
+		self._getMoveEvent.wait()
+		self._getMoveEvent.clear()
+		self.logger.debug("Receive getMove event")
+
 		if return_code == MOVE_OK:
-			# set the playMove Event
-			self._playMoveEvent.set()
-
-			# and then wait that the opponent get the move
-			self.logger.debug("Wait for getMove event")
-			self._getMoveEvent.wait()
-			self._getMoveEvent.clear()
-			self.logger.debug("Receive getMove event")
-
 			# change who plays
 			self._whoPlays = int(not self._whoPlays)
 
@@ -210,9 +210,9 @@ class Game:
 			# TODO: congrats, etc.
 			self.endOfGame()
 		else:  # return_code == MOVE_LOSE
-
 			# TODO: signifier la fin de partie
 			self.endOfGame()
+
 
 		return return_code, msg
 
