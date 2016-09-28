@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """
 
 * --------------------- *
@@ -15,9 +13,8 @@ Status: still in dev... (not even a beta)
 
 File: CGS.py
 	Main file/entry for the Coding Game Server
-	-> Configure and run the TCP server and the webserver
-
-	see --help for args command
+	-> import a class inheriting from Game
+	-> and just call runCGS() !!
 
 """
 
@@ -31,7 +28,8 @@ from logging.handlers import RotatingFileHandler
 from colorlog import ColoredFormatter  # logging with colors
 from docopt import docopt  # used to parse the command line
 
-if __name__ == '__main__':
+
+def runCGS():
 
 	# parse the command line
 	usage = """
@@ -39,8 +37,8 @@ Coding Game Server
 Run the servers (Game server and web server)
 
 Usage:
-  CGS.py -h | --help
-  CGS.py [options] [--debug|--dev|--prod]
+  runXXX.py -h | --help
+  runXXX.py [options] [--debug|--dev|--prod]
 
 Options:
   -h --help                Show this screen.

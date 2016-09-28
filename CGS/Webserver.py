@@ -22,7 +22,7 @@ from logging import getLogger
 
 from bottle import route, request, jinja2_view, redirect, static_file, template, TEMPLATE_PATH, error
 from bottle import run, response, install			    # webserver (bottle)
-from Labyrinth import Labyrinth
+from Game import Game
 from Player import Player
 from functools import wraps										# use to wrap a logger for bottle
 
@@ -31,6 +31,7 @@ weblogger = getLogger('bottle')
 # Configure the web server template engine
 view = partial(jinja2_view, template_lookup=['templates'])
 TEMPLATE_PATH.append('templates')
+
 
 
 def runWebserver(host, port, quiet):
@@ -47,6 +48,14 @@ def runWebserver(host, port, quiet):
 			weblogger.info('%s %s %s %s' % (request.remote_addr, request.method, request.url, response.status))
 			return actual_response
 		return _log_to_logger
+
+	# find the game that inherits from Game, store it in GameClass
+	global GameClass
+	if len(Game.__subclasses__()) == 1:
+		GameClass = Game.__subclasses__()[0]
+	else:
+		raise ValueError("One (and only one) class *must* inherit from `Game`.")
+
 
 	# Start the web server
 	install(log_to_logger)
@@ -68,7 +77,7 @@ def index():
 	Main page (based on index.html template)
 	"""
 	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
-	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Labyrinth.allGames.values()])
+	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game.allGames.values()])
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList}
 
 
@@ -96,7 +105,7 @@ def create_new_game():
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the labyrinth object created here
-		Labyrinth(player1, player2)
+		GameClass(player1, player2)
 
 	except ValueError as e:
 		# TODO: redirect to an error page
@@ -110,7 +119,7 @@ def create_new_game():
 
 @route('/game/<gameName>')
 def game(gameName):
-	g = Labyrinth.getFromName(gameName)
+	g = Game.getFromName(gameName)
 	if g:
 		# TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
 		return g.HTMLpage()

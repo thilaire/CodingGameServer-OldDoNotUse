@@ -25,11 +25,6 @@ int sockfd = -1;		/* socket descriptor, equal to -1 when we are not yet connecte
 char buffer[1000];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message; TODO: is it useful?) */
 int debug=0;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
 
-unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again */
-
-
-
-
 
 /* Display Error message and exit
  *
@@ -121,7 +116,7 @@ void sendString( const char* fct, const char* str, ...) {
  * - port: (int) port number used for the connection	TODO: should we fix it ?
  * - name: (string) name of the bot : max 20 characters (checked by the server)
  */
-void connectToServer( char* serverName, int port, char* name)
+void connectToCGS( char* serverName, int port, char* name)
 {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
@@ -161,7 +156,7 @@ void connectToServer( char* serverName, int port, char* name)
  * Parameters:
  * None
 */
-void closeConnection()
+void closeCGSConnection()
 {
 	if (sockfd<0)
 		dispError(__FUNCTION__,"The connection to the server is not established. Call 'connectToServer' before !");
@@ -170,14 +165,14 @@ void closeConnection()
 
 
 
-/* ----------------------------------------------------
- * Wait for a labyrinth, and retrieve its name and size
+/* ------------------------------------------------------------------------------
+ * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
- * - sizeX, sizeY: sizes of the labyrinth
+ * - gameName: string (max 50 characters), corresponds to the game name
+ * - data: string (max 128 characters), corresponds to the data
  */
-void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
+void waitForGame( char* labyrinthName, char* data)
 {
 	sendString( __FUNCTION__,"WAIT_GAME");
 
@@ -197,11 +192,7 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
 		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
 
 	dispDebug(__FUNCTION__, "Receive Labyrinth sizes=%s", buffer);
-	sscanf( buffer, "%d %d", sizeX, sizeY);
-
-	/* store the size, to be reused in getLabyrinth (so, no need to ask them again) */
-	nX = *sizeX;
-	nY = *sizeY;
+	strcpy( data, buffer);
 }
 
 
