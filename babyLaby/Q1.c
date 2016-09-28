@@ -24,7 +24,7 @@ int main()
 	int player;
 	int sizeX,sizeY;
 
-	debug=0;	/* enable debug */
+	debug=1;	/* enable debug */
 
 	/* connection to the server */
 	char nom[50];

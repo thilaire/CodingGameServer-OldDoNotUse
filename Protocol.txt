@@ -5,7 +5,7 @@
 1) Client opens TCP connection on server HOST and port PORT         (layrinth.c: connectToServer, socketPlayer.py: handle)
 
 2) Name of the client       (labyrinth.c: connectToServer, socketPlayer.py: getPlayerName)
-2a) Client sends "CLIENT_NAME %s" with its name
+2a) Client sends "CLIENT_NAME %s" with its name (max 20 char. in [a-zA-Z0-9_])
 2b) Server acknowledges (send "OK") if the name is valid
 
 3) Waiting for a game       ((labyrinth.c: waitForLabyrinth, socketPlayer.py: waitForGame)
@@ -48,6 +48,6 @@ Now the client can send any of the following command (until the end of the game)
     8) Send a comment
     8a) Client sends "SEND_COMMENT %s"
     8b) Server acknowledges (send "OK")
-    8c) Server publishs this important comment
+    8c) Server publishes this important comment
 
 When the game ends, the client can go to step 3 (it is already connected, the server already knows its name)

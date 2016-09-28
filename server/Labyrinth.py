@@ -131,14 +131,15 @@ class Labyrinth(Game):
 	- _logger: logger to use to log infos, debug, ...
 	- _name: name of the game
 	- _whoPlays: number of the player who should play now (0 or 1)
-	- _waitingPlayer: Event used to wait for the player
+	- _waitingPlayer: Event used to wait for the players
 	- _lastMove, _last_return_code: string and returning code corresponding to the last move
 
 	Add some properties
-	- _lab: numpy array representing the labyrinth
+	- _lab: array (list of lists of booleans) representing the labyrinth
 	- _L,_H: length and height of the labyrinth
 	- _treasure: coordinate (2-uplet) of the treasure
 	- _playerPos: list of the coordinates of the two players (player #0 and player #1)
+	- _playerEnergy: list of the energy level of the two players
 
 	"""
 
@@ -167,6 +168,10 @@ class Labyrinth(Game):
 		self._playerPos.append((0, self.H // 2))
 		self._playerPos.append((self.L - 1, self.H // 2))
 
+		# Level of energy
+		self._playerEnergy = [5, 5]
+
+
 		for x, y in self._playerPos:
 			self._lab[x][y] = True  # no wall here
 
@@ -174,6 +179,7 @@ class Labyrinth(Game):
 		# the players and they will immediately requires some Labyrinth's properties)
 		super(Labyrinth, self).__init__(player1, player2, seed)
 
+		self._playerEnergy[self._whoPlays] = 4
 
 
 	@property
@@ -195,10 +201,8 @@ class Labyrinth(Game):
 		"""
 		Convert a Game into string (to be send to clients, and display)
 		"""
-		# TODO: add informations about players, last move, etc.
-		# TODO: add treasure and players' position
+		# TODO: add informations about last move, etc.
 		# TODO: use unicode box-drawing characters to display the game (cf https://en.wikipedia.org/wiki/Box-drawing_character)
-		# TODO: use module "colorama" to add color
 
 		lines = []
 		for y in range(self.H):
@@ -222,7 +226,7 @@ class Labyrinth(Game):
 			lines.append("|" + " ".join(st) + "|")
 
 		# add player names
-		# TODO: add points
+		# TODO: add energy
 		br0 = "[]" if self._whoPlays == 0 else "  "
 		br1 = "[]" if self._whoPlays == 1 else "  "
 		lines[self.H//2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
@@ -288,6 +292,8 @@ class Labyrinth(Game):
 			else:
 				return MOVE_OK, ""
 
+		elif move_type == DO_NOTHING:
+			return MOVE_OK, ""
 		else:
 			return MOVE_LOSE, "Rotation not yet implemented"
 

@@ -74,7 +74,7 @@ class Game:
 		self._logger = logging.getLogger(self.name)
 		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
 		file_handler = logging.FileHandler('logs/games/' + self.name + '.log')
-		file_handler.setLevel(logging.INFO)
+		# file_handler.setLevel(logging.INFO)     #TODO: changer le niveau ??
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
 		self._logger.addHandler(file_handler)
@@ -121,7 +121,24 @@ class Game:
 		:param name: (string) name of the game
 		:return: the game (the object) or None if this game doesn't exist
 		"""
-		return cls.allGames.get(name, None)
+		if name in cls.allGames:
+			return cls.allGames[name]
+		else:
+			return None
+		# return cls.allGames.get(name, None)
+
+
+	@classmethod
+	def removeGame(cls, name):
+		"""
+		Remove a game in the game list (the allGames dictionary) (from its name)
+		"""
+		gam = cls.getFromName(name)
+		if gam is not None:
+			del cls.allGames[name]
+
+
+
 
 
 	def endOfGame(self):
@@ -133,6 +150,10 @@ class Game:
 		self.logger.info("The game '%s' is now finished", self.name)
 
 		self._gameOver = True
+
+
+
+
 
 
 	@property

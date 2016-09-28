@@ -20,6 +20,7 @@ File: Player.py
 import logging
 from logging.handlers import RotatingFileHandler
 from threading import Event
+from Game import Game
 
 logger = logging.getLogger()		# general logger ('root')
 
@@ -127,7 +128,7 @@ class Player:
 			self.logger.info("Leave the game " + self._game.name)
 			# since we do not have a game, we can clear the the Event
 			self._waitingGame.clear()
-
+			Game.removeGame(self._game.name)
 		self._game = g
 
 

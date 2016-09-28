@@ -62,6 +62,7 @@ Options:
 	logger = logging.getLogger()
 	logger.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	# add an handler to redirect the log to a file (1Mo max)
+	# todo: vérifier que
 	file_handler = RotatingFileHandler('logs/activity.log', 'a', 1000000, 1)
 	file_handler.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")

@@ -139,6 +139,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		and log it
 		"""
 		data = str(self.request.recv(size).strip(), "utf-8")
+		# TODO: si reçu '' alors la connection est interrompue
 		if self._player:
 			logger.debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
