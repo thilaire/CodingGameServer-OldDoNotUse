@@ -20,7 +20,7 @@ File: PlayerSocket.py
 import logging
 from socketserver import BaseRequestHandler
 from re import sub
-from Player import Player
+from CGS.Player import Player
 
 logger = logging.getLogger()  # general logger ('root')
 

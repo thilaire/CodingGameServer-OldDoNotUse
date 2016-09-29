@@ -22,8 +22,8 @@ from logging import getLogger
 
 from bottle import route, request, jinja2_view, redirect, static_file, template, TEMPLATE_PATH, error
 from bottle import run, response, install			    # webserver (bottle)
-from Game import Game
-from Player import Player
+from CGS.Game import Game
+from CGS.Player import Player
 from functools import wraps										# use to wrap a logger for bottle
 
 weblogger = getLogger('bottle')

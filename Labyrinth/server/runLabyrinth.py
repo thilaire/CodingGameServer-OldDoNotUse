@@ -23,9 +23,11 @@ File: runLabyrinth.py
 	see --help for args command
 
 """
+import sys
+sys.path.insert(0, '..')
 
 from Labyrinth import Labyrinth
-from CGS import runCGS
+from CGS.CGS import runCGS
 
 # Labyrinth class is not used here, but its importation makes the Coding Game Server knows that it should use it
 
