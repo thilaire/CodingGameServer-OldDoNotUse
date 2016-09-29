@@ -21,7 +21,7 @@ from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
 
-from Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
+from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
 
 
 class Game:

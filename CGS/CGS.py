@@ -20,8 +20,8 @@ File: CGS.py
 
 import threading  # to run threads
 from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
-from PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
-from Webserver import runWebServer  # to run the webserver (bottle)
+from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
+from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 
 import logging  # logging system
 from logging.handlers import RotatingFileHandler

@@ -25,6 +25,7 @@ File: runLabyrinth.py
 """
 import sys
 sys.path.insert(0, '..')
+
 from Labyrinth import Labyrinth
 from CGS.CGS import runCGS
 

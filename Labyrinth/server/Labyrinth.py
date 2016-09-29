@@ -18,8 +18,8 @@ File: Labyrinth.py
 
 
 from random import shuffle, random, randint
-from Game import Game
-from Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
+from CGS.Game import Game
+from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
 from colorama import Fore
 from re import compile
 

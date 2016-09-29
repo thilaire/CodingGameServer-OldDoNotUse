@@ -20,7 +20,7 @@ File: Player.py
 import logging
 from logging.handlers import RotatingFileHandler
 from threading import Event
-from Game import Game
+from CGS.Game import Game
 
 logger = logging.getLogger()		# general logger ('root')
 
