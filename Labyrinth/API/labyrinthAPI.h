@@ -19,17 +19,7 @@ File: labyrinthAPI.h
 
 #ifndef __API_CLIENT_LABYRINTH__
 #define __API_CLIENT_LABYRINTH__
-
-
-//TODO: le nom des constantes n'est pas terrible...
-typedef enum
-{
-	MOVE_OK = 0,
-	MOVE_WIN = 1,
-	MOVE_LOSE = -1
-} t_return_code;
-
-
+#include "GameAPI.h"
 
 typedef enum
 {

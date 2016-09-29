@@ -31,7 +31,7 @@ TODO: explain...
 #include <unistd.h>
 #include <stdarg.h>
 
-#include "labyrinthAPI.h"
+#include "GameAPI.h"
 
 
 /* global variables about the connection

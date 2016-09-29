@@ -17,7 +17,8 @@ File: labyrinthAPI.c
 */
 
 #include "GameAPI.h"
-
+#include <stdio.h>
+#include "labyrinthAPI.h"
 
 unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again */
 
@@ -33,7 +34,7 @@ unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not
  */
 void connectToServer( char* serverName, int port, char* name)
 {
-	ConnectToCGS( __FUNCTION__, serverName, port, name);
+	connectToCGS( __FUNCTION__, serverName, port, name);
 }
 
 
@@ -120,9 +121,9 @@ t_return_code getMove( t_move *move)
     int ret = getCGSMove( __FUNCTION__, data);
 
 	/* extract move */
-	sscanf( buffer, "%d%d", &(move->type), &(move->value));
+	sscanf( data, "%d%d", &(move->type), &(move->value));
 
-	return result;
+	return ret;
 }
 
 
@@ -139,7 +140,7 @@ t_return_code sendMove( t_move move)
 {
     /* build the string move */
     char data[128];
-    sscanf( data, "%d %d", move.type, move.value);
+    sscanf( data, "%d %d", &(move.type), &(move.value));
 
     /* send the move */
 	return sendCGSMove( __FUNCTION__, data);

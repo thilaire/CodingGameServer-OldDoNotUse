@@ -27,6 +27,18 @@ TODO: explain...
 #define __API_CLIENT_GAME__
 
 
+
+
+//TODO: le nom des constantes n'est pas terrible...
+typedef enum
+{
+	MOVE_OK = 0,
+	MOVE_WIN = 1,
+	MOVE_LOSE = -1
+} t_return_code;
+
+
+
 /* Display Error message and exit
  *
  * Parameters:
@@ -45,7 +57,7 @@ void dispError(const char* fct, const char* msg, ...);
  * - msg: message to display
  * - ...: extra parameters to give to printf...
 */
-void dispDebug(const char* fct, const char* msg, ...)
+void dispDebug(const char* fct, const char* msg, ...);
 
 
 

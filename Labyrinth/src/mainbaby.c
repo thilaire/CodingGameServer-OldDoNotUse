@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../clientAPI/labyrinthAPI.h"
+#include "../API/labyrinthAPI.h"
 #include <unistd.h>
 
 
