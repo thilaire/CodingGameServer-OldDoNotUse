@@ -1,6 +1,25 @@
-//
-// Created by Thib on 20/06/2016.
-//
+/*
+
+* --------------------- *
+|                       |
+|   -= Labyrinth =-     |
+|                       |
+| based on the          |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
+
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: GameAPI.c
+	Functions for the Game API (connexion to the Coding Game Server)
+
+TODO: explain...
+
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -112,27 +131,28 @@ void sendString( const char* fct, const char* str, ...) {
  * Quit the program if the connection to the server cannot be established
  *
  * Parameters:
+ * - fct: name of the function that calls connectToCGS (used for the logging)
  * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
  * - port: (int) port number used for the connection	TODO: should we fix it ?
  * - name: (string) name of the bot : max 20 characters (checked by the server)
  */
-void connectToCGS( char* serverName, int port, char* name)
+void connectToCGS( const char* fct, char* serverName, int port, char* name)
 {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 
-	dispDebug( __FUNCTION__, "Initiate connection with %s (port: %d)", serverName, port);
+	dispDebug( fct, "Initiate connection with %s (port: %d)", serverName, port);
 
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
-		dispError(__FUNCTION__,"Impossible to open socket");
+		dispError( fct, "Impossible to open socket");
 
 	/* Get the server */
 	server = gethostbyname(serverName);
 	if (server == NULL)
-		dispError(__FUNCTION__,"Unable to find the server by its name");
-	dispDebug(__FUNCTION__, "Open connection with the server %s", serverName);
+		dispError( fct, "Unable to find the server by its name");
+	dispDebug( fct, "Open connection with the server %s", serverName);
 
 	/* Allocate sockaddr */
 	bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -142,10 +162,10 @@ void connectToCGS( char* serverName, int port, char* name)
 
 	/* Now connect to the server */
 	if (connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-		dispError(__FUNCTION__, "Connection to the server '%s' on port %d impossible.", serverName, port);
+		dispError( fct, "Connection to the server '%s' on port %d impossible.", serverName, port);
 
 	/* Sending our name */
-	sendString( __FUNCTION__, "CLIENT_NAME %s",name);
+	sendString( fct, "CLIENT_NAME %s",name);
 }
 
 
@@ -154,12 +174,12 @@ void connectToCGS( char* serverName, int port, char* name)
  * to do, because we are polite
  *
  * Parameters:
- * None
+ * - fct: name of the function that calls closeCGSConnection (used for the logging)
 */
-void closeCGSConnection()
+void closeCGSConnection( const char* fct)
 {
 	if (sockfd<0)
-		dispError(__FUNCTION__,"The connection to the server is not established. Call 'connectToServer' before !");
+		dispError( fct,"The connection to the server is not established. Call 'connectToServer' before !");
 	close(sockfd);
 }
 
@@ -169,70 +189,71 @@ void closeCGSConnection()
  * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
+ * - fct: name of the function that calls waitForGame (used for the logging)
  * - gameName: string (max 50 characters), corresponds to the game name
  * - data: string (max 128 characters), corresponds to the data
  */
-void waitForGame( char* labyrinthName, char* data)
+void waitForGame( const char* fct, char* gameName, char* data)
 {
-	sendString( __FUNCTION__,"WAIT_GAME");
+	sendString( fct,"WAIT_GAME");
 
 	/* read Labyrinth name */
 	bzero(buffer,1000);
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive Labyrinth name=%s", buffer);
-	strcpy( labyrinthName, buffer);
+	dispDebug(fct, "Receive Labyrinth name=%s", buffer);
+	strcpy( gameName, buffer);
 
 	/* read Labyrinth size */
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'WAIT_GAME' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive Labyrinth sizes=%s", buffer);
+	dispDebug( fct, "Receive Labyrinth sizes=%s", buffer);
 	strcpy( data, buffer);
 }
 
 
 
 /* -------------------------------------
- * Get the labyrinth and tell who starts
- * It fills the char* data with the data of the labyrinth
+ * Get the game data and tell who starts
+ * It fills the char* data with the data of the game (it will be parsed by the caller)
  * 1 if there's a wall, 0 for nothing
  *
  * Parameters:
- * - data: the array of date (the pointer data MUST HAVE allocated with the right size !!
+ * - fct: name of the function that calls gameGetData (used for the logging)
+ * - data: the array of game (the pointer data MUST HAVE allocated with the right size !!)
  *
- * Returns 0 if you begin, or 1 if the opponent begins
+ * Returns 0 if the client begins, or 1 if the opponent begins
  */
-int getLabyrinth( char* data)
+int getGameData( const char* fct, char* data)
 {
-	sendString( __FUNCTION__,"GET_GAME_DATA");
+	sendString( fct, "GET_GAME_DATA");
 
-	/* read Labyrinth name */
-	bzero(buffer,1000);
-	int r = read(sockfd, buffer, 255);
+	/* read game data */
+	int r = read(sockfd, data, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive labyrinth's data:%s", buffer);
+	dispDebug( fct, "Receive labyrinth's data:%s", data);
 
-	/* copy the data in the array lab
-	 * the buffer is a readable string of char '0' and '1'
-	 * */
-	char *p = buffer;
-	for( int i=0; i<nX*nY; i++)
-		*data++ = *p++ - '0';
+
+    /* TODO: copier le buffer dans data
+    pour cela, il faut peut-être connaitre la taille
+    On passe d'abord la taille, ou bien c'est une taille fixe ???
+    Julien, je te laisse régler ce pb ?*/
+
 
 	/* read if we begin (0) or if the opponent begins (1) */
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'GET_GAME_DATA' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive these player who begins=%s", buffer);
+	dispDebug( fct, "Receive these player who begins=%s", buffer);
 
 	return buffer[0]-'0';
 }
@@ -243,31 +264,28 @@ int getLabyrinth( char* data)
  * Get the opponent move
  *
  * Parameters:
- * - move: a move
+ * - fct: name of the function that calls getCGSMove (used for the logging)
+ * - move: a string representing a move (the caller will parse it to extract the move's values)
  *
- * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
+ * Fill the move and returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
  * this code is relative to the opponent (+1 if HE wins, ...)
  */
-t_return_code getMove( t_move *move)
+t_return_code getCGSMove( const char* fct, char* move )
 {
 	int result;
-	sendString( __FUNCTION__, "GET_MOVE");
+	sendString( fct, "GET_MOVE");
 
 	/* read move */
-	bzero(buffer,1000);
-	int r = read(sockfd, buffer, 255);
+	int r = read(sockfd, move, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
-	dispDebug(__FUNCTION__, "Receive that move:%s", buffer);
-
-	/* extract move */
-	sscanf( buffer, "%d%d", &(move->type), &(move->value));
+		dispError( fct, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
+	dispDebug(__FUNCTION__, "Receive that move:%s", move);
 
 	/* read the return code*/
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'GET_MOVE' command (sending:%s)");
 	dispDebug(__FUNCTION__, "Receive that return code:%s", buffer);
 
 	/* extract result */
@@ -282,23 +300,24 @@ t_return_code getMove( t_move *move)
  * Send a move
  *
  * Parameters:
- * - move: a move
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
+ * - move: a string representing a move (the caller will parse it to extract the move's values)
  *
  * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move
  */
-t_return_code sendMove( t_move move)
+t_return_code sendCGSMove( const char* fct, char* move)
 {
 	int result;
-	sendString( __FUNCTION__, "PLAY_MOVE %d %d", move.type, move.value);
+	sendString( fct, "PLAY_MOVE %s", move);
 
 
 	/* read return code */
 	bzero(buffer,1000);
 	int r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive that return code: %s", buffer);
+	dispDebug( fct, "Receive that return code: %s", buffer);
 
 	/* extract result */
 	sscanf( buffer, "%d", &result);
@@ -307,11 +326,13 @@ t_return_code sendMove( t_move move)
 	bzero(buffer,1000);
 	r = read(sockfd, buffer, 255);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
+		dispError( fct, "Cannot read answer from 'PLAY_MOVE' command (sending:%s)");
 
-	dispDebug(__FUNCTION__, "Receive that message: %s", buffer);
+	dispDebug( fct, "Receive that message: %s", buffer);
 
-	/*TODO: that message is not handle or given to the user.. Todo ? */
+	/*TODO: that message is not handle or given to the user..
+
+	 TH: À mon avis, il faut l'afficher que quand le résultat n'est pas MOVE_OK	 */
 
 	return result;
 }
@@ -319,21 +340,24 @@ t_return_code sendMove( t_move move)
 
 
 /* ----------------------
- * Display the labyrinth
+ * Display the game
  * in a pretty way (ask the server what to print)
+ *
+ * Parameters:
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
  */
-void printLabyrinth()
+void printGame( const char* fct)
 {
-	dispDebug(__FUNCTION__, "Try to get string to display labyrinth");
+	dispDebug( fct, "Try to get string to display Game");
 
 	/* send command */
-	sendString( __FUNCTION__, "DISP_GAME");
+	sendString( fct, "DISP_GAME");
 
 	/* get string to print */
 	char buffer[1000];
 	int r = read(sockfd, buffer, 1000);
 	if (r<0)
-		dispError( __FUNCTION__, "Cannot read string from socket");
+		dispError( fct, "Cannot read string from socket");
 
 	/* print it */
 	printf("%s",buffer);
@@ -341,19 +365,21 @@ void printLabyrinth()
 
 
 
-/*
+/* ----------------------------
  * Send a comment to the server
  *
  * Parameters:
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
  * - comment: (string) comment to send to the server (max 100 char.)
  */
-void sendComment(char* comment) {
-	dispDebug(__FUNCTION__, "Try to send a comment");
+void sendCGSComment( const char* fct, char* comment)
+{
+	dispDebug( fct, "Try to send a comment");
 
 	/* max 100. car */
 	if (strlen(comment)>100)
-		dispError( __FUNCTION__, "The Comment is more than 100 characters.");
+		dispError( fct, "The Comment is more than 100 characters.");
 
 	/* send command */
-	sendString(__FUNCTION__, "SEND_COMMENT %s", comment);
+	sendString( fct, "SEND_COMMENT %s", comment);
 }

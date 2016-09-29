@@ -1,11 +1,25 @@
+/*
+* ------------------------ *
+|                          |
+|   -= LabyrinthAPI =-     |
+|                          |
+* ------------------------ *
+
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev... (not even a beta)
+
+File: labyrinthAPI.h
+	Contains the client API for the Labyrinth game
+
+
+*/
+
+
 #ifndef __API_CLIENT_LABYRINTH__
 #define __API_CLIENT_LABYRINTH__
 
-/*
-
-#TODO: ...
-
-*/
 
 //TODO: le nom des constantes n'est pas terrible...
 typedef enum
@@ -82,15 +96,15 @@ void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
 
 /* -------------------------------------
  * Get the labyrinth and tell who starts
- * It fills the char* data with the data of the labyrinth
+ * It fills the char* lab with the data of the labyrinth
  * 1 if there's a wall, 0 for nothing
  *
  * Parameters:
- * - data: the array of date (the pointer data MUST HAVE allocated with the right size !!
+ * - lab: the array of labyrinth (the pointer data MUST HAVE allocated with the right size !!
  *
  * Returns 0 if you begin, or 1 if the opponent begins
  */
-int getLabyrinth( char* data);
+int getLabyrinth( char* lab);
 
 
 
@@ -127,7 +141,7 @@ void printLabyrinth();
 
 
 
-/*
+/* ----------------------------
  * Send a comment to the server
  *
  * Parameters:

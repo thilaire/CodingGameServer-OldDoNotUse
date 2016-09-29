@@ -32,7 +32,7 @@ weblogger = getLogger('bottle')
 view = partial(jinja2_view, template_lookup=['templates'])
 TEMPLATE_PATH.append('templates')
 
-
+GameClass=Game
 
 def runWebserver(host, port, quiet):
 	"""

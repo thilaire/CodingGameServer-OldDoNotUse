@@ -54,11 +54,12 @@ void dispDebug(const char* fct, const char* msg, ...)
  * Quit the program if the connection to the server cannot be established
  *
  * Parameters:
+ * - fct: name of the function that calls connectToCGS (used for the logging)
  * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- * - port: (int) port number used for the connection
+ * - port: (int) port number used for the connection	TODO: should we fix it ?
  * - name: (string) name of the bot : max 20 characters (checked by the server)
  */
-void connectToCGS( char* serverName, int port, char* name);
+void connectToCGS( const char* fct, char* serverName, int port, char* name);
 
 
 
@@ -67,9 +68,9 @@ void connectToCGS( char* serverName, int port, char* name);
  * to do, because we are polite
  *
  * Parameters:
- * None
+ * - fct: name of the function that calls closeCGSConnection (used for the logging)
 */
-void closeCGSConnection();
+void closeCGSConnection( const char* fct);
 
 
 
@@ -77,24 +78,26 @@ void closeCGSConnection();
  * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
+ * - fct: name of the function that calls waitForGame (used for the logging)
  * - gameName: string (max 50 characters), corresponds to the game name
  * - data: string (max 128 characters), corresponds to the data
  */
-void waitForGame( char* labyrinthName, char* data);
+void waitForGame( const char* fct, char* gameName, char* data);
 
 
 
 /* -------------------------------------
- * Get the labyrinth and tell who starts
- * It fills the char* data with the data of the labyrinth
+ * Get the game data and tell who starts
+ * It fills the char* data with the data of the game (it will be parsed by the caller)
  * 1 if there's a wall, 0 for nothing
  *
  * Parameters:
- * - data: the array of date (the pointer data MUST HAVE allocated with the right size !!
+ * - fct: name of the function that calls getGameData (used for the logging)
+ * - data: the array of game (the pointer data MUST HAVE allocated with the right size !!)
  *
- * Returns 0 if you begin, or 1 if the opponent begins
+ * Returns 0 if the client begins, or 1 if the opponent begins
  */
-int getLabyrinth( char* data);
+int getGameData( const char* fct, char* data);
 
 
 
@@ -102,12 +105,13 @@ int getLabyrinth( char* data);
  * Get the opponent move
  *
  * Parameters:
- * - move: a move
+ * - fct: name of the function that calls getCGSMove (used for the logging)
+ * - move: a string representing a move (the caller will parse it to extract the move's values)
  *
- * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
+ * Fill the move and returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
  * this code is relative to the opponent (+1 if HE wins, ...)
  */
-t_return_code getMove( t_move* move );
+t_return_code getCGSMove( const char* fct, char* move );
 
 
 
@@ -115,29 +119,34 @@ t_return_code getMove( t_move* move );
  * Send a move
  *
  * Parameters:
- * - move: a move
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
+ * - move: a string representing a move (the caller will parse it to extract the move's values)
  *
  * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move
  */
-t_return_code sendMove( t_move move );
+t_return_code sendCGSMove( const char* fct, char* move);
 
 
 
 /* ----------------------
- * Display the labyrinth
+ * Display the game
  * in a pretty way (ask the server what to print)
+ *
+ * Parameters:
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
  */
-void printLabyrinth();
+void printGame( const char* fct);
 
 
 
-/*
+/* ----------------------------
  * Send a comment to the server
  *
  * Parameters:
+ * - fct: name of the function that calls sendCGSMove (used for the logging)
  * - comment: (string) comment to send to the server (max 100 char.)
  */
-void sendComment(char* comment);
+void sendCGSComment( const char* fct, char* comment);
 
 
 
