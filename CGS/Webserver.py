@@ -32,9 +32,10 @@ weblogger = getLogger('bottle')
 view = partial(jinja2_view, template_lookup=['templates'])
 TEMPLATE_PATH.append('templates')
 
-GameClass=Game
+# the class that will be used for the games (must inherit from Game)
+specializedGameClass = Game     # defined by runWebServer
 
-def runWebserver(host, port, quiet):
+def runWebServer(host, port, quiet, gameClass):
 	"""
 	Install the logger and run the webserver
 	"""
@@ -50,11 +51,11 @@ def runWebserver(host, port, quiet):
 		return _log_to_logger
 
 	# find the game that inherits from Game, store it in GameClass
-	global GameClass
-	if len(Game.__subclasses__()) == 1:
-		GameClass = Game.__subclasses__()[0]
+	global specializedGameClass
+	if gameClass in Game.__subclasses__():
+		specializedGameClass = gameClass
 	else:
-		raise ValueError("One (and only one) class *must* inherit from `Game`.")
+		raise ValueError("The argument gameClass *must* inherit from the `Game` class.")
 
 
 	# Start the web server
@@ -105,7 +106,7 @@ def create_new_game():
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the labyrinth object created here
-		GameClass(player1, player2)
+		specializedGameClass(player1, player2)
 
 	except ValueError as e:
 		# TODO: redirect to an error page

@@ -30,4 +30,4 @@ from CGS import runCGS
 # Labyrinth class is not used here, but its importation makes the Coding Game Server knows that it should use it
 
 
-runCGS()
+runCGS(Labyrinth)

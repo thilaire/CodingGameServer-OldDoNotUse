@@ -91,7 +91,7 @@ ENV/
 .ropeproject
 
 # logs
-Labyrinth/server/logs/
+Labyrinth/logs/
 
 # Pycharm
 .idea/

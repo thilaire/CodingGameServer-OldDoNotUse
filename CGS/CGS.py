@@ -21,7 +21,7 @@ File: CGS.py
 import threading  # to run threads
 from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
 from PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
-from Webserver import runWebserver  # to run the webserver (bottle)
+from Webserver import runWebServer  # to run the webserver (bottle)
 
 import logging  # logging system
 from logging.handlers import RotatingFileHandler
@@ -29,7 +29,7 @@ from colorlog import ColoredFormatter  # logging with colors
 from docopt import docopt  # used to parse the command line
 
 
-def runCGS():
+def runCGS(gameClass):
 
 	# parse the command line
 	usage = """
@@ -83,8 +83,8 @@ Options:
 	# Run the webserver
 	# TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads ??
 	threading.Thread(
-		target=runWebserver,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True}
+		target=runWebServer,
+		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': gameClass}
 	).start()
 
 	# Start TCP Socket server (connection to players)
