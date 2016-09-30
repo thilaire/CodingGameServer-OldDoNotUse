@@ -75,7 +75,7 @@ class Game:
 		self._logger = logging.getLogger(self.name)
 		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
 		makedirs(type(self).__name__ + '/logs/games/', exist_ok=True)
-		file_handler = logging.FileHandler(type(self).__name__ +'/logs/games/' + self.name + '.log')
+		file_handler = logging.FileHandler(type(self).__name__ + '/logs/games/' + self.name + '.log')
 		# file_handler.setLevel(logging.INFO)     #TODO: changer le niveau ??
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)

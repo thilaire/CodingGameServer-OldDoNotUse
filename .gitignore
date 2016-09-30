@@ -90,8 +90,6 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# logs
-Labyrinth/server/logs/
 
 # Pycharm
 .idea/

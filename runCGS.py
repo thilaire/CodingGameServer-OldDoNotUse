@@ -33,7 +33,7 @@ from importlib import import_module    # to dynamically import modules
 from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
 from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 from CGS.Player import Player
-
+from CGS.Game import Game
 
 usage = """
 Coding Game Server
@@ -69,21 +69,24 @@ if __name__ == "__main__":
 	Player.gameName = gameName
 
 	# import the <gameName> module and get the <gameName> class
+	theGame = Game
 	try:
-		mod = import_module( gameName + '.server.' + gameName)
-	except:
+		mod = import_module(gameName + '.server.' + gameName)
+		if gameName not in mod.__dict__:
+			print(
+				Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName + "`." + Fore.RESET)
+			quit()
+		theGame = mod.__dict__[gameName]
+	except ImportError:
 		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
 		quit()
-	if gameName not in mod.__dict__:
-		print(Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName +	"`." + Fore.RESET)
-		quit()
-	theGame = mod.__dict__[gameName]
+
 
 	# Create and setup the logger
 	logger = logging.getLogger()
 	logger.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	# add an handler to redirect the log to a file (1Mo max)
-	makedirs( gameName+'/logs/', exist_ok=True)
+	makedirs(gameName+'/logs/', exist_ok=True)
 	file_handler = RotatingFileHandler(gameName+'/logs/activity.log', 'a', 1000000, 1)
 	file_handler.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")

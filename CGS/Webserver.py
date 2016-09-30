@@ -54,7 +54,7 @@ def runWebServer(host, port, quiet, gameClass):
 	# keep the gameClass
 	global theGame
 	theGame = gameClass
-	#update the template paths so that in priority, it first looks in <gameName>/server/templates/ and then in CGS/server/templates
+	# update the template paths so that in priority, it first looks in <gameName>/server/templates/ and then in CGS/server/templates
 	TEMPLATE_PATH.append(gameClass.__name__ + "/server/templates")
 	TEMPLATE_PATH.reverse()
 	# Start the web server
@@ -74,7 +74,6 @@ def static_file_from_templates(fileName):
 		if isfile(join(path, fileName)):
 			return static_file(fileName, path)
 	abort(404)
-
 
 
 # some static files
@@ -158,14 +157,13 @@ def log():
 
 
 @route('/logs/player/<playerName>')
-def log(playerName):
-	return static_file(playerName+'.log', root=theGame+'/logs/players/')
+def logP(playerName):
+	return static_file(playerName+'.log', root=theGame.__name__+'/logs/players/')
 
 
 @route('/logs/game/<gameName>')
-def log(gameName):
-	return static_file(gameName+'.log', root=theGame+'/logs/games/')
-
+def logG(gameName):
+	return static_file(gameName+'.log', root=theGame.__name__+'/logs/games/')
 
 
 # handle errors
