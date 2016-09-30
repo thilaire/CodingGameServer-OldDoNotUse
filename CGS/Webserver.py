@@ -29,8 +29,8 @@ from functools import wraps										# use to wrap a logger for bottle
 weblogger = getLogger('bottle')
 
 # Configure the web server template engine
-view = partial(jinja2_view, template_lookup=['templates'])
-TEMPLATE_PATH.append('templates')
+view = partial(jinja2_view, template_lookup=['server/templates'])
+TEMPLATE_PATH.append('server/templates')
 
 # the class that will be used for the games (must inherit from Game)
 specializedGameClass = Game     # defined by runWebServer
