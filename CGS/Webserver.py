@@ -17,23 +17,24 @@ File: webserver.py
 
 """
 
-from functools import partial
 from logging import getLogger
 
-from bottle import route, request, jinja2_view, redirect, static_file, template, TEMPLATE_PATH, error
+from bottle import route, request, jinja2_view as view, redirect, static_file, jinja2_template as template, TEMPLATE_PATH, error, abort
 from bottle import run, response, install			    # webserver (bottle)
+from os.path import isfile, join
 from CGS.Game import Game
 from CGS.Player import Player
+
 from functools import wraps										# use to wrap a logger for bottle
 
+# global variables
 weblogger = getLogger('bottle')
+theGame = Game          # class of the Game used (should at least inherit from Game; set by runWebServer function)
 
-# Configure the web server template engine
-view = partial(jinja2_view, template_lookup=['server/templates'])
-TEMPLATE_PATH.append('server/templates')
 
-# the class that will be used for the games (must inherit from Game)
-specializedGameClass = Game     # defined by runWebServer
+# Path to the template (it will be completed with <gameName>/server/templates/)
+TEMPLATE_PATH[:] = ['CGS/templates']
+
 
 def runWebServer(host, port, quiet, gameClass):
 	"""
@@ -50,24 +51,36 @@ def runWebServer(host, port, quiet, gameClass):
 			return actual_response
 		return _log_to_logger
 
-	# find the game that inherits from Game, store it in GameClass
-	global specializedGameClass
-	if gameClass in Game.__subclasses__():
-		specializedGameClass = gameClass
-	else:
-		raise ValueError("The argument gameClass *must* inherit from the `Game` class.")
-
-
+	# keep the gameClass
+	global theGame
+	theGame = gameClass
+	#update the template paths so that in priority, it first looks in <gameName>/server/templates/ and then in CGS/server/templates
+	TEMPLATE_PATH.append(gameClass.__name__ + "/server/templates")
+	TEMPLATE_PATH.reverse()
 	# Start the web server
 	install(log_to_logger)
 	weblogger.info("Run the web server on port %d...", port)
 	run(host=host, port=port, quiet=quiet)
 
 
+def static_file_from_templates(fileName):
+	"""
+	Returns a static_file from the template paths
+	The function first searches in the first path of the template path list (TEMPLATE_PATH). If the file exists, the function
+	returns that file (static_file function), otherwise it searches for the file in the next path...
+	Redirects to error 404 if the file is not found.
+	"""
+	for path in TEMPLATE_PATH:
+		if isfile(join(path, fileName)):
+			return static_file(fileName, path)
+	abort(404)
+
+
+
 # some static files
 @route('/favicon.ico')
 def favicon():
-	return static_file('favicon.ico', '/')
+	return static_file_from_templates('favicon.ico')
 
 
 @route('/')
@@ -106,7 +119,7 @@ def create_new_game():
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the labyrinth object created here
-		specializedGameClass(player1, player2)
+		theGame(player1, player2)
 
 	except ValueError as e:
 		# TODO: redirect to an error page
@@ -141,12 +154,18 @@ def player(playerName):
 # display the logs
 @route('/logs')
 def log():
-	return static_file('activity.log', root='logs/')
+	return static_file('activity.log', root=theGame.__name__+'/logs/')
 
 
 @route('/logs/player/<playerName>')
 def log(playerName):
-	return static_file(playerName+'.log', root='logs/players/')
+	return static_file(playerName+'.log', root=theGame+'/logs/players/')
+
+
+@route('/logs/game/<gameName>')
+def log(gameName):
+	return static_file(gameName+'.log', root=theGame+'/logs/games/')
+
 
 
 # handle errors

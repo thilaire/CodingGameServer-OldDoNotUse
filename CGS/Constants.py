@@ -11,12 +11,12 @@ Licence: GPL
 Status: still in dev... (not even a beta)
 
 File: Constants.py
-	Contains the constants used in the games
+	Contains the constants and config parameters used in the games
 
 """
 
 
-TIMEOUT_TURN = 100		    # time (in seconds) to play a move
+TIMEOUT_TURN = 10		    # time (in seconds) to play a move
 
 
 # return codes
@@ -26,3 +26,4 @@ TIMEOUT_TURN = 100		    # time (in seconds) to play a move
 MOVE_OK = 0
 MOVE_WIN = 1
 MOVE_LOSE = -1       # TODO: find a better constant name
+

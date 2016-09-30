@@ -59,7 +59,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# get the name from the client and create the player
 			self._player = None
 			name = self.getPlayerName()
-			self._player = Player(name)
+			self._player = Player(name, self.client_address[0])
 
 			while True:
 				# then, wait for a (new) game

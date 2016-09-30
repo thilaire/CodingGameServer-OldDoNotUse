@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 
 * --------------------- *
@@ -11,36 +13,38 @@ Authors: T. Hilaire, J. Brajard
 Licence: GPL
 Status: still in dev... (not even a beta)
 
-File: CGS.py
+File: runCGS.py
 	Main file/entry for the Coding Game Server
-	-> import a class inheriting from Game
-	-> and just call runCGS() !!
+	->
 
 """
 
-import threading  # to run threads
-from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
-from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
-from CGS.Webserver import runWebServer  # to run the webserver (bottle)
-
 import logging  # logging system
+import threading  # to run threads
 from logging.handlers import RotatingFileHandler
+from os import makedirs
+from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
+
+from colorama import Fore
 from colorlog import ColoredFormatter  # logging with colors
 from docopt import docopt  # used to parse the command line
+from importlib import import_module    # to dynamically import modules
+
+from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
+from CGS.Webserver import runWebServer  # to run the webserver (bottle)
+from CGS.Player import Player
 
 
-def runCGS(gameClass):
-
-	# parse the command line
-	usage = """
+usage = """
 Coding Game Server
 Run the servers (Game server and web server)
 
 Usage:
-  runXXX.py -h | --help
-  runXXX.py [options] [--debug|--dev|--prod]
+  runCGS.py -h | --help
+  runCGS.py <gameName> [options] [--debug|--dev|--prod]
 
 Options:
+  gameName                 Name of game [default: Labyrinth]
   -h --help                Show this screen.
   -p PORT --port=PORT      Game server port [default: 1234].
   -w PORT --web=PORT       Web server port [default: 8080].
@@ -49,19 +53,38 @@ Options:
   --dev                    Development mode (log everything, display infos, warnings and errors).
   --prod                   Production mode (log only infos, warnings and errors, display nothing).
 """
+
+
+
+
+if __name__ == "__main__":
+
+	# parse the command line
 	args = docopt(usage)
 	if (not args['--debug']) and (not args['--dev']) and (not args['--prod']):
 		args['--dev'] = True
 	args['--port'] = int(args['--port'])
 	args['--web'] = int(args['--web'])
+	gameName = args['<gameName>']
+	Player.gameName = gameName
+
+	# import the <gameName> module and get the <gameName> class
+	try:
+		mod = import_module( gameName + '.server.' + gameName)
+	except:
+		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
+		quit()
+	if gameName not in mod.__dict__:
+		print(Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName +	"`." + Fore.RESET)
+		quit()
+	theGame = mod.__dict__[gameName]
 
 	# Create and setup the logger
-	# see http://sametmax.com/ecrire-des-logs-en-python/
 	logger = logging.getLogger()
 	logger.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	# add an handler to redirect the log to a file (1Mo max)
-	# todo: vérifier que
-	file_handler = RotatingFileHandler('logs/activity.log', 'a', 1000000, 1)
+	makedirs( gameName+'/logs/', exist_ok=True)
+	file_handler = RotatingFileHandler(gameName+'/logs/activity.log', 'a', 1000000, 1)
 	file_handler.setLevel(logging.INFO if args['--prod'] else logging.DEBUG)
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)
@@ -84,7 +107,7 @@ Options:
 	# TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads ??
 	threading.Thread(
 		target=runWebServer,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': gameClass}
+		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': theGame}
 	).start()
 
 	# Start TCP Socket server (connection to players)

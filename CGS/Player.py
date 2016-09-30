@@ -20,6 +20,8 @@ File: Player.py
 import logging
 from logging.handlers import RotatingFileHandler
 from threading import Event
+from os import makedirs
+
 from CGS.Game import Game
 
 logger = logging.getLogger()		# general logger ('root')
@@ -39,14 +41,16 @@ class Player:
 	- his turn (_game.playerWhoPlays == self)
 	- opponent's turn (game.playerWhoPlays != self)
 	"""
-	allPlayers = {}
+	allPlayers = {}     # dictionary with all the players
+	gameName = ''    # name of the game, only used for the logger, initialized by runCGS
 
-	def __init__(self, name):
+	def __init__(self, name, address):
 		# create the logger of the player
 		self._logger = logging.getLogger(name)
 		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
 		if not self._logger.handlers:
-			file_handler = RotatingFileHandler('logs/players/'+name+'.log', 'a', 1000000, 1)
+			makedirs(self.gameName + '/logs/players/', exist_ok=True)
+			file_handler = RotatingFileHandler(self.gameName + '/logs/players/'+name+'.log', 'a', 1000000, 1)
 			file_handler.setLevel(logging.INFO)
 			file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 			file_handler.setFormatter(file_formatter)
@@ -54,7 +58,7 @@ class Player:
 
 
 		self.logger.info("=================================")
-		self.logger.info(name + " just log in.")
+		self.logger.info(name + " just log in (from " + address + ".")
 
 		# name
 		self._name = name
