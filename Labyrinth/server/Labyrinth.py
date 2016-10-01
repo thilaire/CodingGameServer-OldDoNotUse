@@ -245,7 +245,7 @@ class Labyrinth(Game):
 	def H(self):
 		return self._H
 
-
+	# TODO: (julien) renommer playMove
 	def playMove(self, move):
 		"""
 		Play a move

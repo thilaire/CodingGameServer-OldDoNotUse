@@ -108,12 +108,23 @@ if __name__ == "__main__":
 
 	# Run the webserver
 	# TODO: is it necessary to use thread here, since bottle relies on paste server that is multi-threads ??
-	threading.Thread(
-		target=runWebServer,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': theGame}
-	).start()
+	#threading.Thread(
+	#	target=runWebServer,
+	#	kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': theGame}
+	#).start()
+	runWebServer(host=args['--host'], port=args[--'port'], quiet=True, gameClass=theGame)
 
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)
 	logger.info("Run the game server on port %d...", args['--port'])
 	threading.Thread(target=PlayerServer.serve_forever())
+
+
+
+
+#TODO: (julien) faire des messages de taille fixe (128 et 4096), à définir dans le protocole
+#TODO: (thib) rajouter un joueur DO_NOTHING, et tout le mécanisme nécessaire (dans WAIT_GAME)
+#TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx)
+#TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME)
+#TODO: (thib) logguer les déplacements
+

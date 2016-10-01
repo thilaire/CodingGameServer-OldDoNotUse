@@ -272,7 +272,7 @@ class Game:
 	# TODO: DO SOMETHING WITH THAT COMMENT
 
 
-
+	# TODO: (julien) renommer playMove
 	def playMove(self, move):
 		"""
 		Play a move
