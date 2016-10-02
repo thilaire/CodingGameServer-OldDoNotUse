@@ -58,6 +58,7 @@ int main()
 				//.... choose what to play
 				printf("\nIt's your turn to play (0:ROT_LEFT, 1:ROT_RIGHT, 2:ROT_UP, 3:ROT_DOWN, 4:UP, 5:DOWN, 6:LEFT, 7:RIGHT):");
 				scanf("%d %d", &move.type, &move.value);
+				printf("move: %d %d\n",move.type,move.value);
 				ret = sendMove(move);
 				//playMove( &lab, move);
 			}

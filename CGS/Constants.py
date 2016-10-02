@@ -16,7 +16,7 @@ File: Constants.py
 """
 
 
-TIMEOUT_TURN = 10		    # time (in seconds) to play a move
+TIMEOUT_TURN = 100		    # time (in seconds) to play a move
 
 
 # return codes
@@ -27,3 +27,5 @@ MOVE_OK = 0
 MOVE_WIN = 1
 MOVE_LOSE = -1       # TODO: find a better constant name
 
+#Formatteur of the indicator of the length of the message
+SIZE_FMT = "%04d"

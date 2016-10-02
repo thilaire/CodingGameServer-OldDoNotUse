@@ -21,6 +21,7 @@ import logging
 from socketserver import BaseRequestHandler
 from re import sub
 from CGS.Player import Player
+from CGS.Constants import SIZE_FMT
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -101,6 +102,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 						# return the labyrinth
 						self.sendData("OK")
 						# we do not use sendData here, because we do not want to log the full message...
+						head = SIZE_FMT % len(str(self.game).encode())
+						self.request.sendall(head.encode('utf-8'))
 						self.request.sendall(str(self.game).encode())
 						logger.debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
@@ -151,6 +154,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Send data (with self.request.sendall) and log it
 		:param data: (str) data to send
 		"""
+		head = SIZE_FMT % len(data.encode("utf-8"))
+		self.request.sendall(head.encode('utf-8'))
 		if data:
 			self.request.sendall(data.encode('utf-8'))
 		else:

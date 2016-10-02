@@ -140,8 +140,8 @@ t_return_code sendMove( t_move move)
 {
     /* build the string move */
     char data[128];
-    sscanf( data, "%d %d", &(move.type), &(move.value));
-
+    sprintf( data, "%d %d", move.type, move.value);
+// dispDebug(__FUNCTION__,"move send : %s",data);
     /* send the move */
 	return sendCGSMove( __FUNCTION__, data);
 }
