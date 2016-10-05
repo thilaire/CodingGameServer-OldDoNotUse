@@ -26,7 +26,7 @@ TODO: explain...
 #ifndef __API_CLIENT_GAME__
 #define __API_CLIENT_GAME__
 
-
+#include <stdio.h>
 
 
 //TODO: le nom des constantes n'est pas terrible...
@@ -106,10 +106,11 @@ void waitForGame( const char* fct, char* gameName, char* data);
  * Parameters:
  * - fct: name of the function that calls getGameData (used for the logging)
  * - data: the array of game (the pointer data MUST HAVE allocated with the right size !!)
+ * - ndata : maximum size of the data
  *
  * Returns 0 if the client begins, or 1 if the opponent begins
  */
-int getGameData( const char* fct, char* data);
+int getGameData( const char* fct, char* data, size_t ndata);
 
 
 
@@ -119,11 +120,11 @@ int getGameData( const char* fct, char* data);
  * Parameters:
  * - fct: name of the function that calls getCGSMove (used for the logging)
  * - move: a string representing a move (the caller will parse it to extract the move's values)
- *
+ * - nmove : maximum size of the string representing the move  
  * Fill the move and returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
  * this code is relative to the opponent (+1 if HE wins, ...)
  */
-t_return_code getCGSMove( const char* fct, char* move );
+t_return_code getCGSMove( const char* fct, char* move, size_t nmove );
 
 
 

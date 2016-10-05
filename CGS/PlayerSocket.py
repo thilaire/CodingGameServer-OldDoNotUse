@@ -161,7 +161,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		else:
 			# that's a trick when we want to send an empty message...
 			# TODO: change this (do not send any empty message? always send X octets messages?)
-			self.request.sendall('\n'.encode('utf-8'))
+			self.request.sendall(''.encode('utf-8'))
 		if self._player:
 			logger.debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
 		else:

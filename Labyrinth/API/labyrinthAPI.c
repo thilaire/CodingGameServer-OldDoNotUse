@@ -89,7 +89,7 @@ int getLabyrinth( char* lab)
 {
 	char data[4096];
 	/* wait for a game */
-	int ret = getGameData( __FUNCTION__, data);
+	int ret = getGameData( __FUNCTION__, data, 4096);
 
 	/* copy the data in the array lab
 	 * the datas is a readable string of char '0' and '1'
@@ -118,11 +118,11 @@ t_return_code getMove( t_move *move)
     char data[128];
 
     /* get the move */
-    int ret = getCGSMove( __FUNCTION__, data);
+    int ret = getCGSMove( __FUNCTION__, data,128);
 
 	/* extract move */
-	sscanf( data, "%d%d", &(move->type), &(move->value));
-
+	sscanf( data, "%d %d", &(move->type), &(move->value));
+	dispDebug(__FUNCTION__,"move type:%d, ret:%d",move->type,ret);
 	return ret;
 }
 
