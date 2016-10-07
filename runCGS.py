@@ -119,7 +119,6 @@ if __name__ == "__main__":
 	threading.Thread(target=PlayerServer.serve_forever())
 
 
-#TODO: (julien) faire des messages de taille fixe (128 et 4096), à définir dans le protocole
 #TODO: (thib) rajouter un joueur DO_NOTHING, et tout le mécanisme nécessaire (dans WAIT_GAME)
 #TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
 #TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !

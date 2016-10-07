@@ -285,7 +285,7 @@ class Game:
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
 		# play that move
-		return (0,'')
+		return 0,''
 
 
 	def getData(self):
