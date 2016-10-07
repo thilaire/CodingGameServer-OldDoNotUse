@@ -42,6 +42,7 @@ class Game:
 	"""
 
 	allGames = {}
+	_theGameClass = None
 
 	def __init__(self, player1, player2, seed=None):
 		"""
@@ -139,8 +140,28 @@ class Game:
 		if gam is not None:
 			del cls.allGames[name]
 
+	@classmethod
+	def setTheGameClass(cls, theGameClass):
+		"""
+			Setter for the Game we are playing (in order to let that class be available for everyone)
+			Set when the game is known and imported
+		"""
+		cls._theGameClass = theGameClass
 
+	@classmethod
+	def getTheGameClass(cls):
+		"""
+		Getter for the Game we are playing (in order to let that class be available for everyone)
+		Returns the class of the game we are playing (used to create those games)
+		"""
+		return cls._theGameClass
 
+	@classmethod
+	def getTheGameName(cls):
+		"""
+		Getter for the name of the Game we are playing
+		"""
+		return cls._theGameClass.__name__
 
 
 	def endOfGame(self):
@@ -181,6 +202,8 @@ class Game:
 		Returns the player who Plays
 		"""
 		return self._players[self._whoPlays]
+
+
 
 
 	def getLastMove(self):

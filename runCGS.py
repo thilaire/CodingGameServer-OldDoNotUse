@@ -68,19 +68,17 @@ if __name__ == "__main__":
 	gameName = args['<gameName>']
 	Player.gameName = gameName
 
-	# import the <gameName> module and get the <gameName> class
-	theGame = Game
+	# import the <gameName> module and store it (in Game)
 	try:
 		mod = import_module(gameName + '.server.' + gameName)
 		if gameName not in mod.__dict__:
 			print(
 				Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName + "`." + Fore.RESET)
 			quit()
-		theGame = mod.__dict__[gameName]
 	except ImportError:
 		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
 		quit()
-
+	Game.setTheGameClass(mod.__dict__[gameName])
 
 	# Create and setup the logger
 	logger = logging.getLogger()
@@ -109,7 +107,7 @@ if __name__ == "__main__":
 	# Run the webserver
 	threading.Thread(
 		target=runWebServer,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': theGame}
+		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True}
 	).start()
 
 
