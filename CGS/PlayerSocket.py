@@ -22,6 +22,7 @@ from socketserver import BaseRequestHandler
 from re import sub
 from CGS.Player import Player
 from CGS.Constants import SIZE_FMT
+from CGS.Game import Game
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -221,9 +222,24 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# get the WAIT_GAME message
 		data = self.receiveData()
-		if not data.startswith("WAIT_GAME"):
-			self.sendData("Bad protocol, should send 'WAIT_GAME' command")
-			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME' command")
+		if not data.startswith("WAIT_GAME "):
+			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+
+		# get the type of the game
+		try:
+			typeGame = int( data[10:])
+		except ValueError:
+			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+
+		# if not a regular game
+		if typeGame != 0:
+			# Create a particular Game
+			g = Game.getTheGameClass().gameFactory(typeGame, self._player)
+			if g is None:
+				self.sendData("The game type sent by '%s' command is not valid"%data)
+				raise MyConnectionError("The game type sent by '%s' command is not valid"%data)
 
 		# just send back OK
 		self.sendData("OK")
@@ -236,6 +252,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# now send the game sizes
 		self.sendData(self.game.getDataSize())
+
+
 
 
 

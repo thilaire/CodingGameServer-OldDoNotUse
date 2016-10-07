@@ -47,6 +47,17 @@ typedef struct
 } t_move;
 
 
+/* Game type
+defines the type of a game:
+0 -> regular games (against regular player)
+1 -> against Do_nothing player (player that does nothing)
+*/
+typedef enum
+{
+    REGULAR_GAME = 0,
+    DO_NOTHING_GAME = 1
+} t_gameType;
+
 
 
 /* -------------------------------------
@@ -77,10 +88,11 @@ void closeConnection();
  * Wait for a labyrinth, and retrieve its name and size
  *
  * Parameters:
+ * - gameType: type of the game the player is waiting for (0: regular game, 1: play against do_nothing player, etc.)
  * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
  * - sizeX, sizeY: sizes of the labyrinth
  */
-void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY);
+void waitForLabyrinth( t_gameType gameType, char* labyrinthName, int* sizeX, int* sizeY);
 
 
 

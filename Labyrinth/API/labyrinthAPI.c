@@ -56,14 +56,15 @@ void closeConnection()
  * Wait for a labyrinth, and retrieve its name and size
  *
  * Parameters:
+ * - gameType: type of the game the player is waiting for (0: regular game, 1: play against do_nothing player, etc.)
  * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
  * - sizeX, sizeY: sizes of the labyrinth
  */
-void waitForLabyrinth( char* labyrinthName, int* sizeX, int* sizeY)
+void waitForLabyrinth( t_gameType gameType, char* labyrinthName, int* sizeX, int* sizeY)
 {
 	char data[128];
 	/* wait for a game */
-	waitForGame( __FUNCTION__, labyrinthName, data);
+	waitForGame( __FUNCTION__, (int) gameType, labyrinthName, data);
 
 	/* parse the data */
 	sscanf( data, "%d %d", sizeX, sizeY);

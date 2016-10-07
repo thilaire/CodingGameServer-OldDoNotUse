@@ -329,3 +329,17 @@ class Game:
 
 		"""
 		return ""
+
+	@classmethod
+	def gameFactory(cls, typeGame, player1):
+		"""
+		Create a game with a particular player
+
+		Parameters:
+		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
+		- player1: player who plays the game
+
+		TO BE OVERLOADED BY THE CHILD CLASS
+
+		"""
+		pass

@@ -75,10 +75,11 @@ if __name__ == "__main__":
 			print(
 				Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName + "`." + Fore.RESET)
 			quit()
+		Game.setTheGameClass(mod.__dict__[gameName])
 	except ImportError:
 		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
 		quit()
-	Game.setTheGameClass(mod.__dict__[gameName])
+
 
 	# Create and setup the logger
 	logger = logging.getLogger()

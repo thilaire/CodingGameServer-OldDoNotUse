@@ -9,7 +9,7 @@
 2b) Server acknowledges (send "OK") if the name is valid
 
 3) Waiting for a game       ((labyrinth.c: waitForLabyrinth, socketPlayer.py: waitForGame)
-3a) Client sends "WAIT_GAME"
+3a) Client sends "WAIT_GAME %d" with the type of the game (0: regular game, 1: play against do_nothing, etc.)
 3b) Server acknowledges (send "OK")
 3c) Server waits for the game to start
 3d) Server sends "%s" the name of the game

@@ -106,7 +106,7 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitForLabyrinth( lab.name, &(lab.sizeX), &(lab.sizeY));
+		waitForLabyrinth( REGULAR_GAME, lab.name, &(lab.sizeX), &(lab.sizeY));
 		lab.data = (char*) malloc( lab.sizeX * lab.sizeY );
 		lab.player = getLabyrinth( lab.data);
 

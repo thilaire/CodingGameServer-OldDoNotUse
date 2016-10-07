@@ -143,8 +143,6 @@ class Labyrinth(Game):
 
 	"""
 
-	allGames = {}
-
 	def __init__(self, player1, player2, seed=None):
 		"""
 		Create a labyrinth
@@ -318,3 +316,18 @@ class Labyrinth(Game):
 		Here, the size of the labyrinth
 		"""
 		return "%d %d" % (self.L, self.H)
+
+
+	@classmethod
+	def gameFactory(cls, typeGame, player1):
+		"""
+		Create a game with a particular player
+
+		Parameters:
+		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
+		- player1: player who plays the game
+
+		"""
+		#TODO: il n'y a pas de jeu particulier pour le moment
+		if typeGame <= 0 or typeGame >= 0:
+			return None
