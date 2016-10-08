@@ -32,7 +32,6 @@ from importlib import import_module    # to dynamically import modules
 
 from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
 from CGS.Webserver import runWebServer  # to run the webserver (bottle)
-from CGS.Player import Player
 from CGS.Game import Game
 
 usage = """
@@ -66,7 +65,6 @@ if __name__ == "__main__":
 	args['--port'] = int(args['--port'])
 	args['--web'] = int(args['--web'])
 	gameName = args['<gameName>']
-	Player.gameName = gameName
 
 	# import the <gameName> module and store it (in Game)
 	try:
@@ -118,8 +116,8 @@ if __name__ == "__main__":
 	threading.Thread(target=PlayerServer.serve_forever())
 
 
-#TODO: (thib) rajouter un joueur DO_NOTHING, et tout le mécanisme nécessaire (dans WAIT_GAME)
-#TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
-#TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
-#TODO: (thib) logguer les déplacements
+
+# TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
+# TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
+# TODO: (thib) logguer les déplacements
 

@@ -23,7 +23,7 @@ from bottle import route, request, jinja2_view as view, redirect, static_file, j
 from bottle import run, response, install			    # webserver (bottle)
 from os.path import isfile, join
 from CGS.Game import Game
-from CGS.Player import Player
+from CGS.RegularPlayer import RegularPlayer
 
 from functools import wraps										# use to wrap a logger for bottle
 
@@ -87,7 +87,7 @@ def index():
 	"""
 	Main page (based on index.html template)
 	"""
-	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
+	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in RegularPlayer.allPlayers.values()])
 	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game.allGames.values()])
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList}
 
@@ -98,7 +98,7 @@ def new_game():
 	"""
 	Page to create a new game
 	"""
-	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in Player.allPlayers.values()])
+	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in RegularPlayer.allPlayers.values()])
 
 	return {"list_players": Players}
 
@@ -109,8 +109,8 @@ def create_new_game():
 	Page to create a new game
 	"""
 	# get Player 1
-	player1 = Player.getFromName(request.forms.get('player1'))
-	player2 = Player.getFromName(request.forms.get('player2'))
+	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
+	player2 = RegularPlayer.getFromName(request.forms.get('player2'))
 
 
 	try:
@@ -140,7 +140,7 @@ def game(gameName):
 
 @route('/player/<playerName>')
 def player(playerName):
-	pl = Player.getFromName(playerName)
+	pl = RegularPlayer.getFromName(playerName)
 	if pl:
 		# TODO: use a template
 		return pl.HTMLpage()

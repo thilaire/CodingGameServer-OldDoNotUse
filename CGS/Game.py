@@ -216,31 +216,56 @@ class Game:
 		"""
 
 		# wait for the move of the opponent
-		self.logger.debug("Wait for playMove event")
-		if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
-			self.logger.debug("Receive playMove event")
-			self._playMoveEvent.clear()
 
-			self._getMoveEvent.set()
+		# only if the opponent is a regular player
+		if self._players[self._whoPlays].isRegular:
 
-			return self._lastMove, self._lastReturn_code
+			self.logger.debug("Wait for playMove event")
+			if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
+				self.logger.debug("Receive playMove event")
+				self._playMoveEvent.clear()
+
+				self._getMoveEvent.set()
+
+				return self._lastMove, self._lastReturn_code
+			else:
+				# Timeout !!
+				# the opponent has lost the game
+				self._playMoveEvent.clear()
+
+				# TODO: DO SOMETHING !!
+				# TODO: signifier la fin de partie, etc.
+
+				self.endOfGame()
+
+				return self._lastMove, MOVE_LOSE
+
 		else:
-			# Timeout !!
-			# the opponent has lost the game
-			self._playMoveEvent.clear()
+			# otherwise, we call the player's playMove method
+			move = self._players[self._whoPlays].playMove()
+			return_code, msg = self.updateGame(move)
 
-			# TODO: DO SOMETHING !!
-			# TODO: signifier la fin de partie, etc.
+			if return_code == MOVE_OK:
+				# change who plays
+				self._whoPlays = int(not self._whoPlays)
 
-			self.endOfGame()
+			elif return_code == MOVE_WIN:
+				# TODO: signifier la fin de la partie
+				# TODO: congrats, etc.
+				self.endOfGame()
+			else:  # return_code == MOVE_LOSE
+				# TODO: signifier la fin de partie
+				self.endOfGame()
 
-			return self._lastMove, MOVE_LOSE
+
+			return move, return_code
 
 
-	def receiveMove(self, move):
-		# TODO: changer ce nom !!! (éventuellement playMove, mais il faut renommer le playMove de labyrinth... ReceiveMove traite le move et surtout fait la synchronisation avec l'adversaire, et gère la défaite/victoire). Alors que le playMove de Labyrinth ne fait que jouer le coup et renvoyer le return_code et le message
+
+	def playMove(self, move):
 		"""
-		Play a move
+		Play a move we just received (from PlayerSocket)
+		Do all the synchronization stuff (between the two players)
 		- move: a string corresponding to the move
 		Return a tuple (move_code, msg), where
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
@@ -250,22 +275,25 @@ class Game:
 		if self._gameOver:
 			return MOVE_LOSE, "Timeout !"
 
-		# play that move
+		# play that move and update the game
 		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
-		return_code, msg = self.playMove(move)
+		return_code, msg = self.updateGame(move)
 
 		# keep the last move
 		self._lastMove = move
 		self._lastReturn_code = return_code
 
-		# set the playMove Event
-		self._playMoveEvent.set()
+		# only if the opponent is a regular player
+		if self._players[1 - self._whoPlays].isRegular:
+			# set the playMove Event
+			self._playMoveEvent.set()
 
-		# and then wait that the opponent get the move
-		self.logger.debug("Wait for getMove event")
-		self._getMoveEvent.wait()
-		self._getMoveEvent.clear()
-		self.logger.debug("Receive getMove event")
+			# and then wait that the opponent get the move
+			self.logger.debug("Wait for getMove event")
+			self._getMoveEvent.wait()
+			self._getMoveEvent.clear()
+			self.logger.debug("Receive getMove event")
+
 
 		if return_code == MOVE_OK:
 			# change who plays
@@ -295,20 +323,20 @@ class Game:
 	# TODO: DO SOMETHING WITH THAT COMMENT
 
 
-	# TODO: (julien) renommer playMove
-	def playMove(self, move):
+
+	def updateGame(self, move):
 		"""
-		Play a move
+		update the Game by playing the move
 		TO BE OVERLOADED BY THE CHILD CLASS
 
-		Play a move
-		- move: a string "%d %d"
+		Play a move and update the game
+		- move: a string
 		Return a tuple (move_code, msg), where
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
 		# play that move
-		return 0,''
+		return 0, ''
 
 
 	def getData(self):
