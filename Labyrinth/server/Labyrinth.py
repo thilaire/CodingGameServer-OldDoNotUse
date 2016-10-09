@@ -44,7 +44,15 @@ Ddx = {MOVE_UP: 0, MOVE_DOWN: 0, MOVE_LEFT: -1, MOVE_RIGHT: 1}      # simple dic
 Ddy = {MOVE_UP: -1, MOVE_DOWN: 1, MOVE_LEFT: 0, MOVE_RIGHT: 0}
 
 
+def xshift (L,x,dx):
+	LL = [l[x] for l in L]
+	LL = LL[-dx:]+LL[:-dx]
+	for l in L:
+		l[x]=LL.pop(0)
+	return L
 
+def yshift (L,y,dy):
+	return L[y][-dy:] + L[y][:-dy]
 
 
 def CreateLaby(sX, sY):
@@ -294,7 +302,17 @@ class Labyrinth(Game):
 
 		elif move_type == DO_NOTHING:
 			return MOVE_OK, ""
+
+		#rotation
+		elif  ROTATE_LINE_LEFT <= move_type <=ROTATE_LINE_RIGHT:
+			dx = -1 if move_type == ROTATE_LINE_LEFT else 1
+			self._lab=xshift(self._lab,value,dx)
+			return MOVE_OK, ""
 		else:
+			dy = -1 if move_type == ROTATE_COLUMN_UP else 1
+			return MOVE_OK, ""
+
+
 			return MOVE_LOSE, "Rotation not yet implemented"
 
 
