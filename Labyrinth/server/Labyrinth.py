@@ -16,32 +16,16 @@ File: Labyrinth.py
 
 """
 
-
 from random import shuffle, random, randint
-from CGS.Game import Game
-from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
-from colorama import Fore
 from re import compile
 
-regdd = compile("(\d+)\s+(\d+)")    # regex to parse a "%d %d" string
+from colorama import Fore
 
-
-
-# TODO: check how to make `pythonic` constants
-# see http://stackoverflow.com/questions/11111632/python-best-cleanest-way-to-define-constant-lists-or-dictionarys
-# put all these constants in a separate Laby_const.py file ?
-ROTATE_LINE_LEFT = 0
-ROTATE_LINE_RIGHT = 1
-ROTATE_COLUMN_UP = 2
-ROTATE_COLUMN_DOWN = 3
-MOVE_UP = 4
-MOVE_DOWN = 5
-MOVE_LEFT = 6
-MOVE_RIGHT = 7
-DO_NOTHING = 8
-
-Ddx = {MOVE_UP: 0, MOVE_DOWN: 0, MOVE_LEFT: -1, MOVE_RIGHT: 1}      # simple dictionary of x-offsets
-Ddy = {MOVE_UP: -1, MOVE_DOWN: 1, MOVE_LEFT: 0, MOVE_RIGHT: 0}
+from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
+from CGS.Game import Game
+from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_UP, MOVE_RIGHT, \
+	DO_NOTHING, Ddx, Ddy
+from .DoNothingPlayer import DoNothingPlayer
 
 
 def xshift (L,x,dx):
@@ -50,6 +34,8 @@ def xshift (L,x,dx):
 	for l in L:
 		l[x]=LL.pop(0)
 	return L
+
+regdd = compile("(\d+)\s+(\d+)")    # regex to parse a "%d %d" string
 
 def yshift (L,y,dy):
 	return L[y][-dy:] + L[y][:-dy]
@@ -151,8 +137,6 @@ class Labyrinth(Game):
 
 	"""
 
-	allGames = {}
-
 	def __init__(self, player1, player2, seed=None):
 		"""
 		Create a labyrinth
@@ -185,7 +169,7 @@ class Labyrinth(Game):
 
 		# call the superclass constructor (only at the end, because the superclass constructor launches
 		# the players and they will immediately requires some Labyrinth's properties)
-		super(Labyrinth, self).__init__(player1, player2, seed)
+		super().__init__(player1, player2, seed)
 
 		self._playerEnergy[self._whoPlays] = 4
 
@@ -253,10 +237,10 @@ class Labyrinth(Game):
 	def H(self):
 		return self._H
 
-	# TODO: (julien) renommer playMove
-	def playMove(self, move):
+
+	def updateGame(self, move):
 		"""
-		Play a move
+		update the game by playing a move
 		- move: a string "%d %d"
 		Return a tuple (move_code, msg), where
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
@@ -336,3 +320,21 @@ class Labyrinth(Game):
 		Here, the size of the labyrinth
 		"""
 		return "%d %d" % (self.L, self.H)
+
+
+	@classmethod
+	def gameFactory(cls, typeGame, player1):
+		"""
+		Create a game with a particular player
+
+		Parameters:
+		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
+		- player1: player who plays the game
+
+		"""
+		if typeGame == 1:
+			p = DoNothingPlayer()
+			return cls(player1, p)
+		else:
+			return None
+

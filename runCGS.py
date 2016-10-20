@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# -*- coding: utf-8
 """
 
 * --------------------- *
@@ -32,7 +32,6 @@ from importlib import import_module    # to dynamically import modules
 
 from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
 from CGS.Webserver import runWebServer  # to run the webserver (bottle)
-from CGS.Player import Player
 from CGS.Game import Game
 
 usage = """
@@ -66,17 +65,15 @@ if __name__ == "__main__":
 	args['--port'] = int(args['--port'])
 	args['--web'] = int(args['--web'])
 	gameName = args['<gameName>']
-	Player.gameName = gameName
 
-	# import the <gameName> module and get the <gameName> class
-	theGame = Game
+	# import the <gameName> module and store it (in Game)
 	try:
 		mod = import_module(gameName + '.server.' + gameName)
 		if gameName not in mod.__dict__:
 			print(
 				Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName + "`." + Fore.RESET)
 			quit()
-		theGame = mod.__dict__[gameName]
+		Game.setTheGameClass(mod.__dict__[gameName])
 	except ImportError:
 		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
 		quit()
@@ -109,7 +106,7 @@ if __name__ == "__main__":
 	# Run the webserver
 	threading.Thread(
 		target=runWebServer,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True, 'gameClass': theGame}
+		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True}
 	).start()
 
 
@@ -119,9 +116,8 @@ if __name__ == "__main__":
 	threading.Thread(target=PlayerServer.serve_forever())
 
 
-#TODO: (julien) faire des messages de taille fixe (128 et 4096), à définir dans le protocole
-#TODO: (thib) rajouter un joueur DO_NOTHING, et tout le mécanisme nécessaire (dans WAIT_GAME)
-#TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
-#TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
-#TODO: (thib) logguer les déplacements
+
+# TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
+# TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
+# TODO: (thib) logguer les déplacements
 

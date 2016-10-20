@@ -20,8 +20,9 @@ File: PlayerSocket.py
 import logging
 from socketserver import BaseRequestHandler
 from re import sub
-from CGS.Player import Player
+from CGS.RegularPlayer import RegularPlayer
 from CGS.Constants import SIZE_FMT
+from CGS.Game import Game
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -60,7 +61,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# get the name from the client and create the player
 			self._player = None
 			name = self.getPlayerName()
-			self._player = Player(name, self.client_address[0])
+			self._player = RegularPlayer(name, self.client_address[0])
 
 			while True:
 				# then, wait for a (new) game
@@ -91,7 +92,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 						if self._player is self.game.playerWhoPlays:
 							self.sendData("OK")
 							# play that move to see if it's a winning/losing/normal move
-							return_code, msg = self.game.receiveMove(data[10:])
+							return_code, msg = self.game.playMove(data[10:])
 							# now, send the result of the move and the associated message
 							self.sendData(str(return_code))
 							self.sendData(msg)
@@ -103,7 +104,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 						self.sendData("OK")
 						# we do not use sendData here, because we do not want to log the full message...
 						head = SIZE_FMT % len(str(self.game).encode())
-						self.request.sendall(head.encode('utf-8'))
+						self.request.sendall(str(head).encode('utf-8'))
 						self.request.sendall(str(self.game).encode())
 						logger.debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
@@ -133,7 +134,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		if self._player is not None:
 			self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
-			Player.removePlayer(self._player.name)
+			RegularPlayer.removePlayer(self._player.name)
 			del self._player
 
 	def receiveData(self, size=1024):
@@ -155,7 +156,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		:param data: (str) data to send
 		"""
 		head = SIZE_FMT % len(data.encode("utf-8"))
-		self.request.sendall(head.encode('utf-8'))
+		self.request.sendall(str(head).encode('utf-8'))
 		if data:
 			self.request.sendall(data.encode('utf-8'))
 		else:
@@ -194,7 +195,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = data[12:]
 
 		# check if the player doesn't exist yet
-		if data in Player.allPlayers:
+		if data in RegularPlayer.allPlayers:
 			self.sendData("A client with the same name ('" + data + "') is already connected!")
 			raise MyConnectionError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 
@@ -221,9 +222,24 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# get the WAIT_GAME message
 		data = self.receiveData()
-		if not data.startswith("WAIT_GAME"):
-			self.sendData("Bad protocol, should send 'WAIT_GAME' command")
-			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME' command")
+		if not data.startswith("WAIT_GAME "):
+			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+
+		# get the type of the game
+		try:
+			typeGame = int(data[10:])
+		except ValueError:
+			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+
+		# if not a regular game
+		if typeGame != 0:
+			# Create a particular Game
+			g = Game.getTheGameClass().gameFactory(typeGame, self._player)
+			if g is None:
+				self.sendData("The game type sent by '%s' command is not valid" % data)
+				raise MyConnectionError("The game type sent by '%s' command is not valid" % data)
 
 		# just send back OK
 		self.sendData("OK")
@@ -236,6 +252,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		# now send the game sizes
 		self.sendData(self.game.getDataSize())
+
+
 
 
 

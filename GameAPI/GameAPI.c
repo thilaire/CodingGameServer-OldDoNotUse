@@ -229,12 +229,13 @@ void closeCGSConnection( const char* fct)
  *
  * Parameters:
  * - fct: name of the function that calls waitForGame (used for the logging)
+ * - gameType: type of the game the player is waiting for (0: regular game, 1: play agains do_nothing player, etc.)
  * - gameName: string (max 50 characters), corresponds to the game name
  * - data: string (max 128 characters), corresponds to the data
  */
-void waitForGame( const char* fct, char* gameName, char* data)
+void waitForGame( const char* fct, int gameType, char* gameName, char* data)
 {
-	sendString( fct,"WAIT_GAME");
+	sendString( fct,"WAIT_GAME %d", gameType);
 
 	/* read Labyrinth name */
 	bzero(buffer,1000);

@@ -23,20 +23,20 @@ from bottle import route, request, jinja2_view as view, redirect, static_file, j
 from bottle import run, response, install			    # webserver (bottle)
 from os.path import isfile, join
 from CGS.Game import Game
-from CGS.Player import Player
+from CGS.RegularPlayer import RegularPlayer
 
 from functools import wraps										# use to wrap a logger for bottle
 
-# global variables
-weblogger = getLogger('bottle')
-theGame = Game          # class of the Game used (should at least inherit from Game; set by runWebServer function)
 
+# weblogger
+weblogger = getLogger('bottle')
 
 # Path to the template (it will be completed with <gameName>/server/templates/)
 TEMPLATE_PATH[:] = ['CGS/templates']
 
 
-def runWebServer(host, port, quiet, gameClass):
+
+def runWebServer(host, port, quiet):
 	"""
 	Install the logger and run the webserver
 	"""
@@ -51,11 +51,9 @@ def runWebServer(host, port, quiet, gameClass):
 			return actual_response
 		return _log_to_logger
 
-	# keep the gameClass
-	global theGame
-	theGame = gameClass
+
 	# update the template paths so that in priority, it first looks in <gameName>/server/templates/ and then in CGS/server/templates
-	TEMPLATE_PATH.append(gameClass.__name__ + "/server/templates")
+	TEMPLATE_PATH.append(Game.getTheGameName() + "/server/templates")
 	TEMPLATE_PATH.reverse()
 	# Start the web server
 	install(log_to_logger)
@@ -89,7 +87,7 @@ def index():
 	"""
 	Main page (based on index.html template)
 	"""
-	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in Player.allPlayers.values()])
+	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in RegularPlayer.allPlayers.values()])
 	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game.allGames.values()])
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList}
 
@@ -100,7 +98,7 @@ def new_game():
 	"""
 	Page to create a new game
 	"""
-	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in Player.allPlayers.values()])
+	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in RegularPlayer.allPlayers.values()])
 
 	return {"list_players": Players}
 
@@ -111,14 +109,14 @@ def create_new_game():
 	Page to create a new game
 	"""
 	# get Player 1
-	player1 = Player.getFromName(request.forms.get('player1'))
-	player2 = Player.getFromName(request.forms.get('player2'))
+	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
+	player2 = RegularPlayer.getFromName(request.forms.get('player2'))
 
 
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the labyrinth object created here
-		theGame(player1, player2)
+		Game.getTheGameClass()(player1, player2)
 
 	except ValueError as e:
 		# TODO: redirect to an error page
@@ -142,7 +140,7 @@ def game(gameName):
 
 @route('/player/<playerName>')
 def player(playerName):
-	pl = Player.getFromName(playerName)
+	pl = RegularPlayer.getFromName(playerName)
 	if pl:
 		# TODO: use a template
 		return pl.HTMLpage()
@@ -153,17 +151,17 @@ def player(playerName):
 # display the logs
 @route('/logs')
 def log():
-	return static_file('activity.log', root=theGame.__name__+'/logs/')
+	return static_file('activity.log', root=Game.getTheGameName()+'/logs/')
 
 
 @route('/logs/player/<playerName>')
 def logP(playerName):
-	return static_file(playerName+'.log', root=theGame.__name__+'/logs/players/')
+	return static_file(playerName+'.log', root=Game.getTheGameName()+'/logs/players/')
 
 
 @route('/logs/game/<gameName>')
 def logG(gameName):
-	return static_file(gameName+'.log', root=theGame.__name__+'/logs/games/')
+	return static_file(gameName+'.log', root=Game.getTheGameName()+'/logs/games/')
 
 
 # handle errors
