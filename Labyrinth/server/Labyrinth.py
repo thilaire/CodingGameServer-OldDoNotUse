@@ -28,21 +28,34 @@ from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, RO
 from .DoNothingPlayer import DoNothingPlayer
 
 
-def xshift (L,x,dx):
+def xshift ( L, x, dx ):
 	LL = [l[x] for l in L]
-	LL = LL[-dx:]+LL[:-dx]
+	LL = LL[-dx:] + LL[:-dx]
 	for l in L:
-		l[x]=LL.pop(0)
-	return L
-
-regdd = compile("(\d+)\s+(\d+)")    # regex to parse a "%d %d" string
-
-def yshift (L,y,dy):
-	L[y]=L[y][-dy:] + L[y][:-dy]
+		l[x] = LL.pop(0)
 	return L
 
 
-def CreateLaby(sX, sY):
+regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
+
+
+def yshift ( L, y, dy ):
+	L[y] = L[y][-dy:] + L[y][:-dy]
+	return L
+
+
+def tadd ( tuple1, tuple2, modu):
+	"""
+	Make element wise sum of tuples
+	:param tuple1:
+	:param tuple2:
+	:param modu:
+	:return: result of element sum of tuple1 and tuple2 modulo modu
+	"""
+	return tuple(map(lambda x, y, m: (x + y)%m, tuple1, tuple2, modu))
+
+
+def CreateLaby ( sX, sY ):
 	"""
 	Build a Labyrinth (an array of booleans: True=> empty, False=> wall)
 	:param sX: number of 2x2 blocks (over X)
@@ -73,7 +86,7 @@ def CreateLaby(sX, sY):
 	L = 4 * sX + 1
 	H = 2 * sY + 1
 	# create a L*H array of False)
-	lab = [list((False,)*H) for _ in range(L)]
+	lab = [list((False,) * H) for _ in range(L)]
 
 	shuffle(Directions)
 	stack = [(0, 0, list(Directions))]  # X, Y of the cell( 2x2 cell) and directions
@@ -138,7 +151,7 @@ class Labyrinth(Game):
 
 	"""
 
-	def __init__(self, player1, player2, seed=None):
+	def __init__ ( self, player1, player2, seed=None ):
 		"""
 		Create a labyrinth
 		:param player1: 1st Player
@@ -157,13 +170,12 @@ class Labyrinth(Game):
 		self._treasure = (self.L // 2, self.H // 2)
 		self._lab[self._treasure[0]][self._treasure[1]] = True  # no wall here
 
-		self._playerPos = []            # list of coordinates
+		self._playerPos = []  # list of coordinates
 		self._playerPos.append((0, self.H // 2))
 		self._playerPos.append((self.L - 1, self.H // 2))
 
 		# Level of energy
 		self._playerEnergy = [5, 5]
-
 
 		for x, y in self._playerPos:
 			self._lab[x][y] = True  # no wall here
@@ -174,23 +186,19 @@ class Labyrinth(Game):
 
 		self._playerEnergy[self._whoPlays] = 4
 
-
 	@property
-	def lab(self):
+	def lab ( self ):
 		return self._lab
 
-
-	def HTMLrepr(self):
+	def HTMLrepr ( self ):
 		return "<A href='/game/%s'>%s</A>" % (self.name, self.name)
 
-	def HTMLpage(self):
+	def HTMLpage ( self ):
 		# TODO: return a dictionary to fill a html template
 		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 			self.name, self._players[0].name, self._players[1].name, self)
 
-
-
-	def __str__(self):
+	def __str__ ( self ):
 		"""
 		Convert a Game into string (to be send to clients, and display)
 		"""
@@ -222,24 +230,22 @@ class Labyrinth(Game):
 		# TODO: add energy
 		br0 = "[]" if self._whoPlays == 0 else "  "
 		br1 = "[]" if self._whoPlays == 1 else "  "
-		lines[self.H//2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
-		lines[self.H//2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
+		lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
+		lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[
+			1]
 
-		head = "+"+"-"*(2*self.L-1)+"+\n"
+		head = "+" + "-" * (2 * self.L - 1) + "+\n"
 		return head + "\n".join(lines) + "\n" + head
 
-
 	@property
-	def L(self):
+	def L ( self ):
 		return self._L
 
-
 	@property
-	def H(self):
+	def H ( self ):
 		return self._H
 
-
-	def updateGame(self, move):
+	def updateGame ( self, move ):
 		"""
 		update the game by playing a move
 		- move: a string "%d %d"
@@ -270,7 +276,7 @@ class Labyrinth(Game):
 			y += Ddy[move_type]
 
 			# TODO: on rajoute cette règle, ou bien on a droit de cycler ?
-			if not (0 <= x < self.L) or not(0 <= y < self.H):
+			if not (0 <= x < self.L) or not (0 <= y < self.H):
 				return MOVE_LOSE, "Cannot go outside of the labyrinth"
 
 			if not self._lab[x][y]:
@@ -288,23 +294,43 @@ class Labyrinth(Game):
 		elif move_type == DO_NOTHING:
 			return MOVE_OK, ""
 
-		#rotation
-		elif  ROTATE_LINE_LEFT <= move_type <=ROTATE_LINE_RIGHT:
-			dx = -1 if move_type == ROTATE_LINE_LEFT else 1
-			self._lab=xshift(self._lab,value,dx)
+		elif ROTATE_LINE_LEFT <= move_type <= ROTATE_COLUMN_DOWN:
+			# rotation
+			xm = -1  # column to move
+			ym = -1  # row to move
+			dx = 0
+			dy = 0
+			if ROTATE_LINE_LEFT <= move_type <= ROTATE_LINE_RIGHT:
+				dx = -1 if move_type == ROTATE_LINE_LEFT else 1
+				ym = value
+				self._lab = xshift(self._lab, value, dx)
+
+			else:
+				dy = -1 if move_type == ROTATE_COLUMN_UP else 1
+				xm = value
+				self._lab = yshift(self._lab, value, dy)
+
+			print ((dx,dy))
+			print ((xm,ym))
+			# possibly move treasure
+			if xm == self._treasure[0] or ym == self._treasure[1]:
+				self._treasure = tadd(self._treasure, (dx, dy),(self.L,self.H))
+
+			# possibly move players
+			for i, (x, y) in enumerate(self._playerPos):
+				print ((xm,ym))
+				print ((x,y))
+				if xm == x or ym == y:
+					#print(self._playerPos[i])
+					#print((dx, dy))
+					#print(tadd((x, y), (dx, dy)))
+					self._playerPos[i] = tadd((x, y), (dx, dy), (self.L,self.H))
+					#print(self._playerPos[i])
 			return MOVE_OK, ""
-		else:
-			dy = -1 if move_type == ROTATE_COLUMN_UP else 1
-			self._lab=yshift(self._lab,value,dy)
-			return MOVE_OK, ""
 
+		return MOVE_LOSE, "Rotation not yet implemented"
 
-			return MOVE_LOSE, "Rotation not yet implemented"
-
-
-
-
-	def getData(self):
+	def getData ( self ):
 		"""
 		Return the datas of the labyrinth (when ask with the GET_GAME_DATA message)
 		"""
@@ -314,18 +340,15 @@ class Labyrinth(Game):
 				msg.append("1" if self.lab[x][y] else "0")
 		return "".join(msg)
 
-
-
-	def getDataSize(self):
+	def getDataSize ( self ):
 		"""
 		Returns the size of the next incoming data
 		Here, the size of the labyrinth
 		"""
 		return "%d %d" % (self.L, self.H)
 
-
 	@classmethod
-	def gameFactory(cls, typeGame, player1):
+	def gameFactory ( cls, typeGame, player1 ):
 		"""
 		Create a game with a particular player
 
@@ -339,4 +362,3 @@ class Labyrinth(Game):
 			return cls(player1, p)
 		else:
 			return None
-
