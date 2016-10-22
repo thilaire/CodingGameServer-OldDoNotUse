@@ -38,7 +38,8 @@ def xshift (L,x,dx):
 regdd = compile("(\d+)\s+(\d+)")    # regex to parse a "%d %d" string
 
 def yshift (L,y,dy):
-	return L[y][-dy:] + L[y][:-dy]
+	L[y]=L[y][-dy:] + L[y][:-dy]
+	return L
 
 
 def CreateLaby(sX, sY):
@@ -294,6 +295,7 @@ class Labyrinth(Game):
 			return MOVE_OK, ""
 		else:
 			dy = -1 if move_type == ROTATE_COLUMN_UP else 1
+			self._lab=yshift(self._lab,value,dy)
 			return MOVE_OK, ""
 
 
