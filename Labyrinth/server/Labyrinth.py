@@ -24,7 +24,7 @@ from colorama import Fore
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
 from CGS.Game import Game
 from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_UP, MOVE_RIGHT, \
-	DO_NOTHING, Ddx, Ddy
+	DO_NOTHING, Ddx, Ddy, INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND, ROTATE_ENERGY
 from .DoNothingPlayer import DoNothingPlayer
 
 
@@ -176,7 +176,7 @@ class Labyrinth(Game):
 		self._playerPos.append((self.L - 1, self.H // 2))
 
 		# Level of energy
-		self._playerEnergy = [5, 5]
+		self._playerEnergy = [INITIAL_ENERGY_SECOND]*2
 
 		for x, y in self._playerPos:
 			self._lab[x][y] = True  # no wall here
@@ -185,7 +185,7 @@ class Labyrinth(Game):
 		# the players and they will immediately requires some Labyrinth's properties)
 		super().__init__(player1, player2, seed)
 
-		self._playerEnergy[self._whoPlays] = 4
+		self._playerEnergy[self._whoPlays] = INITIAL_ENERGY_FIRST
 
 	@property
 	def lab ( self ):
@@ -280,18 +280,17 @@ class Labyrinth(Game):
 		# move the player
 		if MOVE_UP <= move_type <= MOVE_RIGHT:
 			x, y = self._playerPos[self._whoPlays]
-			x += Ddx[move_type]
-			y += Ddy[move_type]
-
-			# TODO: on rajoute cette règle, ou bien on a droit de cycler ?
-			if not (0 <= x < self.L) or not (0 <= y < self.H):
-				return MOVE_LOSE, "Cannot go outside of the labyrinth"
+			x += Ddx[move_type]%self.L
+			y += Ddy[move_type]%self.H
 
 			if not self._lab[x][y]:
 				return MOVE_LOSE, "Outch! There's a wall where you want to move!"
 
 			# play the move (move the player on the lab)
 			self._playerPos[self._whoPlays] = (x, y)
+
+			#update energy
+			self._playerEnergy[self._whoPlays] += 1
 
 			# check if won
 			if (x, y) == self._treasure:
@@ -300,9 +299,12 @@ class Labyrinth(Game):
 				return MOVE_OK, ""
 
 		elif move_type == DO_NOTHING:
+			self._playerEnergy[self._whoPlays] += 1
 			return MOVE_OK, ""
 
 		elif ROTATE_LINE_LEFT <= move_type <= ROTATE_COLUMN_DOWN:
+			if self._playerEnergy[self._whoPlays] < ROTATE_ENERGY:
+				return MOVE_LOSE, "not enough energy to make a rotation"
 			# rotation
 			xm = -1  # column to move
 			ym = -1  # row to move
@@ -334,6 +336,10 @@ class Labyrinth(Game):
 					#print(tadd((x, y), (dx, dy)))
 					self._playerPos[i] = tadd((x, y), (dx, dy), (self.L,self.H))
 					#print(self._playerPos[i])
+
+			#update energy
+			self._playerEnergy[self._whoPlays] -= ROTATE_ENERGY
+
 			return MOVE_OK, ""
 
 		return MOVE_LOSE, "Rotation not yet implemented"
