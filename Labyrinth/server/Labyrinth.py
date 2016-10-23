@@ -229,7 +229,6 @@ class Labyrinth(Game):
 			lines.append("|" + " ".join(st) + "|")
 
 		# add player names
-		# TODO: add energy
 
 		#index of lines where player dispplay is add
 		iline = [self.H//2 - 2, self.H//2 +2 ]
