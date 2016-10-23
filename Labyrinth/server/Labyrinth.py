@@ -55,6 +55,7 @@ def tadd ( tuple1, tuple2, modu):
 	return tuple(map(lambda x, y, m: (x + y)%m, tuple1, tuple2, modu))
 
 
+
 def CreateLaby ( sX, sY ):
 	"""
 	Build a Labyrinth (an array of booleans: True=> empty, False=> wall)
@@ -205,6 +206,7 @@ class Labyrinth(Game):
 		# TODO: add informations about last move, etc.
 		# TODO: use unicode box-drawing characters to display the game (cf https://en.wikipedia.org/wiki/Box-drawing_character)
 
+		global br
 		lines = []
 		for y in range(self.H):
 			st = []
@@ -228,11 +230,18 @@ class Labyrinth(Game):
 
 		# add player names
 		# TODO: add energy
-		br0 = "[]" if self._whoPlays == 0 else "  "
-		br1 = "[]" if self._whoPlays == 1 else "  "
-		lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
-		lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[
-			1]
+
+		#index of lines where player dispplay is add
+		iline = [self.H//2 - 2, self.H//2 +2 ]
+		colors = [Fore.BLUE,Fore.RED]
+		for i,pl in enumerate(self._players):
+			br = "[]" if self._whoPlays == i else "  "
+			lines[iline[i]] += "\t\t" + br[0] + colors[i] + "Player "+str(i+1) + ": " + Fore.RESET + pl.name + br[1]
+			lines[iline[i]+1] += "\t\t " + "Energy:" + str(self._playerEnergy[i])
+		#br0 = "[]" if self._whoPlays == 0 else "  "
+		#br1 = "[]" if self._whoPlays == 1 else "  "
+		#lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
+		#lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
 
 		head = "+" + "-" * (2 * self.L - 1) + "+\n"
 		return head + "\n".join(lines) + "\n" + head
