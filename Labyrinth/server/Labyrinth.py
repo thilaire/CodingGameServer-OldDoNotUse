@@ -206,7 +206,6 @@ class Labyrinth(Game):
 		# TODO: add informations about last move, etc.
 		# TODO: use unicode box-drawing characters to display the game (cf https://en.wikipedia.org/wiki/Box-drawing_character)
 
-		global br
 		lines = []
 		for y in range(self.H):
 			st = []
