@@ -279,8 +279,8 @@ class Labyrinth(Game):
 		# move the player
 		if MOVE_UP <= move_type <= MOVE_RIGHT:
 			x, y = self._playerPos[self._whoPlays]
-			x += Ddx[move_type]%self.L
-			y += Ddy[move_type]%self.H
+			x = (x+Ddx[move_type])%self.L
+			y = (y+Ddy[move_type])%self.H
 
 			if not self._lab[x][y]:
 				return MOVE_LOSE, "Outch! There's a wall where you want to move!"
