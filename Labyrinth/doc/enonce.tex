@@ -14,6 +14,7 @@
 \usepackage{xcomment}
 \usepackage{array}
 \usepackage{rotating}
+\usepackage{listings}
 %\usepackage{enumitem}
 \textwidth17cm
 \textheight25cm
@@ -106,6 +107,10 @@ $\displaystyle }l<{$\end{lrbox}%
 \let\Examplebox\examplebox
 \let\endExamplebox\endexamplebox
 
+\lstset{ %
+ frame=single,	       
+ language=C,
+}        
 \makeatletter
 \renewcommand{\thesection}{\@arabic\c@section}
 \makeatother
@@ -230,7 +235,7 @@ Il vous est conseillé de :
 \end{itemize}
 
 On donne ici la strutcture général de votre programme. Les fonctions appelés et les types utilisés sont détaillés
-dans la section~\ref{sec:help}.  Les modèles de structure et les prototypes des fonctions sont décrits dans le fichier 
+dans la section~\ref{sec:api}.  Les modèles de structure et les prototypes des fonctions sont décrits dans le fichier 
 \verb|API/labyrinthAPI.h|
 Voici les différentes étapes que devra respecter votre programme pour interagir avec le serveur
 
@@ -243,17 +248,85 @@ Voici les différentes étapes que devra respecter votre programme pour interagir 
 \item Récupérer les données du labyrinthe en appelant la fonction \verb|getLabyrinth|.
 \item Répéter les actions suivantes :
 \begin{itemize}
-\item Si c'est à vous de jouer : Envoyer le votre coup en appelant la fonction \verb|sendMove|, vous récupérez le code
-retour 
+\item Si c'est à vous de jouer : Envoyer le votre coup en appelant la fonction \verb|sendMove|, vous récupérez le code \verb|ret|.
+\item Si c'est à l'adversaire de jouer : Récpérer le coup jouer par l'adversaire en appelant la fonction \verb|getMove|, vous récupérez égalelemnt le code \verb|ret|.
+\item En fonction de \verb|ret| :
+\begin{itemize}
+\item \verb|ret==MOVE_OK| : vous pouvez continuer à jouer
+\item \verb|ret==MOVE_LOSE| : vous avez perdu
+\item \verb|ret==MOVE_WIN| : vous avez gagné
 \end{itemize}
+\end{itemize}
+\item Ferme la connexion au serveur en appelant la fonction \verb|closeConnection|
 \end{enumerate}
+De plus, à tout moment, vous pouvez demander l'affiche du jeu à l'écran en appelant la fonction \verb|printLabyrinth|.
+
 \subsection{Jouer contre un autre joueur}
 
-\section{\label{sec:help}API}
+\section{\label{sec:api}API}
 
 
-\subsection{structures utilisées}
+\subsection{Les structures à utiliser}
+
+\subsubsection{La structure \texttt{t\_move}}
+Cette structure décrit un coup joué par vous ou par votre adversaire, elle utilisée dans les fonctions  \verb|sendMove| et \verb|getMove| :
+\lstinputlisting[language=C, firstline=38, lastline=50]{../API/labyrinthAPI.h}
+Par exemple :
+\begin{itemize}
+\item Une variable \verb|m| décrivant le déplacement d'une case vers la droite a pour valeurs
+
+\verb|m.type = MOVE_RIGHT| et \verb|m.value = -1| (valeur non utilisée).
+\item Une variable \verb|m| décrivant une rotation de la colonne 3 vers le haut a pour valeurs
+
+\verb|m.type = ROTATE_COLUMN_UP| et  \verb|m.value = 3|. On rappelle ici que la première colonne
+(et la première ligne) est numérotée 0.
+\end{itemize}
+
+\subsubsection{L'énumération \texttt{t\_gameType}}
+Cette énumération donne les choix de jeux possible (jouer seul ou contre un autre programme)
+Pour le moment seuls deux types de jeux sont prévus :
+\begin{itemize}
+\item \verb|DO_NOTHING_GAME| : pour jouer seul contre un adversaire qui ne fait rien.
+\item \verb|REGULAR_GAME| : pour jouer contre un autre programme
+\end{itemize}
+Dans le futur, d'autres types de jeu seront mis à disposition pour jouer seul.
+\lstinputlisting[language=C, firstline=53, lastline=62]{../API/labyrinthAPI.h}
+
+
+\subsection{Fonctions fournies}
  
+\subsubsection{\texttt{connectToServer}}
+\lstinputlisting[language=C, firstline=66, lastline=79]{../API/labyrinthAPI.h}
+Le numéro de port et le nom du serveur vous seront donné ultérieurement.
+
+
+\subsubsection{\texttt{closeConnection}}
+\lstinputlisting[language=C, firstline=83, lastline=90]{../API/labyrinthAPI.h}
+
+
+\subsubsection{\texttt{waitForLabyrinth}}
+\lstinputlisting[language=C, firstline=94, lastline=106]{../API/labyrinthAPI.h}
+Les arguments \texttt{labyrinthName}, \texttt{sizeX} et \texttt{sizeY} sont passés via des pointeurs et leurs valeurs
+seront donc données en sortie de fonction.
+
+
+\subsubsection{\texttt{getLabyrinth}}
+\lstinputlisting[language=C, firstline=110, lastline=121]{../API/labyrinthAPI.h}
+L'argument \texttt{lab} est passé via un pointeur et 
+la valeur sera donc données en sortie de fonction.
+
+
+\subsubsection{\texttt{getMove}}
+\lstinputlisting[language=C, firstline=125, lastline=137]{../API/labyrinthAPI.h}
+L'argument \texttt{move} est passé via un pointeur et 
+la valeur sera donc données en sortie de fonction.
+
+
+\subsubsection{\texttt{sendMove}}
+\lstinputlisting[language=C, firstline=141, lastline=153]{../API/labyrinthAPI.h}
+L'argument \texttt{move} est passé en entrée de la fonction
+
+
 \subsubsection{\label{sec_move}La structure de données \texttt{move}}
 La structure de données permettant de décrire un coup (\textit{move} en anglais) est imposée.
 La figure~\ref{schema_move} décrit la façon de spécifier le coup joué

@@ -37,13 +37,16 @@ typedef enum
 
 /*
 A move is a tuple (type,value):
-- type can be ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP or MOVE_DOWN
-- in case of rotation, the value indicates the number of the line (or column) to be rotated
+- type can be ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, 
+ROTATE_COLUMN_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP or MOVE_DOWN
+- in case of rotation, the value indicates the number of the line 
+(or column) to be rotated
 */
 typedef struct
 {
-	t_typeMove type;		/* type of the move */
-	int value;				/* value associated with the type (number of the line or the column to rotate) */
+	t_typeMove type; /* type of the move */
+	int value; /* value associated with the type 
+		      (number of the line or the column to rotate)*/
 } t_move;
 
 
@@ -62,12 +65,16 @@ typedef enum
 
 /* -------------------------------------
  * Initialize connection with the server
- * Quit the program if the connection to the server cannot be established
+ * Quit the program if the connection to the server 
+ * cannot be established
  *
  * Parameters:
- * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
+ * - serverName: (string) address of the server 
+ *   (it could be "localhost" if the server is run in local, 
+ *   or "pc4521.polytech.upmc.fr" if the server runs there)
  * - port: (int) port number used for the connection
- * - name: (string) name of the bot : max 20 characters (checked by the server)
+ * - name: (string) name of the bot : max 20 characters 
+ *         (checked by the server)
  */
 void connectToServer( char* serverName, int port, char* name);
 
@@ -88,11 +95,15 @@ void closeConnection();
  * Wait for a labyrinth, and retrieve its name and size
  *
  * Parameters:
- * - gameType: type of the game the player is waiting for (0: regular game, 1: play against do_nothing player, etc.)
- * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
+ * - gameType: type of the game the player is waiting for 
+ * - labyrinthName: string (max 50 characters), corresponds 
+ *   to the labyrinth name
  * - sizeX, sizeY: sizes of the labyrinth
  */
-void waitForLabyrinth( t_gameType gameType, char* labyrinthName, int* sizeX, int* sizeY);
+void waitForLabyrinth( t_gameType gameType, 
+		       char* labyrinthName, 
+		       int* sizeX, 
+		       int* sizeY);
 
 
 
@@ -102,7 +113,8 @@ void waitForLabyrinth( t_gameType gameType, char* labyrinthName, int* sizeX, int
  * 1 if there's a wall, 0 for nothing
  *
  * Parameters:
- * - lab: the array of labyrinth (the pointer data MUST HAVE allocated with the right size !!
+ * - lab: the array of labyrinth 
+ *   (the pointer data MUST HAVE allocated with the right size !!)
  *
  * Returns 0 if you begin, or 1 if the opponent begins
  */
@@ -116,8 +128,11 @@ int getLabyrinth( char* lab);
  * Parameters:
  * - move: a move
  *
- * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move)
- * this code is relative to the opponent (+1 if HE wins, ...)
+ * Returns a return_code 
+ * MOVE_OK for normal move, 
+ * MOVE_WIN for a winning move, -1 
+ * MOVE_LOSE for a losing (or illegal) move
+ * this code is relative to the opponent (MOVE_WIN if HE wins, ...)
  */
 t_return_code getMove( t_move* move );
 
@@ -129,7 +144,11 @@ t_return_code getMove( t_move* move );
  * Parameters:
  * - move: a move
  *
- * Returns a return_code (0 for normal move, 1 for a winning move, -1 for a losing (or illegal) move
+ * Returns a return_code 
+ * MOVE_OK for normal move, 
+ * MOVE_WIN for a winning move, -1 
+ * MOVE_LOSE for a losing (or illegal) move
+ * this code is relative to your programm (MOVE_WIN if YOU win, ...)
  */
 t_return_code sendMove( t_move move );
 
