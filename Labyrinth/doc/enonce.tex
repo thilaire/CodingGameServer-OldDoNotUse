@@ -1,0 +1,626 @@
+\documentclass[french,12pt,a4paper,twoside,openright,titlepage]{report}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[latin1]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+%\usepackage{here}
+\usepackage{hyperref}
+\usepackage{ifthen}
+\usepackage{xcomment}
+\usepackage{array}
+\usepackage{rotating}
+%\usepackage{enumitem}
+\textwidth17cm
+\textheight25cm
+%\oddsidemargin-1cm
+%\parskip0.2pt
+\voffset-2cm
+\hoffset-1cm
+\headsep0.5cm
+\topmargin0.5cm
+\oddsidemargin0.5cm
+\evensidemargin0.5cm
+
+\makeatletter
+\@addtoreset{section}{part}
+\makeatother
+\newlength{\mylength}
+\newcounter{exo}\stepcounter{exo}
+\newcounter{step}\stepcounter{step}
+\newcommand\exercice{
+\subsubsection*{Exercice \theexo\stepcounter{exo}}
+%{\bf Exercice \theexo\stepcounter{exo}\\}
+}
+\newcommand\etape[1]{
+\subsection*{Etape \thestep \stepcounter{step} : {#1}}
+}
+ 
+\RequirePackage{layout,color}
+
+\definecolor{gray50}{gray}{.5}
+\definecolor{gray40}{gray}{.6}
+\definecolor{gray30}{gray}{.7}
+\definecolor{gray20}{gray}{.8}
+\definecolor{gray10}{gray}{.9}
+\definecolor{gray05}{gray}{.95}
+
+\newsavebox{\laboiboite}
+\newlength{\longdelaboiboite}
+\newlength{\deptdelaboiboite}
+\newlength{\hautdelaboiboite}
+\newcolumntype{R}{>{\begin{lrbox}{\laboiboite} 
+$\displaystyle }r<{$\end{lrbox}%
+    \settowidth{\longdelaboiboite}{\usebox{\laboiboite}}%
+    \settoheight{\hautdelaboiboite}{\usebox{\laboiboite}}%
+    \settodepth{\deptdelaboiboite}{\usebox{\laboiboite}}%
+    \addtolength{\hautdelaboiboite}{\deptdelaboiboite}%
+    \addtolength{\hautdelaboiboite}{2ex}%
+    \parbox[c][\hautdelaboiboite][c]{0cm}{} \makebox[\width]
+{\usebox{\laboiboite}}}}
+\newcolumntype{C}{>{\begin{lrbox}{\laboiboite} 
+$\displaystyle }c<{$\end{lrbox}%
+    \settowidth{\longdelaboiboite}{\usebox{\laboiboite}}%
+    \settoheight{\hautdelaboiboite}{\usebox{\laboiboite}}%
+    \settodepth{\deptdelaboiboite}{\usebox{\laboiboite}}%
+    \addtolength{\hautdelaboiboite}{\deptdelaboiboite}%
+    \addtolength{\hautdelaboiboite}{2ex}%
+    \parbox[c][\hautdelaboiboite][c]{0cm}{} \makebox[\width]
+{\usebox{\laboiboite}}}}
+\newcolumntype{L}{>{\begin{lrbox}{\laboiboite} 
+$\displaystyle }l<{$\end{lrbox}%
+    \settowidth{\longdelaboiboite}{\usebox{\laboiboite}}%
+    \settoheight{\hautdelaboiboite}{\usebox{\laboiboite}}%
+    \settodepth{\deptdelaboiboite}{\usebox{\laboiboite}}%
+    \addtolength{\hautdelaboiboite}{\deptdelaboiboite}%
+    \addtolength{\hautdelaboiboite}{2ex}%
+    \parbox[c][\hautdelaboiboite][c]{0cm}{} \makebox[\width]
+{\usebox{\laboiboite}}}}
+
+\newcolumntype{S}{>{\begin{lrbox}{\laboiboite}}r<{\end{lrbox}%
+    \mbox{\usebox{\laboiboite}}}}
+\newcolumntype{D}{>{\begin{lrbox}{\laboiboite}}c<{\end{lrbox}%
+    \mbox{\usebox{\laboiboite}}}}
+\newcolumntype{M}{>{\begin{lrbox}{\laboiboite}}l<{\end{lrbox}%
+    \mbox{\usebox{\laboiboite}}}}
+\newlength\Linewidth
+\def\findlength{\setlength\Linewidth\linewidth
+\addtolength\Linewidth{-4\fboxrule}
+\addtolength\Linewidth{-3\fboxsep}
+}
+\newenvironment{examplebox}{\par\begingroup%
+   \setlength{\fboxsep}{5pt}\findlength%
+   \setbox0=\vbox\bgroup\noindent%
+   \hsize=\Linewidth%
+   \begin{minipage}{\Linewidth}\small}%
+    {\end{minipage}\egroup%
+    \vspace{6pt}%
+    \noindent\textcolor{gray20}{\fboxsep2.5pt\fbox%
+     {\fboxsep5pt\colorbox{gray05}{\normalcolor\box0}}}%
+    \endgroup\par\addvspace{6pt minus 3pt}\noindent%
+    \normalcolor\ignorespacesafterend}
+\let\Examplebox\examplebox
+\let\endExamplebox\endexamplebox
+
+\makeatletter
+\renewcommand{\thesection}{\@arabic\c@section}
+\makeatother
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newboolean{sol}
+%\setboolean{sol}{true}
+\setboolean{sol}{false}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%M
+\ifthenelse{\boolean{sol}}
+{
+\newenvironment{solution}
+{
+\begin{examplebox}
+\begin{center}
+\begin{tabular}{m{0.5cm}|m{15cm}|}\cline{2-2}
+%\begin{turn}{90}{Solution}\end{turn}&
+\rotatebox{90}{Solution}&
+\begin{minipage}[H]{\linewidth}
+\vspace{0.2cm}
+}
+{
+\vspace{0.2cm}
+\end{minipage}
+\\\cline{2-2}
+\end{tabular}
+\end{center}
+\end{examplebox}
+}
+}
+{
+\newxcomment[]{solution}
+}
+
+
+\newcommand{\ROBorMAIN}{ROB}%set to MAIN or to ROB
+\newcommand{\ROBMAIN}[2]{\ifthenelse{\equal{\ROBorMAIN}{ROB}}{#1}{#2}}
+
+
+
+
+\begin{document}
+
+\lhead[ROB3/MAIN3]{ROB3/MAIN3}
+\chead[]{}
+\rhead[Informatique général]{}
+ 
+\ifthenelse{\boolean{sol}}
+{
+\lfoot[Polytech'Paris-UPMC 2016-2016 (version enseignants)]{Polytech'Paris-UPMC 2016-2017 (version enseignants)}
+
+}
+{
+\lfoot[Polytech'Paris-UPMC 2016-2017 (version \'etudiants)]{Polytech'Paris-UPMC 2016-2017 (version \'etudiants)}
+}
+
+\cfoot[]{}
+\rfoot[\thepage]{\thepage}
+
+
+
+
+\pagestyle{fancyplain}
+%%%%%%%%%%%%
+
+ %\addcontentsline{toc}{chapter}{S\'erie 1 : Conception d'algorithmes}
+ %\chapter{Conception d'algorithmes}
+ %\addcontentsline{toc}{chapter}{S\'erie 1 : Conception d'algorithmes}
+
+\chapter*{Mini-Projet : Labyrinthe}
+
+L'objectif du projet est de programmer un jeu de Labyrinthe de façon à ce que votre programme puisse jouer une partie avec les programmes des autres étudiants.
+
+\section{Organisation générale du projet}
+
+Ce projet se déroulera en binôme (ou trinome). Le choix des binomes est libre. La soutenance du projet aura lieu en deux temps : 
+\begin{itemize}
+\item une soutenance orale de 15 minutes (avec supports Power-Point\ROBMAIN{}{ ou Beamer/\LaTeX}) le \textbf{15 Décembre 2015}
+\item un tournoi de Pipopipette entre les binomes le \textbf{5 Janvier 2015}. Le gagnant du tournoi aura l'honneur de rencontrer un programme réalisé par un enseignant et invaincu (par définition) jusqu'à aujourd'hui. Les modalités détaillées de la soutenance seront précisées début décembre. Il est également prévu que le tournoi soit commun avec la spécialité \ROBMAIN{MAIN}{ROB}.
+\end{itemize}
+
+\subsection{Déroulement du projet}
+Le projet se déroulera à partir du 24 Novembre. \ROBMAIN{Vous bénéficierez de 3 séances de TP encadrées pour la réalisation de ce projet. L'encadrant de TP aura le rôle de chef de projet. C'est donc lui qui vous conseillera et vous guidera pour les étapes importantes, et c'est aussi lui qui validera la réalisation de chacune des étapes du projet.}{Vous disposerez d'un peu plus d'un mois pour réaliser ce projet. Il n'y a pas de séances prévues pour l'encadrement, mais les enseignants seront disponibles pour répondre à toutes vos questions et vous aider.}
+
+\subsection{Assistance}
+À tout moment il vous est possible de poser une question sur la plateforme Piazza dédiée à l'adresse suivante :
+\begin{center}
+\url{http://piazza.com/upmc.fr/winter2016/pipopipette/home}
+\end{center}
+Vous allez très rapidement recevoir un email pour vous y inscrire.\\
+Cette plateforme permet à chacun de poser des questions sur un forum dédié au projet. Cela vous permettra de poser vos questions \ROBMAIN{en dehors des séances de TP encadrées}{à tout moment} et d'obtenir des conseils ou de l'aide. Vous pouvez aussi utiliser ce forum entre vous pour vous aider (vous aider et non pas sous-traiter votre code!). N'hésitez pas à l'utiliser !
+
+
+\subsection{Évaluation}
+Le projet sera évalué sur les critères suivants : 
+\begin{itemize}
+\item La soutenance orale.
+\item La qualité du programme finale (bugs, fonctionnalités codées, etc.).
+\item La place au tournoi de Labyrinthe.
+\end{itemize}
+
+\section{Règles du jeu}
+
+\section{Structure du programme}
+Votre programme labyrinthe devra se connecter à un serveur de jeu qui a deux rôles :
+\begin{enumerate}
+\item Mettre en relation des programmes afin de les faire jouer entre eux
+\item Vérifier la validité des coups joués et déclarer le joueur gagnant
+\end{enumerate}
+
+\subsection{Fichiers fournis}
+Tous les fichiers qui vous sont fournis dans le cadre de ce projet sont disponible sur le serveur de Polytech
+à l'emplacement \verb|~brajard/Public/ROB/| ou sur Sakai dans le dossier projet (fichier compressé)
+Il vous est conseillé de :
+\begin{itemize}
+\item Copier sur votre compter les templates fournis que vous pourrez modifier (tous le contenu du répertoire \verb|src|)
+\item Garder les chemins vers les \textit{header} et \textit{bibliothèques}.
+\end{itemize}
+
+On donne ici la strutcture général de votre programme. Les fonctions appelés et les types utilisés sont détaillés
+dans la section~\ref{sec:help}.  Les modèles de structure et les prototypes des fonctions sont décrits dans le fichier 
+\verb|API/labyrinthAPI.h|
+Voici les différentes étapes que devra respecter votre programme pour interagir avec le serveur
+
+\subsection{Jouer seul contre un programme par défaut}
+\begin{enumerate}
+\item Se connecter au server en appelant la fonction \verb|connectToServer|
+\item Demander un Labyrinth en appelant la fonction \verb|waitForLabyrinth| avec l'option 
+
+\texttt{DO\_NOTHING\_GAME}. D'autres adversaires par défaut seront disponibles en cours de projet.
+\item Récupérer les données du labyrinthe en appelant la fonction \verb|getLabyrinth|.
+\item Répéter les actions suivantes :
+\begin{itemize}
+\item Si c'est à vous de jouer : Envoyer le votre coup en appelant la fonction \verb|sendMove|, vous récupérez le code
+retour 
+\end{itemize}
+\end{enumerate}
+\subsection{Jouer contre un autre joueur}
+
+\section{\label{sec:help}API}
+
+
+\subsection{structures utilisées}
+ 
+\subsubsection{\label{sec_move}La structure de données \texttt{move}}
+La structure de données permettant de décrire un coup (\textit{move} en anglais) est imposée.
+La figure~\ref{schema_move} décrit la façon de spécifier le coup joué
+par un joueur. 
+
+On précise d'une part les coordonnées de la case
+concernée par le coup (coordonnées $(x,y)$ définies comme sur la figure
+(la première case en haut à gauche est la case de coordonnées $(0,0)$.
+D'autre part on précise quelle ligne on souhaite tracer, qui peut être
+la ligne au \emph{nord} de la case (en haut), à l'\emph{ouest} de la case (à
+gauche), au \emph{sud} de la case (en base) ou à l'\emph{est} de la case (à
+droite) selon les notations de la figure ~\ref{schema_move}.
+
+\begin{figure}[h]
+\centering
+%\includegraphics[]{./schema_move.pdf}
+\caption{\label{schema_move} Schéma décrivant comment spécifier un coup
+  de coordonnées $(x,y)$ ainsi que la notation pour définir la ligne correpondante.}
+\end{figure}
+
+Ainsi, pour jouer le coup correspondant à la ligne rouge de la
+figure~\ref{exemple_move}, on déclarera une variable (par exemple
+\verb|m|) de type \verb|move| définie de la façon suivante :
+
+\begin{verbatim}
+move m;
+m.x = 2 ;
+m.y = 0 ;
+m.d = E ;
+\end{verbatim}
+
+\begin{figure}[h]
+\centering
+%\includegraphics[]{./exemple_move.png}
+\caption{\label{exemple_move}Exemple d'un coup joué sur la case $(2,0)$, côté Est.}
+\end{figure}
+
+Notez qu'un coup n'est pas défini de façon unique car on aurait pu
+écrire de façon équivalente :
+\begin{verbatim}
+move m;
+m.x = 3 ;
+m.y = 0 ;
+m.d = W ;
+\end{verbatim}
+
+\subsubsection{\label{sec_mod}La structure de données \texttt{modcode}}
+Cette structure de donnée sert à l'arbitre (voir la section~\ref{sec_arbitre}) à vous communiquer la prochaine phase de jeu.
+En effet, au cours du jeu, vous pouvez être amené à :
+\begin{itemize}
+\item jouer un coup (éventuellement plusieurs fois de suite
+si vous capturez un carré) ;
+\item prendre en compte un coup de votre adversaire (là aussi, éventuellement
+plusieurs fois si votre adversaire capture un carré) ;
+\item constater la fin de la partie.
+\end{itemize}
+Pour indiquer à votre programme quelle information il doit, soit recevoir,
+soit envoyer à l'arbitre, l'arbitre vous envoie une information de type \verb|modcode| qui décrit quelle sera 
+la prochaine phase de jeu. Dans la suite, on appelle cela le mode du jeu, et le déroulement d'une partie est décrit
+plus précisémment en section~\ref{sec_phases}
+
+\subsubsection{La chaîne de caractère \texttt{Nom}}
+Votre programme devra porter un nom. Ce nom ne pourra excéder 98 caractères et sera contenu dans un tableau de caractères nommé \verb|Nom|.
+
+
+\subsubsection{Les autres variables}
+Les autres variables obligatoirement utilisées dans ce projet le seront dans le cadre des bibliothèques mises à votre disposition qui sont décrites dans la section~\ref{sec_outils}.
+
+\subsection{Le programme arbitre}
+\label{sec_arbitre}
+A la fin du projet, le but est de faire rencontrer plusieurs programmes. Les deux programmes opposants se rencontreront à travers un programme noté \texttt{arbitre} qui gèrera la rencontre. Il recevra les coups (de type \verb|move|) que vous lui envoyez, il les verifiera, et vous renverra les coups joués par votre concurrent.
+C'est lui aussi qui vous signifiera si vous avez perdu ou gagné.
+
+Pour tester votre programme vous pouvez utilisez le programme arbitre comme bon vous semble. L'exécutable \verb|arbitre| se trouve dans le répertoire \verb|~brajard/Public/ROB/bin| sur le réseau de l'école. Bien entendu, vous ne disposez pas du code source de ce programme. 
+
+D'un point de vue pratique, ce programme est un serveur, et les communications se gèreront par l'utilisation de sockets. Les interfaces réseaux ne sont pas abordées dans ce projet, une bibliothèque nommée \texttt{pipocom} est mise à votre disposition et vous permettra de réaliser toutes les communications de base avec l'arbitre, 
+vous n'aurez pas de code spécifique à produire.
+
+
+
+\subsection{Phases du jeu}
+\label{sec_phases}
+
+Pour faire jouer deux programmes l'un contre l'autre, la procédure à suivre est la suivante.
+\begin{enumerate}
+\item Ouvrir 3 terminaux sur la même machine.
+\item Dans le premier terminal, lancer le programme \verb|arbitre|.
+\item Dans le deuxième terminal, lancer le programme du joueur 1.
+\item Dans le troisième terminal, lancer le programme du joueur 2.
+\item Attendre que le jeu se déroule en observant l'évolution de la partie dans le premier terminal.
+\item A la fin du jeu, féliciter le binome qui a programmé le programme gagnant.
+\end{enumerate}
+
+Maintenant,  voici la description des phases du jeu que doit absolument respecter votre programme. Les fonctions de la bibliothèque \texttt{pipocom.h} à utiliser sont précisées à chaque étape.
+\begin{enumerate}
+\item Initialisation
+
+Déclaration et initialisation des variables.
+
+\item Connection au programme arbitre
+
+Appel de la fonction \verb|c_init_connect|.
+
+\item Authentification : envoi de votre nom à l'arbitre
+
+Appel de la fonction \verb|c_envoie_nom|.
+
+\item Affectation du joueur : L'arbitre vous envoie l'information permettant de savoir si vous êtes le
+joueur A ou B.
+
+Appel de la fonction \verb|c_receive_num|.
+ \newcounter{enumTemp}
+    \setcounter{enumTemp}{\theenumi}
+\end{enumerate}
+BOUCLE WHILE
+\begin{enumerate}
+\setcounter{enumi}{\theenumTemp}
+\item Réception du mode de jeu. L'arbitre vous envoie une variable de type \verb|modcode| qui vous indique
+dans quel mode de jeu vous vous situez, c'est-à-dire, l'action prochaine attendue de vous.
+ 
+Appel de la fonction \verb|c_receive_mode|. La fonction met en pause le programme en attendant 
+que l'arbitre envoie le prochain mode noté \verb|m|.
+\begin{itemize}
+\item \textbf{CAS 1 : } \verb|m == RCV|, l'arbitre va vous envoyer un nouveau coup (variable
+de type \verb|move|) joué par votre adversaire.\\
+Vous devez alors réceptionner cette variable en sortie de la fonction \verb|c_receive_mv|.
+
+\item \textbf{CAS 2 : }\verb|m == SND|, l'arbitre va réceptionner le
+  coup que vous devez jouer.\\
+Vous devez envoyer une variable de type \verb|move| représentant le
+coup que vous jouez à l'aide de la fonction \verb|c_envoie_move|.
+\textbf{Attention :} l'arbitre mesure le temps, si votre réponse arrive à
+l'arbitre en plus de la variable indiquée dans la constante
+\verb|LIM_TIME|, vous avez perdu.
+De même si le coup envoyé est non valide, vous avez perdu.
+
+\item \textbf{CAS 3 : } \verb|m == FIN|, la rencontre est fini et
+  l'arbitre s'apprête à vous envoyer le résultat à l'aide de la
+  fonction \verb|c_receive_result|\\
+Vous devez sortir de la boucle WHILE.
+\end{itemize}
+
+\setcounter{enumTemp}{\theenumi}
+\end{enumerate}
+ENDWHILE
+\begin{enumerate}
+\setcounter{enumi}{\theenumTemp}
+\item Affichage du résultat
+\end{enumerate}
+
+\subsection{Outils à disposition}
+\label{sec_outils}
+
+Pour la réalisation de ce projet, plusieurs outils sont mis à votre disposition. Ils sont accessibles sur le réseau de Polytech' dans le répertoire \verb|~brajard/Public/ROB/|. N'hésitez pas explorer ce répertoire. Vous y trouverez notamment les sous-répertoires suivants :
+\begin{itemize}
+\item \verb|bin| : Contient les exécutables que vous pouvez utilisez pour vous aider dans votre projet : le programme \verb|arbitre| décrit dans la section~\ref{sec_arbitre} et un programme simple qui joue à la pipolette : \verb|babypipo| décrite dans la section~\ref{sec_robslayer}
+\item \verb|doc| : Contient les document pdf pour le projet (identique à ceux présents sur Sakai).
+\item \verb|include| : Contient les \textit{header} des bibliothèque
+  \verb|pipocom.h|  et \verb|common.h| que vous devez utiliser dans votre programme. 
+Il est conseiller de lire en détail le contenu de \verb|common.h| et
+\verb|pipocom.h| qui contient le détail des constantes, types de
+données et fonctions de la bibliothèque.
+\item \verb|lib| : Contient les bibliothèques compilées. Ce répertoire est indispensable pour que vous puissiez faire l'édition des liens, il contient du code binaire qu'il est inutile de lire.
+\item \verb|template| : Contient un exemple de programme et de \verb|Makefile| qui peut vous servir de base pour votre propre programme.
+\item \verb|src| : Contient les sources utilisées pour le développement de tous les outils. Vous n'y aurez bien sûr pas accès.
+\end{itemize}
+
+\subsubsection{Le header \texttt{common.h}}
+Le fichier \verb|common.h| contient les déclarations et constantes utiles à votre programme et à la communication avec l'arbitre
+en particulier la structure \verb|move| déjà décrite dans la section~\ref{sec_move}, la structure \verb|modcode| décrite en section~\ref{sec_mod}
+et dont l'utilisation est explicitée en section~\ref{sec_phases}. Des constantes sont aussi définies :
+\begin{itemize}
+\item \verb|NX| et \verb|NY| décrivent la taille de la grille de jeu. Attention à ce que votre programme continue de fonctionner si les valeurs de 
+ces constantes changent.
+\item \verb|LIM_TIME| est le temps limite (strict) que vous avez pour jouer (en seconde).
+\end{itemize}
+
+\subsubsection{La bibliothèque \texttt{pipocom.h}}
+La bibliothèque \verb|pipocom.h| contient les fonctions nécessaires à la communication avec le programme arbitre. Les fonctions à utiliser sont mentionnées dans la section sur les phases du jeu (section~\ref{sec_phases}). 
+Les prototypes des fonctions sont commentés dans l'header correspondant : \verb|~brajard/Public/ROB/include/pipocom.h|. 
+
+Pour utiliser cette bibliothèque, il faut rajouter donc l'option \verb|-I ~brajard/Public/ROB/include/| lors de la compilation et l'option \verb|-L ~brajard/Public/ROB/lib -lpipocom| lors de l'édition des liens.
+
+Enfin, vous devez écrire les lignes suivantes au début de votre code :
+\begin{verbatim}
+#include <common.h>
+#include <pipocom.h>
+\end{verbatim}
+ 
+au début du \texttt{main} (pour initialiser la communication):
+\begin{verbatim}
+int sd=-1;
+sd=c_init_socket();
+\end{verbatim}
+
+à la fin du \texttt{main} (pour fermer la comunication) : 
+\begin{verbatim}
+c_clean_socket(sd,-1,-1);
+\end{verbatim}
+
+
+
+\subsubsection{Le template}
+Vous trouverez dans le répertoire \verb|~brajard/Public/template| un code source \verb|main.c| et un fichier \verb|makefile| pouvant vous servir de base à votre projet. Pour utiliser ces fichiers, il faut les copier dans votre répertoire personnel (commande linux \verb|cp -r|).
+Ensuite vous compilez le projet avec la commande \verb|make| puis, vous pouvez l'exécuter avec la commande \verb|./main|.
+
+Ce programme peut servir de base à votre projet. Vous pourrez compléter le \verb|makefile| avec vos propres modules et compléter le \verb|main| pour tester les différentes étapes du projet. 
+
+\subsubsection{Babypipo}
+\label{sec_robslayer}
+Normalement, à un moment de votre projet, vous aurez envie de tester votre programme. Vous pouvez bien sûr faire jouer votre programme contre lui-même. Mais il vous est également possible de faire jouer votre programme contre \texttt{babypipo} qui est joue très aléatoirement à la pipopipette.
+Pour voir le déroulement d'une rencontre entre deux programmes, vous pouvez également tenter de faire jouer \texttt{babypipo} contre lui-même. 
+Pour cela, il faut suivre la procédure indiquée dans la section sur les phases du jeu (section~\ref{sec_phases}). 
+Il vous est même conseillé de faire ce test avant de commencer tout codage.
+Notez que \texttt{babypipo} va évoluer pendant la durée du projet. Il vous est conseillé de ne pas le copier 
+dans votre propre répertoire.
+
+
+
+\section{Etapes à valider}
+\label{sec_etape}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\etape{Le jeu de base}
+\textbf{But} : Programmer les structures et fonctions de base du
+programme permettant de jouer "à la main"\\
+
+\textbf{Description de cette étape} : A chaque phase de jeu, votre
+programme devra être à même de faire évoluer la grille de jeu en fonction des coups
+joués.
+
+Dans cette étape, vous devez créer un jeu minimum, avec un affichage très
+simple, qui permet d'indiquer un coup "à la main" à l'aide de
+\verb|scanf|, de transformer ce coup en une variable de type
+\verb|move| et ensuite d'interpréter cette variable pour remplir une
+grille de jeu qui sera une structure (probablement à base de tableau)
+que vous devrez définir. 
+Votre programme devra également compter combien de carrés sont
+capturés par le joueur A ou le joueur B.
+
+Enfin, n'oubliez pas que si un joueur prend possession d'un carré lors
+d'un coup, il peut rejouer.
+
+
+\textbf{Conseil pour cette étape} : Ne vous lancez pas tout de suite
+dans le code. Prenez le temps de visiter le répertoire
+\verb|~brajard/Public/ROB/| et de comprendre les structures de
+données proposées.
+
+L'essentiel de cette étape est de définir un modèle de structure
+représentant la grille de jeu et les fonctions d'affichage et de
+remplissage qui y seront associées.
+
+\textbf{Validation de l'étape} : Cette étape sera validée \ROBMAIN{par le chef
+de projet}{} lorsque vous aurez dans des fichiers séparés (header + code
+source \verb|.c|) un programme permettant :
+\begin{itemize}
+\item de jouer à la main joueur contre joueur
+\item de vérifier la correction des coups joués par chaque joueur
+(la sécurisation du \verb|scanf| n'est pas importante ici)
+\item d'afficher la grille de jeu et suivre son évolution
+\item de déterminant lorsqu'un joueur est gagnant 
+\end{itemize}
+
+
+\textbf{Rappel : }Votre programme doit fonctionner seul, il ne s'agit
+pas ici d'interagir avec l'arbitre.
+Votre programme doit \textbf{obligatoirement} utiliser les structures
+de données et constantes définies dans \verb|common.h| en particulier
+le type de données \verb|move| (votre programme peut utiliser en interne n'importe quelle représentation pour la grille de jeu).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\etape{L'arbre des coups posssibles}
+\textbf{But} : programmer les fonctions permettant de renvoyer l'ensemble des coups possibles à partir
+d'une position donnée.. \\
+
+\textbf{Description de cette étape} : Dans le cours du jeu, à partir
+d'une position donné, votre programme devra lister les coups possibles,
+et pour chacun de ces coups possibles, les coups suivants possibles.
+La structure sous-jacente est donc une structure d'arbre. La racine de
+l'arbre est donc une position initiale de jeu, l'ensemble des fils de
+la racine représentent l'ensemble des coups possibles pour un joueur
+donné.
+
+Dans cet étape, vous devrez programmer des fonctions permettant de
+faire la liste des coups possibles à partir d'une position donnée.
+
+
+\textbf{Conseil pour cette étape} :N'oubliez pas que si cette position initiale correspond à la capture
+d'un carré, il n'y a pas de coup suivant possible. 
+représenter éventuellement par un coup avec une orientation qui a pour
+valeur \verb|none| prévue dans la structure de donnnée \verb|coup|
+
+Par exemple, si le
+joueur A capture un carré, le joueur B n'aura pas de coup suivant
+possible (un seul fils avec un coup qui a une orientation
+\verb|none|. Ce noeud fils correspond lui-même à un position donnée
+pour laquelle il faut lister l'ensemble des coups possibles pour le
+joueur A.
+
+\textbf{Validation de cette étape} : Cette étape sera validée \ROBMAIN{par le
+chef de projet} lorsque vos fonctions permettront de lister les coups
+possibles à partir de quelques positions données\ROBMAIN{ définies par le chef de
+projet}. Il faut que le cas où un joueur doit rejouer soit pris en
+compte et que votre programme marche à la fois pour le joueur A ou B.\\
+
+\textbf{Optimisation} : Vous aurez sans doute besoin de revenir plusieurs fois sur cette étape pour rajouter des fonctionnalités que vous n'aviez pas prévues au début, cela fait partie du processus normal de programmation.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\etape{L'intelligence du jeu}
+
+\textbf{But} : Programmer les fonctions permettant, à partir de n'importe quelle situation de jeu, de renvoyer le meilleur coup possible. \\
+
+\textbf{Description de cette étape} : Le principe de cette étape est le suivant :
+\begin{enumerate}
+\item Créer un arbre dont la racine est la position actuelle, les fils sont les coups possibles, les fils des fils sont les réponses possibles de l'adversaire, les fils des fils des fils, les réponses possibles, etc. La profondeur de l'arbre sera fixée en début d'algorithme.
+\item Chaque noeud de l'arbre sera évalué. L'évaluation donne la qualité de la position correspondant au coup joué. Si le noeud est une feuille, il faut créer une fonction évaluation qui donne la valeur a priori d'une position quelconque. Si le noeud n'est pas une feuille, il prendra la valeur du plus grand de ses fils 
+si c'est au joueur courant de jouer (on considère que le joueur choisit le coup qui l'arrange le plus), il prendra la valeur du plus petit de ses fils si c'est à l'adversaire de jouer (on considère que l'adversaire choisit le coup qui arrange le moins le joueur courant).
+Cet algorithme, appelé algorithme \textit{minimax}, est détaillé par exemple sur \url{http://fr.wikipedia.org/wiki/Algorithme_minimax}.
+\item L'algorithme renvoie la position qui correspond à la meilleure évaluation.
+\end{enumerate}
+
+\textbf{Conseil pour cette étape} : Il s'agit de l'étape clé de ce projet. Prenez bien le temps de prévoir le prototype des fonctions avant de les coder. 
+Pensez à utiliser des fonctions récursives. 
+L'algorithme \textit{Negamax} est un cas particulier du \textit{minimax}, il est conseillé de l'utiliser (voir la page Wikipedia). Il est demandé que votre algorithme réponde en moins de 10 secondes, faites des essais pour savoir quelle profondeur d'arbre vous garantit de répondre dans les temps. Enfin, dès que vous avez une version qui fonctionne, n'oubliez pas de la sauvegarder avant de tester des améliorations.\\
+
+\textbf{Validation de cette étape} : L'étape sera validée \ROBMAIN{par le chef de projet} à partir du moment où votre algorithme donnera une réponse dans les temps, quelle que soit la qualité de cette réponse.\\
+
+\textbf{Optimisation} : Il existe beaucoup d'optimisations possibles pour cet algorithme, en voici certaines :
+\begin{itemize}
+\item Un point très important de l'énoncé est l'évaluation des feuilles de l'arbre. Prenez du temps pour avoir une évaluation la plus précise possible de la qualité d'une position donnée. Il existe beaucoup d'idées sur internet.
+\item Il existe un algorithme d'optimisation classique qui permet de ne pas explorer toutes les possibilités et ainsi d'évaluer des arbres plus profonds : \textit{l'élagage alpha-beta} \footnote{\texttt{http://fr.wikipedia.org/wiki/\%C3\%89lagage\_alpha-beta}}. 
+Cet algorithme vous permettra d'aller beaucoup plus loin dans la profondeur de votre arbre.
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\etape{L'interface avec l'arbitre}
+\textbf{But} : Permettre de jouer contre un autre programme \\
+
+\textbf{Description de cette étape} : Il s'agit maintenant de coder le programme principal de votre projet. Vous utiliserez la bibliothèque \texttt{pipocom} qui vous fournira les fonctions à intégrer dans votre programme pour respecter les différentes étapes du jeu.\\
+
+\textbf{Conseil pour cette étape} : Il n'y a pas de difficulté particulière pour cette étape, mais elle permettra peut-être de révéler des erreurs commises à des étapes précédentes. 
+Soyez rigoureux sur les différentes procédures à suivre (prototype des fonctions, ordre des différentes étapes).\\
+
+\textbf{Validation de cette étape} : L'étape sera validée \ROBMAIN{par le chef de projet} si vous arrivez à jouer une partie contre vous même (on lancera deux fois le même exécutable).\\
+
+\textbf{Optimisation} : Vous pouvez améliorer la qualité des commentaires de ce code qui est en quelque sorte, la "vitrine" de votre code. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\etape{Optimisation et débuggage}
+\textbf{But} : Corriger toutes les erreurs qui restent à corriger \\
+
+\textbf{Description de cette étape} : Cette étape est là pour vous rappeler qu'il faut garder du temps pour corriger les erreurs inévitables dans votre code.\\
+
+\textbf{Conseil pour cette étape} : Utilisez un débuggeur : \texttt{gdb} ou \texttt{ddd}.\\
+
+\textbf{Validation de cette étape} : Cette étape sera validée le jour de la soutenance.\\
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
