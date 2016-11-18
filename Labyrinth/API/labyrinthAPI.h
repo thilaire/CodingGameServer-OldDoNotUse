@@ -19,7 +19,7 @@ File: labyrinthAPI.h
 
 #ifndef __API_CLIENT_LABYRINTH__
 #define __API_CLIENT_LABYRINTH__
-#include "GameAPI.h"
+#include "ret_type.h"
 /* TODO: enlever l'inclusion de GameAPI.h, puisque ce truc est interne... il faudra (je ne vois pas comment faire autrement) recopier le t_return_code ici... */
 typedef enum
 {

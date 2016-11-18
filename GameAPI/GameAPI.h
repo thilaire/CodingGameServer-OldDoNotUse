@@ -28,15 +28,7 @@ TODO: explain...
 
 #include <stdio.h>
 
-
-//TODO: le nom des constantes n'est pas terrible...
-typedef enum
-{
-	MOVE_OK = 0,
-	MOVE_WIN = 1,
-	MOVE_LOSE = -1
-} t_return_code;
-
+#include "ret_type.h"
 
 
 /* Display Error message and exit

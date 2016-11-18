@@ -11,7 +11,7 @@ set(SRC_BABYLABY src/mainbaby.c)
 set(SRC_Q1 src/Q1.c)
 
 set(SRC_API API/labyrinthAPI.h API/labyrinthAPI.c)
-set(GAME_API ../GameAPI/GameAPI.h ../GameAPI/GameAPI.c)
+set(GAME_API ../GameAPI/GameAPI.h ../GameAPI/ret_type.h ../GameAPI/GameAPI.c)
 
 set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
