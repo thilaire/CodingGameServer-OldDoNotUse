@@ -29,7 +29,7 @@ Now the client can send any of the following command (until the end of the game)
     5b) Server acknowledges (send "OK") if it's the opponent's turn to play
     5c) Server waits the opponent's last move (synchronize the two clients)
     5d) Server plays this move
-    5e) Server sends "%d" the move
+    5e) Server sends "%s" the move
     5f) Server sends "%d" the return_code (0 for move ok, +1 for winning move, -1 for losing move)
 
     6) Send its move        (labyrinth.c: getMove, socketPlayer: handle)

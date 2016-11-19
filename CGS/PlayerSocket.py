@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: PlayerSocket.py
 	Contains the Socket Handler for the player
@@ -23,6 +23,7 @@ from re import sub
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
+from CGS.Constants import MOVE_LOSE, MOVE_WIN
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -70,8 +71,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				# and finally send the data for the game
 				self.sendGameData()
 
-				# repeat until we play
-				while not self.game.isOver:
+				# repeat until we're still in the game
+				while self.game is not None:
 					data = self.receiveData()
 
 					if data.startswith("GET_MOVE"):
@@ -83,13 +84,27 @@ class PlayerSocketHandler(BaseRequestHandler):
 							# send the move and the return code
 							self.sendData(move)
 							self.sendData(str(return_code))
+							# and then log the move if it's the end of the game
+							if return_code == MOVE_LOSE:    # the opponent loose, so we win
+								self._player.logger.info("We won the game (%s) !" % msg)
+							elif return_code == MOVE_WIN:
+								self._player.logger.info("We loose the game (%s) !" % msg)
+
 						else:
 							# we cannot ask for a move, since it's our turn to play
 							self.sendData("It's our turn to play, so we cannot ask for a move!")
+							# TODO: le player doit perdre ? ou bien on attend la déconnexion faite par l'API client ?
 
 					elif data.startswith("PLAY_MOVE "):
+						# check if it's not too late (timeout)
+						if self.game is None:   # the game is already finished due to TIMEOUT
+							# Timeout !
+							self.sendData("OK")
+							return_code, msg = MOVE_LOSE, "Timeout !"
+							self.sendData(str(return_code))
+							self.sendData(msg)
 						# play move
-						if self._player is self.game.playerWhoPlays:
+						elif self._player is self.game.playerWhoPlays:
 							self.sendData("OK")
 							# play that move to see if it's a winning/losing/normal move
 							return_code, msg = self.game.playMove(data[10:])
@@ -99,8 +114,14 @@ class PlayerSocketHandler(BaseRequestHandler):
 						else:
 							self.sendData("It's not our turn to play, so we cannot play a move!")
 
+						# and then log the move if it's the end of the game
+						if return_code == MOVE_LOSE:
+							self._player.logger.info("We loose the game (%s) !" % msg)
+						elif return_code == MOVE_WIN:
+							self._player.logger.info("We win the game (%s) !" % msg)
+
 					elif data.startswith("DISP_GAME"):
-						# return the labyrinth
+						# returns a (long) string describing the labyrinth
 						self.sendData("OK")
 						# we do not use sendData here, because we do not want to log the full message...
 						head = SIZE_FMT % len(str(self.game).encode())
@@ -109,18 +130,16 @@ class PlayerSocketHandler(BaseRequestHandler):
 						logger.debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
 					elif data.startswith("SEND_COMMENT "):
-						# return the labyrinth
+						# receive comment
 						self.sendData("OK")
 						self.game.sendComment(self._player, data[13:])
 
 					else:
 						raise MyConnectionError("Bad protocol, command should not start with '" + data + "'")
 
-				# now the game is over
-				self._player.game = None    # this also kill the Game
-
 		except MyConnectionError as e:
 			# TODO: not sure if we need to stop and turnoff the connection here...
+			# TODO: end of the game
 			if self._player is None:
 				logger.error("Error with client (%s): '%s'", self.client_address[0], e)
 			else:

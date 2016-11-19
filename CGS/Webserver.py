@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: webserver.py
 	Contains the webserver routines (based on bottle)
@@ -19,7 +19,8 @@ File: webserver.py
 
 from logging import getLogger
 
-from bottle import route, request, jinja2_view as view, redirect, static_file, jinja2_template as template, TEMPLATE_PATH, error, abort
+from bottle import route, request, jinja2_view as view, jinja2_template as template
+from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
 from bottle import run, response, install			    # webserver (bottle)
 from os.path import isfile, join
 from CGS.Game import Game
@@ -52,7 +53,8 @@ def runWebServer(host, port, quiet):
 		return _log_to_logger
 
 
-	# update the template paths so that in priority, it first looks in <gameName>/server/templates/ and then in CGS/server/templates
+	# update the template paths so that in priority,
+	# it first looks in <gameName>/server/templates/ and then in CGS/server/templates
 	TEMPLATE_PATH.append(Game.getTheGameName() + "/server/templates")
 	TEMPLATE_PATH.reverse()
 	# Start the web server
@@ -64,8 +66,9 @@ def runWebServer(host, port, quiet):
 def static_file_from_templates(fileName):
 	"""
 	Returns a static_file from the template paths
-	The function first searches in the first path of the template path list (TEMPLATE_PATH). If the file exists, the function
-	returns that file (static_file function), otherwise it searches for the file in the next path...
+	The function first searches in the first path of the template path list (TEMPLATE_PATH).
+	If the file exists, the function returns that file (static_file function), otherwise it searches
+	for the file in the next path...
 	Redirects to error 404 if the file is not found.
 	"""
 	for path in TEMPLATE_PATH:

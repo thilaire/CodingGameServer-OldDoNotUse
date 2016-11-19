@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: Game.py
 	Contains the class Game
@@ -41,8 +41,10 @@ class Game:
 
 	"""
 
-	allGames = {}
+	allGames = {}   #
 	_theGameClass = None
+
+	type_dict = {}          # dictionnary of the possible non-regular Players (TO BE OVERLOADED BY INHERITED CLASSES)
 
 	def __init__(self, player1, player2, seed=None):
 		"""
@@ -108,9 +110,6 @@ class Game:
 		# time out for the move
 		self._timeout = TIMEOUT_TURN  # maybe overloaded by a Game child class
 
-		# is the game over ?
-		self._gameOver = False
-
 
 	@property
 	def name(self):
@@ -131,19 +130,11 @@ class Game:
 		# return cls.allGames.get(name, None)
 
 
-	@classmethod
-	def removeGame(cls, name):
-		"""
-		Remove a game in the game list (the allGames dictionary) (from its name)
-		"""
-		gam = cls.getFromName(name)
-		if gam is not None:
-			del cls.allGames[name]
 
 	@classmethod
 	def setTheGameClass(cls, theGameClass):
 		"""
-			Setter for the Game we are playing (in order to let that class be available for everyone)
+			Setter for the Game we are playing (in order to let that attribute be available for everyone)
 			Set when the game is known and imported
 		"""
 		cls._theGameClass = theGameClass
@@ -164,31 +155,26 @@ class Game:
 		return cls._theGameClass.__name__
 
 
-	def endOfGame(self):
+	def endOfGame(self, whoWins, msg):
 		"""
-		Manage the end of the game
-		Called when the game is over (after a move or a deconnection)
+		Manage the end of the game:
+		The game is removed from the allGames dictionary, the players do not play to that game anymore
+		Is called when the game is over (after a wining/losing move)
+		Parameters:
+			- whoWins: (int) number of the player who wins the game
+			- msg: (sting) message explaining why it's the end of the game
 		"""
 		# log it
+		self.logger.info("%s won the game (%s) !" % (self._players[whoWins].name, msg))
 		self.logger.info("The game '%s' is now finished", self.name)
 
-		self._gameOver = True
+		# the players do not play anymore
+		self._players[0].game = None
+		self._players[1].game = None
 
-
-
-
-
-
-	@property
-	def isOver(self):
-		return self._gameOver
-
-
-	def __del__(self):
-		# remove from the dictionary of games
-		# TODO: who calls this ?
-		self.logger.debug("Someone call __del__")
+		# remove from the list of Games
 		del self.allGames[self.name]
+
 
 
 	@property
@@ -215,9 +201,7 @@ class Game:
 			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
 		"""
 
-		# wait for the move of the opponent
-
-		# only if the opponent is a regular player
+		# wait for the move of the opponent if the opponent is a regular player
 		if self._players[self._whoPlays].isRegular:
 
 			self.logger.debug("Wait for playMove event")
@@ -232,30 +216,25 @@ class Game:
 				# Timeout !!
 				# the opponent has lost the game
 				self._playMoveEvent.clear()
-
-				# TODO: DO SOMETHING !!
-				# TODO: signifier la fin de partie, etc.
-
-				self.endOfGame()
+				self.endOfGame(1 - self._whoPlays, "Timeout")
 
 				return self._lastMove, MOVE_LOSE
 
 		else:
-			# otherwise, we call the player's playMove method
+			# otherwise, we call the opponent player's playMove method
 			move = self._players[self._whoPlays].playMove()
 			return_code, msg = self.updateGame(move)
 
 			if return_code == MOVE_OK:
 				# change who plays
-				self._whoPlays = int(not self._whoPlays)
+				self._whoPlays = 1 - self._whoPlays
 
 			elif return_code == MOVE_WIN:
-				# TODO: signifier la fin de la partie
-				# TODO: congrats, etc.
-				self.endOfGame()
+				# Game won by the opponent, end of the game
+				self.endOfGame(self._whoPlays, msg)
 			else:  # return_code == MOVE_LOSE
-				# TODO: signifier la fin de partie
-				self.endOfGame()
+				# Game won by the regular player, end of the game
+				self.endOfGame(1 - self._whoPlays, msg)
 
 
 			return move, return_code
@@ -266,14 +245,14 @@ class Game:
 		"""
 		Play a move we just received (from PlayerSocket)
 		Do all the synchronization stuff (between the two players)
-		- move: a string corresponding to the move
-		Return a tuple (move_code, msg), where
-		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
-		- msg: a message to send to the player, explaining why the game is ending"""
+		The move is really played in the method updateGame (that tells if the move is legal or not)
 
-		# if we try to play a move, but the game is already over, it means the move arrive *after* the timeout
-		if self._gameOver:
-			return MOVE_LOSE, "Timeout !"
+		Parameters:
+		- move: a string corresponding to the move
+		Returns a tuple (move_code, msg), where
+		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
+		- msg: a message to send to the player, explaining why the game is ending
+		"""
 
 		# play that move and update the game
 		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
@@ -297,16 +276,12 @@ class Game:
 
 		if return_code == MOVE_OK:
 			# change who plays
-			self._whoPlays = int(not self._whoPlays)
+			self._whoPlays = 1 - self._whoPlays
 
 		elif return_code == MOVE_WIN:
-			# TODO: signifier la fin de la partie
-			# TODO: congrats, etc.
-			self.endOfGame()
+			self.endOfGame(self._whoPlays, msg)
 		else:  # return_code == MOVE_LOSE
-			# TODO: signifier la fin de partie
-			self.endOfGame()
-
+			self.endOfGame(1 - self._whoPlays, msg)
 
 		return return_code, msg
 
@@ -321,6 +296,29 @@ class Game:
 		self.logger.debug("Player %s send this comment: '%s", player.name, comment)
 
 	# TODO: DO SOMETHING WITH THAT COMMENT
+
+
+	@classmethod
+	def gameFactory(cls, typeGame, player1):
+		"""
+		Create a game with a particular player
+		each child class fills its own type_dict (dictionnary of the possible non-regular Players)
+
+		1) it creates the non-regular player (according to the type)
+		2) it creates the game (calling the constructor)
+
+		Parameters:
+		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
+		- player1: player who plays the game
+
+		"""
+		if typeGame in cls.type_dict:
+			p = cls.type_dict[typeGame]()
+			return cls(player1, p)
+		else:
+			return None
+
+
 
 
 
@@ -358,16 +356,8 @@ class Game:
 		"""
 		return ""
 
-	@classmethod
-	def gameFactory(cls, typeGame, player1):
-		"""
-		Create a game with a particular player
 
-		Parameters:
-		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
-		- player1: player who plays the game
 
-		TO BE OVERLOADED BY THE CHILD CLASS
 
-		"""
-		pass
+
+# Rajouter les méthodes HTML...

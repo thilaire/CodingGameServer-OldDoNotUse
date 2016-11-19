@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: Player.py
 	Contains the class Player

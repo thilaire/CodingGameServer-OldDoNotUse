@@ -58,7 +58,8 @@ defines the type of a game:
 typedef enum
 {
     REGULAR_GAME = 0,
-    DO_NOTHING_GAME = 1
+    DO_NOTHING_GAME = 1,
+    PLAY_RANDOM = 2
 } t_gameType;
 
 

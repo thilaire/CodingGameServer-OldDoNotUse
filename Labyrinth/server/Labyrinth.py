@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: Labyrinth.py
 	Contains the class Labyrinth
@@ -26,9 +26,11 @@ from CGS.Game import Game
 from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_UP, MOVE_RIGHT, \
 	DO_NOTHING, Ddx, Ddy, INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND, ROTATE_ENERGY
 from .DoNothingPlayer import DoNothingPlayer
+from .PlayRandomPlayer import PlayRandomPlayer
 
 
-def xshift ( L, x, dx ):
+
+def xshift(L, x, dx):
 	LL = [l[x] for l in L]
 	LL = LL[-dx:] + LL[:-dx]
 	for l in L:
@@ -39,12 +41,12 @@ def xshift ( L, x, dx ):
 regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
 
 
-def yshift ( L, y, dy ):
+def yshift(L, y, dy):
 	L[y] = L[y][-dy:] + L[y][:-dy]
 	return L
 
 
-def tadd ( tuple1, tuple2, modu):
+def tadd(tuple1, tuple2, modu):
 	"""
 	Make element wise sum of tuples
 	:param tuple1:
@@ -52,11 +54,10 @@ def tadd ( tuple1, tuple2, modu):
 	:param modu:
 	:return: result of element sum of tuple1 and tuple2 modulo modu
 	"""
-	return tuple(map(lambda x, y, m: (x + y)%m, tuple1, tuple2, modu))
+	return tuple(map(lambda x, y, m: (x + y) % m, tuple1, tuple2, modu))
 
 
-
-def CreateLaby ( sX, sY ):
+def CreateLaby(sX, sY):
 	"""
 	Build a Labyrinth (an array of booleans: True=> empty, False=> wall)
 	:param sX: number of 2x2 blocks (over X)
@@ -152,7 +153,12 @@ class Labyrinth(Game):
 
 	"""
 
-	def __init__ ( self, player1, player2, seed=None ):
+
+	# dictionnary of the possible non-regular Players
+	type_dict = {1: DoNothingPlayer, 2: PlayRandomPlayer}   # type -> class of the Player
+
+
+	def __init__(self, player1, player2, seed=None):
 		"""
 		Create a labyrinth
 		:param player1: 1st Player
@@ -176,7 +182,7 @@ class Labyrinth(Game):
 		self._playerPos.append((self.L - 1, self.H // 2))
 
 		# Level of energy
-		self._playerEnergy = [INITIAL_ENERGY_SECOND]*2
+		self._playerEnergy = [INITIAL_ENERGY_SECOND] * 2
 
 		for x, y in self._playerPos:
 			self._lab[x][y] = True  # no wall here
@@ -188,18 +194,18 @@ class Labyrinth(Game):
 		self._playerEnergy[self._whoPlays] = INITIAL_ENERGY_FIRST
 
 	@property
-	def lab ( self ):
+	def lab(self):
 		return self._lab
 
-	def HTMLrepr ( self ):
+	def HTMLrepr(self):
 		return "<A href='/game/%s'>%s</A>" % (self.name, self.name)
 
-	def HTMLpage ( self ):
+	def HTMLpage(self):
 		# TODO: return a dictionary to fill a html template
 		return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 			self.name, self._players[0].name, self._players[1].name, self)
 
-	def __str__ ( self ):
+	def __str__(self):
 		"""
 		Convert a Game into string (to be send to clients, and display)
 		"""
@@ -229,30 +235,30 @@ class Labyrinth(Game):
 
 		# add player names
 
-		#index of lines where player dispplay is add
-		iline = [self.H//2 - 2, self.H//2 +2 ]
-		colors = [Fore.BLUE,Fore.RED]
-		for i,pl in enumerate(self._players):
+		# index of lines where player dispplay is add
+		iline = [self.H // 2 - 2, self.H // 2 + 2]
+		colors = [Fore.BLUE, Fore.RED]
+		for i, pl in enumerate(self._players):
 			br = "[]" if self._whoPlays == i else "  "
-			lines[iline[i]] += "\t\t" + br[0] + colors[i] + "Player "+str(i+1) + ": " + Fore.RESET + pl.name + br[1]
-			lines[iline[i]+1] += "\t\t " + "Energy:" + str(self._playerEnergy[i])
-		#br0 = "[]" if self._whoPlays == 0 else "  "
-		#br1 = "[]" if self._whoPlays == 1 else "  "
-		#lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
-		#lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
+			lines[iline[i]] += "\t\t" + br[0] + colors[i] + "Player " + str(i + 1) + ": " + Fore.RESET + pl.name + br[1]
+			lines[iline[i] + 1] += "\t\t " + "Energy:" + str(self._playerEnergy[i])
+		# br0 = "[]" if self._whoPlays == 0 else "  "
+		# br1 = "[]" if self._whoPlays == 1 else "  "
+		# lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
+		# lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
 
 		head = "+" + "-" * (2 * self.L - 1) + "+\n"
 		return head + "\n".join(lines) + "\n" + head
 
 	@property
-	def L ( self ):
+	def L(self):
 		return self._L
 
 	@property
-	def H ( self ):
+	def H(self):
 		return self._H
 
-	def updateGame ( self, move ):
+	def updateGame(self, move):
 		"""
 		update the game by playing a move
 		- move: a string "%d %d"
@@ -279,8 +285,8 @@ class Labyrinth(Game):
 		# move the player
 		if MOVE_UP <= move_type <= MOVE_RIGHT:
 			x, y = self._playerPos[self._whoPlays]
-			x = (x+Ddx[move_type])%self.L
-			y = (y+Ddy[move_type])%self.H
+			x = (x + Ddx[move_type]) % self.L
+			y = (y + Ddy[move_type]) % self.H
 
 			if not self._lab[x][y]:
 				return MOVE_LOSE, "Outch! There's a wall where you want to move!"
@@ -288,7 +294,7 @@ class Labyrinth(Game):
 			# play the move (move the player on the lab)
 			self._playerPos[self._whoPlays] = (x, y)
 
-			#update energy
+			# update energy
 			self._playerEnergy[self._whoPlays] += 1
 
 			# check if won
@@ -319,31 +325,31 @@ class Labyrinth(Game):
 				xm = value
 				self._lab = yshift(self._lab, value, dy)
 
-			print ((dx,dy))
-			print ((xm,ym))
+			print((dx, dy))
+			print((xm, ym))
 			# possibly move treasure
 			if xm == self._treasure[0] or ym == self._treasure[1]:
-				self._treasure = tadd(self._treasure, (dx, dy),(self.L,self.H))
+				self._treasure = tadd(self._treasure, (dx, dy), (self.L, self.H))
 
 			# possibly move players
 			for i, (x, y) in enumerate(self._playerPos):
-				print ((xm,ym))
-				print ((x,y))
+				print((xm, ym))
+				print((x, y))
 				if xm == x or ym == y:
-					#print(self._playerPos[i])
-					#print((dx, dy))
-					#print(tadd((x, y), (dx, dy)))
-					self._playerPos[i] = tadd((x, y), (dx, dy), (self.L,self.H))
-					#print(self._playerPos[i])
+					# print(self._playerPos[i])
+					# print((dx, dy))
+					# print(tadd((x, y), (dx, dy)))
+					self._playerPos[i] = tadd((x, y), (dx, dy), (self.L, self.H))
+				# print(self._playerPos[i])
 
-			#update energy
+			# update energy
 			self._playerEnergy[self._whoPlays] -= ROTATE_ENERGY
 
 			return MOVE_OK, ""
 
 		return MOVE_LOSE, "Rotation not yet implemented"
 
-	def getData ( self ):
+	def getData(self):
 		"""
 		Return the datas of the labyrinth (when ask with the GET_GAME_DATA message)
 		"""
@@ -353,25 +359,10 @@ class Labyrinth(Game):
 				msg.append("1" if self.lab[x][y] else "0")
 		return "".join(msg)
 
-	def getDataSize ( self ):
+	def getDataSize(self):
 		"""
 		Returns the size of the next incoming data
 		Here, the size of the labyrinth
 		"""
 		return "%d %d" % (self.L, self.H)
 
-	@classmethod
-	def gameFactory ( cls, typeGame, player1 ):
-		"""
-		Create a game with a particular player
-
-		Parameters:
-		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
-		- player1: player who plays the game
-
-		"""
-		if typeGame == 1:
-			p = DoNothingPlayer()
-			return cls(player1, p)
-		else:
-			return None

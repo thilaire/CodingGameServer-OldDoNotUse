@@ -102,28 +102,27 @@ void dispDebug(const char* fct, const char* msg, ...)
 */
 
 int read_inbuf(const char *fct, char *buf, size_t nbuf){
-  static char stream_size[HEAD_SIZE];/* size of the message to be receivied, static to avoid allocate memory at each call*/
-  int r;
-  static size_t length=0 ; // static because some length has to be read again
-  if (!length)  { 
-      bzero(stream_size,HEAD_SIZE);
-      r = read(sockfd, stream_size, HEAD_SIZE);
-      if (r<0)
-	dispError (fct, "Cannot read message's length");
-      r = sscanf (stream_size,"%lu",&length);
-      if (r!=1)
-	dispError (fct, "Cannot read message length");
-      dispDebug (fct, "prepare to receive a message of length :%lu",length);
-    }
-  int mini = length>nbuf ? nbuf : length ;
-  bzero(buf,nbuf);
-  r = read(sockfd, buf, mini);
-  if (r<0)
-    dispError(fct, "Cannot read message (called by : %s)");
+	static char stream_size[HEAD_SIZE];/* size of the message to be receivied, static to avoid allocate memory at each call*/
+	int r;
+	static size_t length=0 ; // static because some length has to be read again
+	if (!length)  {
+		bzero(stream_size,HEAD_SIZE);
+		r = read(sockfd, stream_size, HEAD_SIZE);
+		if (r<0)
+			dispError (fct, "Cannot read message's length");
+		r = sscanf (stream_size,"%lu",&length);
+		if (r!=1)
+			dispError (fct, "Cannot read message length");
+		dispDebug (fct, "prepare to receive a message of length :%lu",length);
+	}
+	int mini = length>nbuf ? nbuf : length ;
+	bzero(buf,nbuf);
+	r = read(sockfd, buf, mini);
+	if (r<0)
+		dispError(fct, "Cannot read message (called by : %s)");
   
-  length -= mini ; // length to be read again
-  return length ;
-  
+	length -= mini ; // length to be read again
+	return length ;
 }
 
 
@@ -281,10 +280,10 @@ int getGameData( const char* fct, char* data,size_t ndata)
 	dispDebug( fct, "Receive labyrinth's data:%s", data);
 
 
-    /* TODO: copier le buffer dans data
-    pour cela, il faut peut-être connaitre la taille
-    On passe d'abord la taille, ou bien c'est une taille fixe ???
-    Julien, je te laisse régler ce pb ?*/
+	/* TODO: copier le buffer dans data
+	pour cela, il faut peut-être connaitre la taille
+	On passe d'abord la taille, ou bien c'est une taille fixe ???
+	Julien, je te laisse régler ce pb ?*/
 
 
 	/* read if we begin (0) or if the opponent begins (1) */

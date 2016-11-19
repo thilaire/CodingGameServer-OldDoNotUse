@@ -11,11 +11,14 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: runCGS.py
 	Main file/entry for the Coding Game Server
-	->
+
+
+CGS requires Python3 and the following packages: colorama, colorlog, docopt, bottle, jinja2
+>> pip install colorama colorlog docopt bottle jinja2
 
 """
 
@@ -48,6 +51,8 @@ Options:
   -p PORT --port=PORT      Game server port [default: 1234].
   -w PORT --web=PORT       Web server port [default: 8080].
   -H HOST --host=HOST      Servers host [default: localhost].
+  -e EMAIL --email=EMAIL   Email address used to send info when the server fails [default: pyhthoncgs@gmail.com]
+  -s SMTP --smtp=SMTP      SMTP server used to send the email [default: smtp.google.com]
   --debug                  Debug mode (log and display everything).
   --dev                    Development mode (log everything, display infos, warnings and errors).
   --prod                   Production mode (log only infos, warnings and errors, display nothing).
@@ -71,13 +76,15 @@ if __name__ == "__main__":
 		mod = import_module(gameName + '.server.' + gameName)
 		if gameName not in mod.__dict__:
 			print(
-				Fore.RED + "Error: The file `" + gameName + "/server/" + gameName + ".py` must contain a class named `" + gameName + "`." + Fore.RESET)
+					Fore.RED + "Error: The file `" + gameName + "/server/" + gameName
+					+ ".py` must contain a class named `" + gameName + "`." + Fore.RESET
+			)
 			quit()
 		Game.setTheGameClass(mod.__dict__[gameName])
-	except ImportError:
+	except ImportError as e:
 		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
+		print(e)
 		quit()
-
 
 	# Create and setup the logger
 	logger = logging.getLogger()
@@ -117,7 +124,6 @@ if __name__ == "__main__":
 
 
 
-# TODO: (julien) compléter dans play_move les actions du jeu (ROTATE_xxx), ajouter les points (pour les déplacements)
 # TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
 # TODO: (thib) logguer les déplacements
-
+# TODO: (thib) revoir tous les niveaux des debug/infos/warning, etc., vérifier le code à ce propos

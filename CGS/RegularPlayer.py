@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
 File: Player.py
 	Contains the class RegularPlayer
@@ -125,8 +125,8 @@ class RegularPlayer(Player):
 			self.logger.info("Leave the game " + self._game.name)
 			# since we do not have a game, we can clear the the Event
 			self._waitingGame.clear()
-			Game.removeGame(self._game.name)
 		self._game = g
+
 
 	def waitForGame(self):
 		"""
