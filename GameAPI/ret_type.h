@@ -1,6 +1,6 @@
 /*
 File : ret_type.h
-Retrun type to be used both in general API and in
+Return type to be used both in general API and in
 particular API (e.g. Labyrinth)
 */
 

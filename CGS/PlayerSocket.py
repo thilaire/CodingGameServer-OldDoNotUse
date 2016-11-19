@@ -23,7 +23,7 @@ from re import sub
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
-from CGS.Constants import MOVE_LOSE, MOVE_WIN
+from CGS.Constants import MOVE_LOSE
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -84,12 +84,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 							# send the move and the return code
 							self.sendData(move)
 							self.sendData(str(return_code))
-							# and then log the move if it's the end of the game
-							if return_code == MOVE_LOSE:    # the opponent loose, so we win
-								self._player.logger.info("We won the game (%s) !" % msg)
-							elif return_code == MOVE_WIN:
-								self._player.logger.info("We loose the game (%s) !" % msg)
-
 						else:
 							# we cannot ask for a move, since it's our turn to play
 							self.sendData("It's our turn to play, so we cannot ask for a move!")
@@ -113,12 +107,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 							self.sendData(msg)
 						else:
 							self.sendData("It's not our turn to play, so we cannot play a move!")
-
-						# and then log the move if it's the end of the game
-						if return_code == MOVE_LOSE:
-							self._player.logger.info("We loose the game (%s) !" % msg)
-						elif return_code == MOVE_WIN:
-							self._player.logger.info("We win the game (%s) !" % msg)
 
 					elif data.startswith("DISP_GAME"):
 						# returns a (long) string describing the labyrinth

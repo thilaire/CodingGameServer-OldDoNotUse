@@ -21,6 +21,7 @@ from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
 from os import makedirs
+from datetime import datetime
 
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
 
@@ -109,6 +110,7 @@ class Game:
 
 		# time out for the move
 		self._timeout = TIMEOUT_TURN  # maybe overloaded by a Game child class
+		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
 
 
 	@property
@@ -168,6 +170,11 @@ class Game:
 		self.logger.info("%s won the game (%s) !" % (self._players[whoWins].name, msg))
 		self.logger.info("The game '%s' is now finished", self.name)
 
+		if self._players[whoWins].isRegular:
+			self._players[whoWins].logger.info("We won the game (%s) !" % msg)
+		if self._players[1 - whoWins].isRegular:
+			self._players[1 - whoWins].logger.info("We loose the game (%s) !" % msg)
+
 		# the players do not play anymore
 		self._players[0].game = None
 		self._players[1].game = None
@@ -223,8 +230,12 @@ class Game:
 		else:
 			# otherwise, we call the opponent player's playMove method
 			move = self._players[self._whoPlays].playMove()
+			self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
+			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
+			# and update the game
 			return_code, msg = self.updateGame(move)
 
+			# check if the player wins
 			if return_code == MOVE_OK:
 				# change who plays
 				self._whoPlays = 1 - self._whoPlays
@@ -254,8 +265,22 @@ class Game:
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
 
-		# play that move and update the game
+		# log that move
 		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
+		if self._players[self._whoPlays].isRegular:
+			self._players[self._whoPlays].logger.info("I play %s" % move)
+		if self._players[1 - self._whoPlays].isRegular:
+			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
+
+		# check for timeout when the opponent is a non-regular player
+		if not self._players[1 - self._whoPlays].isRegular:
+			if (datetime.now()-self._lastMoveTime).total_seconds() > self._timeout:
+				# Timeout !!
+				# the player has lost the game
+				self.endOfGame(1 - self._whoPlays, "Timeout")
+				return MOVE_LOSE, "Timeout !"
+
+		# play that move and update the game
 		return_code, msg = self.updateGame(move)
 
 		# keep the last move
@@ -272,12 +297,14 @@ class Game:
 			self._getMoveEvent.wait()
 			self._getMoveEvent.clear()
 			self.logger.debug("Receive getMove event")
+		else:
+			#if thge opponent is a non-regular player, we store the time (to compute the timeout)
+			self._lastMoveTime = datetime.now()
 
 
 		if return_code == MOVE_OK:
 			# change who plays
 			self._whoPlays = 1 - self._whoPlays
-
 		elif return_code == MOVE_WIN:
 			self.endOfGame(self._whoPlays, msg)
 		else:  # return_code == MOVE_LOSE
