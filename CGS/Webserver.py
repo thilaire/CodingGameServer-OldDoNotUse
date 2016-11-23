@@ -35,6 +35,7 @@ weblogger = getLogger('bottle')
 # Path to the template (it will be completed with <gameName>/server/templates/)
 TEMPLATE_PATH[:] = ['CGS/templates']
 
+
 def runWebServer(host, port, quiet):
 	"""
 	Install the logger and run the webserver
@@ -59,8 +60,8 @@ def runWebServer(host, port, quiet):
 	install(log_to_logger)
 	weblogger.info("Run the web server on port %d...", port)
 
-	default_app().catchall=False
-	run( host=host, port=port, quiet=quiet)
+	default_app().catchall = False
+	run(host=host, port=port, quiet=quiet)
 
 
 

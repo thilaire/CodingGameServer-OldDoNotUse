@@ -30,11 +30,12 @@ logger = logging.getLogger()  # general logger ('root')
 
 
 
-class protocolError(Exception):
+class ProtocolError(Exception):
 	"""Empty Exception class to manage protocol errors"""
 	pass
 
-class connectionError(Exception):
+
+class DisconnectionError(Exception):
 	"""Empty Exception class to manage connection errors (like disconnected)"""
 	pass
 
@@ -121,9 +122,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 						self.game.sendComment(self._player, data[13:])
 
 					else:
-						raise protocolError("Bad protocol, command should not start with '" + data + "'")
+						raise ProtocolError("Bad protocol, command should not start with '" + data + "'")
 
-		except protocolError as err:
+		except ProtocolError as err:
 			# log the protocol error
 			if self._player is None:
 				logger.error("Error with client (%s): '%s'", self.client_address[0], err)
@@ -135,7 +136,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# answers the client about the error
 			self.sendData(str(err))
 
-		except connectionError:
+		except DisconnectionError:
 			# ends the game
 			if self.game is not None:
 				self.game.partialEndOfGame(self._player)
@@ -171,8 +172,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 		# check if the client has closed the connection
 		# (don't know why, but when the connection is cloded by the client when the server wait with recv, we cannot
 		# use the self.server._closed attribute...)
-		if data=='':
-			raise connectionError()
+		if data == '':
+			raise DisconnectionError()
 		# log it
 		if self._player:
 			logger.debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
@@ -214,27 +215,27 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		Waits for a message "CLIENT_NAME" and treat it
 		Returns the player name
-		or raises an exception (protocolError) if the request is not valid
+		or raises an exception (ProtocolError) if the request is not valid
 		"""
 
 		# get data
 		data = self.receiveData()
 		if not data.startswith("CLIENT_NAME "):
-			raise protocolError("Bad protocol, should start with CLIENT_NAME ")
+			raise ProtocolError("Bad protocol, should start with CLIENT_NAME ")
 
 		data = data[12:]
 
 		# check if the player doesn't exist yet
 		if data in RegularPlayer.allPlayers:
 			self.sendData("A client with the same name ('" + data + "') is already connected!")
-			raise protocolError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
+			raise ProtocolError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 
 
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
 		name = sub('\W+', '', data)
 		if name != data or len(name) > 20:
 			self.sendData("The name is invalid (max 20 characters in [a-zA-Z0-9_])")
-			raise protocolError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" %
+			raise ProtocolError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" %
 			                    (data, self.client_address[0]))
 
 
@@ -254,14 +255,14 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME "):
 			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise protocolError("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %d' command")
 
 		# get the type of the game
 		try:
 			typeGame = int(data[10:])
 		except ValueError:
 			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise protocolError("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %d' command")
 
 		# if not a regular game
 		if typeGame != 0:
@@ -269,7 +270,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			g = Game.getTheGameClass().gameFactory(typeGame, self._player)
 			if g is None:
 				self.sendData("The game type sent by '%s' command is not valid" % data)
-				raise protocolError("The game type sent by '%s' command is not valid" % data)
+				raise ProtocolError("The game type sent by '%s' command is not valid" % data)
 
 		# just send back OK
 		self.sendData("OK")
@@ -297,7 +298,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("GET_GAME_DATA"):
 			self.sendData("Bad protocol, should send 'GET_GAME_DATA' command")
-			raise protocolError("Bad protocol, should send 'GET_GAME_DATA' command")
+			raise ProtocolError("Bad protocol, should send 'GET_GAME_DATA' command")
 
 		# Get the labyrinth
 		self.sendData("OK")
