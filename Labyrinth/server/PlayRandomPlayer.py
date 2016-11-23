@@ -41,15 +41,15 @@ class PlayRandomPlayer(Player):
 
 		# move
 		for move_type in (MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT):
-			x, y = self.game._playerPos[1]
+			x, y = self.game.playerPos[1]
 			x = (x + Ddx[move_type]) % self.game.L
 			y = (y + Ddy[move_type]) % self.game.H
 
-			if self.game._lab[x][y]:
+			if self.game.lab[x][y]:
 				moves.append("%d 0" % move_type)
 
 		# rotate line or column
-		if self.game._playerEnergy[1] >= ROTATE_ENERGY:
+		if self.game.playerEnergy[1] >= ROTATE_ENERGY:
 			line = randint(0, self.game.H)
 			col = randint(0, self.game.L)
 			moves.append("%d %d" % (ROTATE_COLUMN_DOWN, col))

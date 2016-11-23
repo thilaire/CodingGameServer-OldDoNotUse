@@ -194,6 +194,14 @@ class Labyrinth(Game):
 		self._playerEnergy[self._whoPlays] = INITIAL_ENERGY_FIRST
 
 	@property
+	def playerPos(self):
+		return self._playerPos
+
+	@property
+	def playerEnergy(self):
+		return self._playerEnergy
+
+	@property
 	def lab(self):
 		return self._lab
 
