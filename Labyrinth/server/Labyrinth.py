@@ -169,7 +169,7 @@ class Labyrinth(Game):
 		# TODO: add size of the labyrinth in the constructor?
 
 		# random Labyrinth
-		totalSize = randint(7, 11)  # sX + sY is randomly in [7;9]
+		totalSize = randint(8, 12)  # sX + sY is randomly in [8;11]
 		sX = randint(3, 5)
 		self._L, self._H, self._lab = CreateLaby(sX, totalSize - sX)
 
@@ -325,22 +325,14 @@ class Labyrinth(Game):
 				xm = value
 				self._lab = yshift(self._lab, value, dy)
 
-			print((dx, dy))
-			print((xm, ym))
 			# possibly move treasure
 			if xm == self._treasure[0] or ym == self._treasure[1]:
 				self._treasure = tadd(self._treasure, (dx, dy), (self.L, self.H))
 
 			# possibly move players
 			for i, (x, y) in enumerate(self._playerPos):
-				print((xm, ym))
-				print((x, y))
 				if xm == x or ym == y:
-					# print(self._playerPos[i])
-					# print((dx, dy))
-					# print(tadd((x, y), (dx, dy)))
 					self._playerPos[i] = tadd((x, y), (dx, dy), (self.L, self.H))
-				# print(self._playerPos[i])
 
 			# update energy
 			self._playerEnergy[self._whoPlays] -= ROTATE_ENERGY

@@ -149,7 +149,7 @@ void sendString( const char* fct, const char* str, ...) {
 	if (r < 0)
 		dispError( fct, "Cannot write to the socket (%s)",buffer);
 
-		/* get acknowledgment */
+	/* get acknowledgment */
 	r = read_inbuf(fct,buffer,MAX_LENGTH);
 	//bzero(buffer,1000);
 	//r = read(sockfd, buffer, 255);

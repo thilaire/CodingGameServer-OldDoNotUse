@@ -124,6 +124,9 @@ if __name__ == "__main__":
 
 
 
+
 # TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
 # TODO: (thib) logguer les déplacements
 # TODO: (thib) revoir tous les niveaux des debug/infos/warning, etc., vérifier le code à ce propos
+# TODO: empêcher bottle et playerServer de garder les erreurs pour eux (il faut les logguer !!)
+# TODO: rajouter un timeout pour le dataReceive (il y a ça dans la classe BaseRequestHandler)

@@ -16,11 +16,10 @@ File: Player.py
 
 """
 
-
 import logging
 from logging.handlers import RotatingFileHandler
-from threading import Event
 from os import makedirs
+from threading import Event
 
 from CGS.Game import Game
 from CGS.Player import Player
@@ -82,13 +81,12 @@ class RegularPlayer(Player):
 		self._waitingGame.clear()
 
 
+
 	@classmethod
 	def removePlayer(cls, name):
 		pl = cls.getFromName(name)
 		if pl is not None:
-			pl.logger.info(name + " just log out.")
 			del cls.allPlayers[name]
-		# TODO: dire au jeu auquel on joue que la partie est finie ? (ou c'est déjà fait)
 
 
 	@classmethod

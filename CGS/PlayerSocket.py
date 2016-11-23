@@ -25,20 +25,18 @@ from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
 from CGS.Constants import MOVE_LOSE
 
+
 logger = logging.getLogger()  # general logger ('root')
 
 
 
-class MyConnectionError(Exception):
-	"""stupid class to manage the errors due to the connection
-	"""
+class protocolError(Exception):
+	"""Empty Exception class to manage protocol errors"""
+	pass
 
-	# TODO: Useful ?
-	def __init__(self, value):
-		self.value = value
-
-	def __str__(self):
-		return repr(self.value)
+class connectionError(Exception):
+	"""Empty Exception class to manage connection errors (like disconnected)"""
+	pass
 
 
 
@@ -123,26 +121,46 @@ class PlayerSocketHandler(BaseRequestHandler):
 						self.game.sendComment(self._player, data[13:])
 
 					else:
-						raise MyConnectionError("Bad protocol, command should not start with '" + data + "'")
+						raise protocolError("Bad protocol, command should not start with '" + data + "'")
 
-		except MyConnectionError as e:
-			# TODO: not sure if we need to stop and turnoff the connection here...
-			# TODO: end of the game
+		except protocolError as err:
+			# log the protocol error
 			if self._player is None:
-				logger.error("Error with client (%s): '%s'", self.client_address[0], e)
+				logger.error("Error with client (%s): '%s'", self.client_address[0], err)
 			else:
-				self._player.logger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], e)
+				self._player.logger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], err)
+			# ends the game
+			if self.game is not None:
+				self.game.partialEndOfGame(self._player)
+			# answers the client about the error
+			self.sendData(str(err))
 
+		except connectionError:
+			# ends the game
+			if self.game is not None:
+				self.game.partialEndOfGame(self._player)
+
+		except Exception as err:
+			# log all the other errors
+			logger.error(err, exc_info=True)
+			raise err
+			# TODO: send a email when we are in production !
 
 
 	def finish(self):
 		"""
 		Call when the connection is closed
 		"""
+
 		if self._player is not None:
 			self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
 			RegularPlayer.removePlayer(self._player.name)
 			del self._player
+
+		else:
+			logger.debug("Connection closed with client %s", self.client_address[0])
+
+
 
 	def receiveData(self, size=1024):
 		"""
@@ -150,7 +168,12 @@ class PlayerSocketHandler(BaseRequestHandler):
 		and log it
 		"""
 		data = str(self.request.recv(size).strip(), "utf-8")
-		# TODO: si reçu '' alors la connection est interrompue
+		# check if the client has closed the connection
+		# (don't know why, but when the connection is cloded by the client when the server wait with recv, we cannot
+		# use the self.server._closed attribute...)
+		if data=='':
+			raise connectionError()
+		# log it
 		if self._player:
 			logger.debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
@@ -191,28 +214,28 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		Waits for a message "CLIENT_NAME" and treat it
 		Returns the player name
-		or raises an exception (MyConnectionError) if the request is not valid
+		or raises an exception (protocolError) if the request is not valid
 		"""
 
 		# get data
 		data = self.receiveData()
 		if not data.startswith("CLIENT_NAME "):
-			raise MyConnectionError("Bad protocol, should start with CLIENT_NAME ")
+			raise protocolError("Bad protocol, should start with CLIENT_NAME ")
 
 		data = data[12:]
 
 		# check if the player doesn't exist yet
 		if data in RegularPlayer.allPlayers:
 			self.sendData("A client with the same name ('" + data + "') is already connected!")
-			raise MyConnectionError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
+			raise protocolError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 
 
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
 		name = sub('\W+', '', data)
 		if name != data or len(name) > 20:
 			self.sendData("The name is invalid (max 20 characters in [a-zA-Z0-9_])")
-			raise MyConnectionError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" %
-			                        (data, self.client_address[0]))
+			raise protocolError("The name '%s' (from %s) is invalid (max 20 characters in [a-zA-Z0-9_])" %
+			                    (data, self.client_address[0]))
 
 
 		# just send back OK
@@ -231,14 +254,14 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME "):
 			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise protocolError("Bad protocol, should send 'WAIT_GAME %d' command")
 
 		# get the type of the game
 		try:
 			typeGame = int(data[10:])
 		except ValueError:
 			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise MyConnectionError("Bad protocol, should send 'WAIT_GAME %d' command")
+			raise protocolError("Bad protocol, should send 'WAIT_GAME %d' command")
 
 		# if not a regular game
 		if typeGame != 0:
@@ -246,7 +269,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			g = Game.getTheGameClass().gameFactory(typeGame, self._player)
 			if g is None:
 				self.sendData("The game type sent by '%s' command is not valid" % data)
-				raise MyConnectionError("The game type sent by '%s' command is not valid" % data)
+				raise protocolError("The game type sent by '%s' command is not valid" % data)
 
 		# just send back OK
 		self.sendData("OK")
@@ -274,7 +297,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = self.receiveData()
 		if not data.startswith("GET_GAME_DATA"):
 			self.sendData("Bad protocol, should send 'GET_GAME_DATA' command")
-			raise MyConnectionError("Bad protocol, should send 'GET_GAME_DATA' command")
+			raise protocolError("Bad protocol, should send 'GET_GAME_DATA' command")
 
 		# Get the labyrinth
 		self.sendData("OK")

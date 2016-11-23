@@ -113,6 +113,7 @@ class Game:
 		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
 
 
+
 	@property
 	def name(self):
 		return self._name
@@ -155,6 +156,16 @@ class Game:
 		Getter for the name of the Game we are playing
 		"""
 		return cls._theGameClass.__name__
+
+	def partialEndOfGame(self, whoLooses):
+		"""
+		manage a partial end of the game (player has deconnected or send wrong command)
+		Parameters:
+			- whoLooses: (RegularPlayer) player that looses
+		The game is not fully ended, since we need to wait the other player to call GET_MOVE or PLAY_MOVE
+		"""
+		nWhoLooses = 0 if self._players[0] is whoLooses else 1
+		self._players[nWhoLooses].game = None
 
 
 	def endOfGame(self, whoWins, msg):
@@ -208,8 +219,13 @@ class Game:
 			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
 		"""
 
+		# check if the opponent doesn't have disconnected
+		if self._players[self._whoPlays].game is None:
+			self.endOfGame(1-self._whoPlays, "Opponent has disconnected")
+			return "", MOVE_LOSE
+
 		# wait for the move of the opponent if the opponent is a regular player
-		if self._players[self._whoPlays].isRegular:
+		elif self._players[self._whoPlays].isRegular:
 
 			self.logger.debug("Wait for playMove event")
 			if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
@@ -265,6 +281,11 @@ class Game:
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
 
+		# check if the opponent doesn't have disconnected
+		if self._players[self._whoPlays].game is None:
+			self.endOfGame(self._whoPlays, "Opponent has disconnected")
+			return MOVE_WIN, "Opponent has disconnected"
+
 		# log that move
 		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
 		if self._players[self._whoPlays].isRegular:
@@ -298,7 +319,7 @@ class Game:
 			self._getMoveEvent.clear()
 			self.logger.debug("Receive getMove event")
 		else:
-			#if thge opponent is a non-regular player, we store the time (to compute the timeout)
+			# if thge opponent is a non-regular player, we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()
 
 

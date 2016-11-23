@@ -21,7 +21,7 @@ from logging import getLogger
 
 from bottle import route, request, jinja2_view as view, jinja2_template as template
 from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
-from bottle import run, response, install			    # webserver (bottle)
+from bottle import run, response, install, default_app			    # webserver (bottle)
 from os.path import isfile, join
 from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
@@ -34,8 +34,6 @@ weblogger = getLogger('bottle')
 
 # Path to the template (it will be completed with <gameName>/server/templates/)
 TEMPLATE_PATH[:] = ['CGS/templates']
-
-
 
 def runWebServer(host, port, quiet):
 	"""
@@ -60,7 +58,10 @@ def runWebServer(host, port, quiet):
 	# Start the web server
 	install(log_to_logger)
 	weblogger.info("Run the web server on port %d...", port)
-	run(host=host, port=port, quiet=quiet)
+
+	default_app().catchall=False
+	run( host=host, port=port, quiet=quiet)
+
 
 
 def static_file_from_templates(fileName):
