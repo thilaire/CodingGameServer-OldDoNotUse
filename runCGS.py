@@ -51,7 +51,7 @@ Options:
   -p PORT --port=PORT      Game server port [default: 1234].
   -w PORT --web=PORT       Web server port [default: 8080].
   -H HOST --host=HOST      Servers host [default: localhost].
-  -e EMAIL --email=EMAIL   Email address used to send info when the server fails [default: pyhthoncgs@gmail.com]
+  -e EMAIL --email=EMAIL   Email address used to send info when the server fails [default: pythoncgs@gmail.com]
   -s SMTP --smtp=SMTP      SMTP server used to send the email [default: smtp.google.com]
   --debug                  Debug mode (log and display everything).
   --dev                    Development mode (log everything, display infos, warnings and errors).
@@ -127,6 +127,6 @@ if __name__ == "__main__":
 
 # TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
 # TODO: (thib) logguer les déplacements
-# TODO: (thib) revoir tous les niveaux des debug/infos/warning, etc., vérifier le code à ce propos
-# TODO: empêcher bottle et playerServer de garder les erreurs pour eux (il faut les logguer !!)
+# TODO: (thib) revoir tous les niveaux des debug/infos/warning, etc., vérifier le code à ce propos; envoyer un email
+# TODO: empêcher bottle (et playerServer) de garder les erreurs pour eux (il faut les logguer !!)
 # TODO: rajouter un timeout pour le dataReceive (il y a ça dans la classe BaseRequestHandler)

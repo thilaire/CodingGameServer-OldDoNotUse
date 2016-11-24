@@ -165,7 +165,10 @@ class Game:
 		The game is not fully ended, since we need to wait the other player to call GET_MOVE or PLAY_MOVE
 		"""
 		nWhoLooses = 0 if self._players[0] is whoLooses else 1
-		self._players[nWhoLooses].game = None
+		if not self._players[1 - nWhoLooses].isRegular:
+			self.endOfGame(1 - whoLooses, "Opponent has disconnected")
+		else:
+			self._players[nWhoLooses].game = None
 
 
 	def endOfGame(self, whoWins, msg):
@@ -187,8 +190,10 @@ class Game:
 			self._players[1 - whoWins].logger.info("We loose the game (%s) !" % msg)
 
 		# the players do not play anymore
-		self._players[0].game = None
-		self._players[1].game = None
+		if self._players[0].game is not None:
+			self._players[0].game = None
+		if self._players[1].game is not None:
+			self._players[1].game = None
 
 		# remove from the list of Games
 		del self.allGames[self.name]

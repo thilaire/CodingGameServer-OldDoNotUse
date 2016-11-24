@@ -60,7 +60,7 @@ def runWebServer(host, port, quiet):
 	install(log_to_logger)
 	weblogger.info("Run the web server on port %d...", port)
 
-	default_app().catchall = False
+	default_app().catchall = True
 	run(host=host, port=port, quiet=quiet)
 
 

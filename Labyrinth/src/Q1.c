@@ -39,7 +39,7 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitForLabyrinth( PLAY_RANDOM, labName, &sizeX, &sizeY);
+		waitForLabyrinth( REGULAR_GAME, labName, &sizeX, &sizeY);
 		labData = (char*) malloc( sizeX * sizeY );
 		player = getLabyrinth( labData);
 
