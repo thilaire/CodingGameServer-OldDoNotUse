@@ -309,7 +309,7 @@ class Labyrinth(Game):
 
 			# check if won
 			if (x, y) == self._treasure:
-				return MOVE_WIN, "You find the treasure, you win!"
+				return MOVE_WIN, "Treasor found !!"
 			else:
 				return MOVE_OK, ""
 

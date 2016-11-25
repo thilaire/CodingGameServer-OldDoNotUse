@@ -17,7 +17,7 @@ File: playRandomPlayer.py
 
 from CGS.Player import Player
 from random import choice, randint
-from .Constants import MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP
+from .Constants import MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, DO_NOTHING
 from .Constants import ROTATE_COLUMN_DOWN, ROTATE_COLUMN_UP, ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_ENERGY
 from .Constants import Ddx, Ddy
 
@@ -58,13 +58,17 @@ class PlayRandomPlayer(Player):
 
 		# rotate line or column
 		if self.game.playerEnergy[1] >= ROTATE_ENERGY and self.rotate:
-			line = randint(0, self.game.H)
-			col = randint(0, self.game.L)
+			line = randint(0, self.game.H-1)
+			col = randint(0, self.game.L-1)
 			moves.append("%d %d" % (ROTATE_COLUMN_DOWN, col))
 			moves.append("%d %d" % (ROTATE_COLUMN_UP, col))
 			moves.append("%d %d" % (ROTATE_LINE_RIGHT, line))
 			moves.append("%d %d" % (ROTATE_LINE_LEFT, line))
 
 		# choose one (up to 4 moves and 4 rotations)
-		return choice(moves)
+		if moves:
+			return choice(moves)
+		else:
+			# sometimes, he cannot move...
+			return "%d 0" % DO_NOTHING
 
