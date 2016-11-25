@@ -226,6 +226,9 @@ class Labyrinth(Game):
 				# add treasure
 				if (x, y) == self._treasure:
 					st.append(Fore.GREEN + u"\u2691" + Fore.RESET)
+				# add players if they are in the same place
+				elif (x, y) == self._playerPos[0] and (x, y) == self._playerPos[1]:
+					st.append(Fore.MAGENTA + u"\u265F" + Fore.RESET)
 				# add player1
 				elif (x, y) == self._playerPos[0]:
 					st.append(Fore.BLUE + u"\u265F" + Fore.RESET)
