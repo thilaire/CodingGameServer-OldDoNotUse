@@ -117,6 +117,7 @@ def create_new_game():
 	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
 	player2 = RegularPlayer.getFromName(request.forms.get('player2'))
 
+	# add the options (timeout, seed, etc.)
 
 	try:
 		# the constructor will check if player1 and player2 are available to play

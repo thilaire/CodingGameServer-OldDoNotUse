@@ -45,14 +45,16 @@ class Game:
 	allGames = {}   #
 	_theGameClass = None
 
-	type_dict = {}          # dictionnary of the possible non-regular Players (TO BE OVERLOADED BY INHERITED CLASSES)
+	type_dict = {}          # dictionary of the possible non-regular Players (TO BE OVERLOADED BY INHERITED CLASSES)
 
-	def __init__(self, player1, player2, seed=None):
+	def __init__(self, player1, player2, **options):
 		"""
 		Create a Game
 		:param player1: 1st Player
 		:param player2: 2nd Player
-		:param seed: seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
+		:param options: dictionary of options
+			- 'seed': seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
+			- 'timeout': timeout of the game (if not given, the default timeout is used)
 		"""
 
 		# check if we can create the game (are the players available)
@@ -67,10 +69,16 @@ class Game:
 		self._players = (player1, player2)
 
 		# get a seed if the seed is not given; seed the random numbers generator
-		if seed is None:
+		if 'seed' not in options:
 			set_seed(None)  # (from doc):  If seed is omitted or None, current system time is used
 			seed = randint(0, int(1e9))
+		else:
+			try:
+				seed = int(options['seed'])
+			except ValueError:
+				raise ValueError("The 'seed' value is invalid ('seed=%s')" % options['seed'])
 		set_seed(seed)
+
 
 		# (unique) name (unix date + seed + players name)
 		self._name = str(int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
@@ -109,7 +117,15 @@ class Game:
 		self._lastReturn_code = 0
 
 		# time out for the move
-		self._timeout = TIMEOUT_TURN  # maybe overloaded by a Game child class
+		if 'timeout' not in options:
+			self._timeout = TIMEOUT_TURN
+		else:
+			try:
+				self._timeout = int(options['timeout'])
+			except ValueError:
+				raise ValueError("The 'timeout' value is invalid ('timeout=%s')" % options['timeout'])
+
+		# timestamp of the last move
 		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
 
 
@@ -166,7 +182,7 @@ class Game:
 		"""
 		nWhoLooses = 0 if self._players[0] is whoLooses else 1
 		if not self._players[1 - nWhoLooses].isRegular:
-			self.endOfGame(1 - whoLooses, "Opponent has disconnected")
+			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
 			self._players[nWhoLooses].game = None
 
@@ -352,24 +368,25 @@ class Game:
 
 
 	@classmethod
-	def gameFactory(cls, typeGame, player1):
+	def gameFactory(cls, name, player1, options):
 		"""
 		Create a game with a particular player
-		each child class fills its own type_dict (dictionnary of the possible non-regular Players)
+		each child class fills its own type_dict (dictionary of the possible non-regular Players)
 
-		1) it creates the non-regular player (according to the type)
+		1) it creates the training player (according to the type name)
 		2) it creates the game (calling the constructor)
 
 		Parameters:
-		- typeGame: (integer) type of the game (0: regular Game, 1: play against do_nothing player, etc...)
+		- name: (string) type of the training player ("DO_NOTHING": play against do_nothing player, etc...)
 		- player1: player who plays the game
+		- options: (dict) some options given by the player
 
 		"""
-		if typeGame in cls.type_dict:
-			p = cls.type_dict[typeGame]()
-			return cls(player1, p)
+		if name in cls.type_dict:
+			p = cls.type_dict[name](**options)    # may raise ValueError exception if the options are invalid
+			return cls(player1, p, **options)     # may raise ValueError exception if the options are invalid
 		else:
-			return None
+			raise ValueError("The training player name '%s' is not valid." % name)
 
 
 

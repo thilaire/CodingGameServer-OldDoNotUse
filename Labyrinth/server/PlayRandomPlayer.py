@@ -24,8 +24,16 @@ from .Constants import Ddx, Ddy
 
 class PlayRandomPlayer(Player):
 
-	def __init__(self):
+	def __init__(self, **options):
 		super().__init__('Play_Random')
+
+		# check "rotate" option
+		if "rotate" not in options:
+			self.rotate = True
+		elif options["rotate"] in ("False","True"):
+			self.rotate = bool(options["rotate"])
+		else:
+			raise ValueError("The option rotate=%s is incorrect." % options["rotate"])
 
 
 	def playMove(self):
@@ -49,7 +57,7 @@ class PlayRandomPlayer(Player):
 				moves.append("%d 0" % move_type)
 
 		# rotate line or column
-		if self.game.playerEnergy[1] >= ROTATE_ENERGY:
+		if self.game.playerEnergy[1] >= ROTATE_ENERGY and self.rotate:
 			line = randint(0, self.game.H)
 			col = randint(0, self.game.L)
 			moves.append("%d %d" % (ROTATE_COLUMN_DOWN, col))

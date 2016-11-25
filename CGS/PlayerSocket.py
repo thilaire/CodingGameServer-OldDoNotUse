@@ -24,7 +24,7 @@ from CGS.RegularPlayer import RegularPlayer
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
 from CGS.Constants import MOVE_LOSE
-
+import shlex
 
 logger = logging.getLogger()  # general logger ('root')
 
@@ -247,30 +247,44 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 	def waitForGame(self):
 		"""
-		Waits for a message "WAIT_GAME" and then wait for a game (with an Event)
+		Waits for a message "WAIT_GAME %s" and then wait for a game (with an Event)
+		%s is a string like "NAME key1=value1 key2=value1 ..." (could be empty)
+        NAME can be empty. It gives the type of the game (training against a specific player)
 		Returns nothing
 		"""
 
 		# get the WAIT_GAME message
 		data = self.receiveData()
-		if not data.startswith("WAIT_GAME "):
-			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %d' command")
+		if not data.startswith("WAIT_GAME"):
+			self.sendData("Bad protocol, should send 'WAIT_GAME %s' command")
+			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %s' command")
 
-		# get the type of the game
+		# parse the game type
+		name = ""
+		options = {}
 		try:
-			typeGame = int(data[10:])
+			terms = shlex.split(data[10:])
+			if terms:
+				if "=" in terms[0]:
+					name = ""
+					options = dict([token.split('=') for token in terms])
+				else:
+					name = terms[0]
+					options = dict([token.split('=') for token in terms[1:]])
 		except ValueError:
-			self.sendData("Bad protocol, should send 'WAIT_GAME %d' command")
-			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %d' command")
+			self.sendData("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
+			raise ProtocolError("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
 
-		# if not a regular game
-		if typeGame != 0:
+		logger.debug("%s -> Name=%s Dict=%s" % (terms, name, options))
+
+		if name:
 			# Create a particular Game
-			g = Game.getTheGameClass().gameFactory(typeGame, self._player)
-			if g is None:
-				self.sendData("The game type sent by '%s' command is not valid" % data)
-				raise ProtocolError("The game type sent by '%s' command is not valid" % data)
+			try:
+				# create game (no need to store it in a variable)
+				Game.getTheGameClass().gameFactory(name, self._player, options)
+			except ValueError as err:
+				self.sendData("The training player sent by '%s' command is not valid (%s)" % (data,err))
+				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data,err))
 
 		# just send back OK
 		self.sendData("OK")

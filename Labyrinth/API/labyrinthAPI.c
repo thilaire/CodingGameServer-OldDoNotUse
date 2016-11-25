@@ -52,19 +52,34 @@ void closeConnection()
 
 
 
-/* ----------------------------------------------------
- * Wait for a labyrinth, and retrieve its name and size
+/* ------------------------------------------------------------------------------
+ * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - gameType: type of the game the player is waiting for (0: regular game, 1: play against do_nothing player, etc.)
- * - labyrinthName: string (max 50 characters), corresponds to the labyrinth name
- * - sizeX, sizeY: sizes of the labyrinth
+ * - fct: name of the function that calls waitForGame (used for the logging)
+ * - training: string (max 50 characters) type of the training player we want to play with
+ *   (empty string for regular game)
+ * - gameName: string (max 50 characters), corresponds to the game name
+ * - data: string (max 128 characters), corresponds to the data
+ *
+ * training is a string like "NAME key1=value1 key2=value1 ..."
+ * - NAME can be empty. It gives the type of the training player
+ * - key=value pairs are used for options (each training player has its own options)
+ *   invalid keys are ignored, invalid values leads to error
+ *   the following options are common to every training player (when NAME is not empty):
+ *   - timeout: allows an define the timeout when training (in seconds)
+ *
+ * the NAME could be:
+ * - "DO_NOTHING" to play against DO_NOTHING player (player that does not move)
+ * - "PLAY_RANDOM" for a player that make random (but legal) moves (option "rotation=False/True")
+ *
+ *
  */
-void waitForLabyrinth( t_gameType gameType, char* labyrinthName, int* sizeX, int* sizeY)
+void waitForLabyrinth( char* training, char* labyrinthName, int* sizeX, int* sizeY)
 {
 	char data[128];
 	/* wait for a game */
-	waitForGame( __FUNCTION__, (int) gameType, labyrinthName, data);
+	waitForGame( __FUNCTION__, training, labyrinthName, data);
 
 	/* parse the data */
 	sscanf( data, "%d %d", sizeX, sizeY);

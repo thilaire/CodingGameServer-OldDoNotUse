@@ -83,11 +83,18 @@ void closeCGSConnection( const char* fct);
  *
  * Parameters:
  * - fct: name of the function that calls waitForGame (used for the logging)
- * - gameType: type of the game the player is waiting for (0: regular game, 1: play agains do_nothing player, etc.)
+ * - training: string (max 50 characters) type of the training player we want to play with (empty string for regular game)
  * - gameName: string (max 50 characters), corresponds to the game name
  * - data: string (max 128 characters), corresponds to the data
+ *
+ * training is a string like "NAME key1=value1 key2=value1 ..."
+ * - NAME can be empty. It gives the type of the training player
+ * - key=value pairs are used for options (each training player has its own options)
+ *   invalid keys are ignored, invalid values leads to error
+ *   the following options are common to every training player (when NAME is not empty):
+ *   - timeout: allows an define the timeout when training (in seconds)
  */
-void waitForGame( const char* fct, int gameType, char* gameName, char* data);
+void waitForGame( const char* fct, char* training, char* gameName, char* data);
 
 
 

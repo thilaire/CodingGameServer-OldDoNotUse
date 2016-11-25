@@ -153,17 +153,16 @@ class Labyrinth(Game):
 
 	"""
 
+	# dictionary of the possible training Players (non-regular players)
+	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer}   # type -> class of the Player
 
-	# dictionnary of the possible non-regular Players
-	type_dict = {1: DoNothingPlayer, 2: PlayRandomPlayer}   # type -> class of the Player
 
-
-	def __init__(self, player1, player2, seed=None):
+	def __init__(self, player1, player2, **options):
 		"""
 		Create a labyrinth
 		:param player1: 1st Player
 		:param player2: 2nd Player
-		:param seed: seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
+		:param options: dictionary of options (the options 'seed' and 'timeout' are managed by the Game class)
 		"""
 
 		# TODO: add size of the labyrinth in the constructor?
@@ -189,7 +188,7 @@ class Labyrinth(Game):
 
 		# call the superclass constructor (only at the end, because the superclass constructor launches
 		# the players and they will immediately requires some Labyrinth's properties)
-		super().__init__(player1, player2, seed)
+		super().__init__(player1, player2, **options)
 
 		self._playerEnergy[self._whoPlays] = INITIAL_ENERGY_FIRST
 

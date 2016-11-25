@@ -50,20 +50,6 @@ typedef struct
 } t_move;
 
 
-/* Game type
-defines the type of a game:
-0 -> regular games (against regular player)
-1 -> against Do_nothing player (player that does nothing)
-*/
-typedef enum
-{
-    REGULAR_GAME = 0,
-    DO_NOTHING_GAME = 1,
-    PLAY_RANDOM = 2
-} t_gameType;
-
-
-
 /* -------------------------------------
  * Initialize connection with the server
  * Quit the program if the connection to the server 
@@ -92,19 +78,30 @@ void closeConnection();
 
 
 
-/* ----------------------------------------------------
- * Wait for a labyrinth, and retrieve its name and size
+/* ------------------------------------------------------------------------------
+ * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - gameType: type of the game the player is waiting for 
- * - labyrinthName: string (max 50 characters), corresponds 
- *   to the labyrinth name
- * - sizeX, sizeY: sizes of the labyrinth
+ * - fct: name of the function that calls waitForGame (used for the logging)
+ * - training: string (max 50 characters) type of the training player we want to play with
+ *   (empty string for regular game)
+ * - gameName: string (max 50 characters), corresponds to the game name
+ * - data: string (max 128 characters), corresponds to the data
+ *
+ * training is a string like "NAME key1=value1 key2=value1 ..."
+ * - NAME can be empty. It gives the type of the training player
+ * - key=value pairs are used for options (each training player has its own options)
+ *   invalid keys are ignored, invalid values leads to error
+ *   the following options are common to every training player (when NAME is not empty):
+ *   - timeout: allows an define the timeout when training (in seconds)
+ *
+ * the NAME could be:
+ * - "DO_NOTHING" to play against DO_NOTHING player (player that does not move)
+ * - "PLAY_RANDOM" for a player that make random (but legal) moves (option "rotation=False/True")
+ *
+ *
  */
-void waitForLabyrinth( t_gameType gameType, 
-		       char* labyrinthName, 
-		       int* sizeX, 
-		       int* sizeY);
+void waitForLabyrinth( char* training, char* labyrinthName, int* sizeX, int* sizeY);
 
 
 
