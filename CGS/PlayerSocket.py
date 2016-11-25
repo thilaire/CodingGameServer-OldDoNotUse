@@ -320,3 +320,27 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData('0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 
+# TODO: régler ce problème (connection fermée au moment où le serveur envoie un message (exception BrokenPipeError à attraper
+#   [root] | [Errno 32] Broken pipe
+# Traceback (most recent call last):
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 85, in handle
+#     self.sendData(str(return_code))
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 190, in sendData
+#     self.request.sendall(str(head).encode('utf-8'))
+# BrokenPipeError: [Errno 32] Broken pipe
+# Traceback (most recent call last):
+#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 628, in process_request_thread
+#     self.finish_request(request, client_address)
+#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 357, in finish_request
+#     self.RequestHandlerClass(request, client_address, self)
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 54, in __init__
+#     super().__init__(request, client_address, server)
+#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 684, in __init__
+#     self.handle()
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 147, in handle
+#     raise err
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 85, in handle
+#     self.sendData(str(return_code))
+#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 190, in sendData
+#     self.request.sendall(str(head).encode('utf-8'))
+# BrokenPipeError: [Errno 32] Broken pipe
