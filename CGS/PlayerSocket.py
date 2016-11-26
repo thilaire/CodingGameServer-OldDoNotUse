@@ -320,7 +320,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData('0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
 
 
-# TODO: régler ce problème (connection fermée au moment où le serveur envoie un message (exception BrokenPipeError à attraper
+# TODO: régler ce problème (connection fermée au moment où le serveur envoie un message (exception BrokenPipeError à attraper)
 #   [root] | [Errno 32] Broken pipe
 # Traceback (most recent call last):
 #   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 85, in handle

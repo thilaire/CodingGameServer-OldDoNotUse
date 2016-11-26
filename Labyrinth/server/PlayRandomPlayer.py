@@ -20,7 +20,9 @@ from random import choice, randint
 from .Constants import MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, DO_NOTHING
 from .Constants import ROTATE_COLUMN_DOWN, ROTATE_COLUMN_UP, ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_ENERGY
 from .Constants import Ddx, Ddy
+import logging
 
+boolConv = { 'true':True, 'false':False }
 
 class PlayRandomPlayer(Player):
 
@@ -30,8 +32,8 @@ class PlayRandomPlayer(Player):
 		# check "rotate" option
 		if "rotate" not in options:
 			self.rotate = True
-		elif options["rotate"] in ("False","True"):
-			self.rotate = bool(options["rotate"])
+		elif options["rotate"].lower() in boolConv:
+			self.rotate = boolConv[options["rotate"].lower()]
 		else:
 			raise ValueError("The option rotate=%s is incorrect." % options["rotate"])
 

@@ -358,7 +358,7 @@ class Labyrinth(Game):
 		msg = []
 		for y in range(self.H):
 			for x in range(self.L):
-				msg.append("1" if self.lab[x][y] else "0")
+				msg.append("0" if self.lab[x][y] else "1")
 		return "".join(msg)
 
 	def getDataSize(self):

@@ -20,7 +20,7 @@ File: labyrinthAPI.h
 #ifndef __API_CLIENT_LABYRINTH__
 #define __API_CLIENT_LABYRINTH__
 #include "ret_type.h"
-/* TODO: enlever l'inclusion de GameAPI.h, puisque ce truc est interne... il faudra (je ne vois pas comment faire autrement) recopier le t_return_code ici... */
+
 typedef enum
 {
 	ROTATE_LINE_LEFT = 	0,
@@ -82,11 +82,11 @@ void closeConnection();
  * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - fct: name of the function that calls waitForGame (used for the logging)
  * - training: string (max 50 characters) type of the training player we want to play with
  *   (empty string for regular game)
  * - gameName: string (max 50 characters), corresponds to the game name
- * - data: string (max 128 characters), corresponds to the data
+ * - labyrinthName: string (max 50 characters), corresponds to the game name
+ * - sizeX, sizeY: sizes of the labyrinth
  *
  * training is a string like "NAME key1=value1 key2=value1 ..."
  * - NAME can be empty. It gives the type of the training player

@@ -56,11 +56,10 @@ void closeConnection()
  * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - fct: name of the function that calls waitForGame (used for the logging)
  * - training: string (max 50 characters) type of the training player we want to play with
  *   (empty string for regular game)
- * - gameName: string (max 50 characters), corresponds to the game name
- * - data: string (max 128 characters), corresponds to the data
+ * - labyrinthName: string (max 50 characters), corresponds to the game name
+ * - sizeX, sizeY: sizes of the labyrinth
  *
  * training is a string like "NAME key1=value1 key2=value1 ..."
  * - NAME can be empty. It gives the type of the training player

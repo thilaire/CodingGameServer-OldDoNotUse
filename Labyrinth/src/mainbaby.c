@@ -32,29 +32,29 @@ void rotateColumn( t_laby* laby, int column, int delta)
 
 
 /* Play a move (change the labyrinth and coordinate accordingly */
-void playMove( t_laby* laby, t_move move)
+void playMove( t_laby* lab, t_move move)
 {
 	if (move.type==ROTATE_LINE_RIGHT)
-		rotateLine(laby, move.value, 1);
+		rotateLine(lab, move.value, 1);
 	else if (move.type==ROTATE_LINE_LEFT)
-		rotateLine(laby, move.value, -1);
+		rotateLine(lab, move.value, -1);
 	else if (move.type==ROTATE_COLUMN_UP)
-		rotateColumn(laby, move.value, 1);
+		rotateColumn(lab, move.value, 1);
 	else if (move.type==ROTATE_COLUMN_DOWN)
-		rotateColumn(laby, move.value, -1);
+		rotateColumn(lab, move.value, -1);
 	else {
 		/* pointer to the position of the current player */
-		int *pX = laby->player ? &laby->X : &laby->opX;
-		int *pY = laby->player ? &laby->Y : &laby->opY;
+		int *pX = lab->player ? &lab->X : &lab->opX;
+		int *pY = lab->player ? &lab->Y : &lab->opY;
 
 		if (move.type == MOVE_UP)
-			*pY = (*pY + 1) % laby->sizeY;
+			*pY = (*pY + 1) % lab->sizeY;
 		else if (move.type == MOVE_DOWN)
-			*pY = (*pY + laby->sizeY - 1) % laby->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
+			*pY = (*pY + lab->sizeY - 1) % lab->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
 		else if (move.type == MOVE_RIGHT)
-			*pX = (*pX + 1) % laby->sizeX;
+			*pX = (*pX + 1) % lab->sizeX;
 		else if (move.type == MOVE_LEFT)
-			*pX = (*pX + laby->sizeX - 1) % laby->sizeX;    // idem
+			*pX = (*pX + lab->sizeX - 1) % lab->sizeX;    // idem
 	}
 }
 
