@@ -32,15 +32,19 @@ THEAD = $(LAPIDIR)/labyrinthAPI.h $(GAPIDIR)/ret_type.h
 LSRC = $(LAPIDIR)/labyrinthAPI.c $(GAPIDIR)/GameAPI.c
 LOBJ = $(OBJDIR)/labyrinthAPI.o  $(OBJDIR)/GameAPI.o
 
-lib: $(LDIR)/cgslib.a lheaders 
 
-$(LDIR)/cgslib.a: $(OBJDIR)/cgslib.a | $(LDIR)
+
+
+lib: $(LDIR)/libcgs.a lheaders 
+template : $(TSRCDIR)/template.c $(TSRCDIR)/makefile
+
+$(LDIR)/libcgs.a: $(OBJDIR)/libcgs.a | $(LDIR)
 	cp $< $(LDIR)/
 
 lheaders: $(THEAD) | $(HDIR)
 	cp $(THEAD) $(HDIR)
 
-$(OBJDIR)/cgslib.a:  $(LOBJ) | $(OBJDIR)
+$(OBJDIR)/libcgs.a:  $(LOBJ) | $(OBJDIR)
 	ar r $@ $(LOBJ)
 	ranlib $@
 
@@ -64,5 +68,12 @@ $(OBJDIR)/GameAPI.o:  $(GAPIDIR)/GameAPI.c  $(GAPIDIR)/GameAPI.h $(GAPIDIR)/ret_
 %.o: %.c
 	$(CC) $(CCFLAGS) -I$(GAPIDIR) -I$(LAPIDIR) -o $(OBJDIR)/$@ -c $< 
 
+
+$(TSRCDIR)/template.c : $(SRCDIR)/template.c
+	cp -f $< $@
+
+$(TSRCDIR)/makefile : $(SRCDIR)/make_template
+	cp -f $< $@
+
 clean:
-	rm -f $(OBJDIR)/*  $(LDIR)/* $(HDIR)/*
+	rm -f $(OBJDIR)/*  $(LDIR)/* $(HDIR)/* $(TSRCDIR)/*
