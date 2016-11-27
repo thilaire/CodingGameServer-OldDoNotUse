@@ -76,35 +76,35 @@ void connectToServer( char* serverName, int port, char* name);
 */
 void closeConnection();
 
-
-
-/* ------------------------------------------------------------------------------
- * Wait for a Game, and retrieve its name and first data (typically, array sizes)
+/* ----------------------------------------------------------------
+ * Wait for a Game, and retrieve its name and first data 
+ * (typically, array sizes)
  *
  * Parameters:
- * - training: string (max 50 characters) type of the training player we want to play with
- *   (empty string for regular game)
- * - gameName: string (max 50 characters), corresponds to the game name
- * - labyrinthName: string (max 50 characters), corresponds to the game name
+ * - training: string (max 50 characters) type of the training
+ *             player we want to play with
+ *             (empty string for regular game)
+ * - labyrinthName: string (max 50 characters), 
+ *                  corresponds to the game name
  * - sizeX, sizeY: sizes of the labyrinth
  *
  * training is a string like "NAME key1=value1 key2=value1 ..."
  * - NAME can be empty. It gives the type of the training player
- * - key=value pairs are used for options (each training player has its own options)
+ * - key=value pairs are used for options 
+ *   (each training player has its own options)
  *   invalid keys are ignored, invalid values leads to error
- *   the following options are common to every training player (when NAME is not empty):
- *   - timeout: allows an define the timeout when training (in seconds)
- *
+ *   the following options are common to every training player
+ *   (when NAME is not empty):
+ *        - timeout: allows an define the timeout
+ *                   when training (in seconds)
  * the NAME could be:
- * - "DO_NOTHING" to play against DO_NOTHING player (player that does not move)
- * - "PLAY_RANDOM" for a player that make random (but legal) moves (option "rotation=False/True")
- *
- *
+ * - "DO_NOTHING" to play against DO_NOTHING player 
+ *   (player that does not move)
+ * - "PLAY_RANDOM" for a player that make random (legal) moves 
+ *   (option "rotation=False/True")
  */
-void waitForLabyrinth( char* training, char* labyrinthName, int* sizeX, int* sizeY);
-
-
-
+void waitForLabyrinth( char* training, char* labyrinthName,
+		       int* sizeX, int* sizeY);
 /* -------------------------------------
  * Get the labyrinth and tell who starts
  * It fills the char* lab with the data of the labyrinth
