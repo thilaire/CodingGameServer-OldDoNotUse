@@ -1,7 +1,7 @@
 \documentclass[french,12pt,a4paper,twoside,openright,titlepage]{report}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -110,7 +110,25 @@ $\displaystyle }l<{$\end{lrbox}%
 \lstset{ %
  frame=single,	       
  language=C,
-}        
+}
+\usepackage{color}
+\lstset{
+	language=C, 
+	breaklines=true, 
+	tabsize=2, 
+	keywordstyle=\color{blue}, 
+	commentstyle=\color{gray50}, 
+	stringstyle=\color{red}, 
+	basicstyle=\tt,
+	morekeywords={True,False},
+	frame=single
+}
+
+
+
+
+
+
 \makeatletter
 \renewcommand{\thesection}{\@arabic\c@section}
 \makeatother
@@ -160,7 +178,7 @@ $\displaystyle }l<{$\end{lrbox}%
 
 \lhead[ROB3/MAIN3]{ROB3/MAIN3}
 \chead[]{}
-\rhead[Informatique général]{}
+\rhead[Informatique gÃ©nÃ©ral]{}
  
 \ifthenelse{\boolean{sol}}
 {
@@ -186,85 +204,85 @@ $\displaystyle }l<{$\end{lrbox}%
 
 \chapter*{Mini-Projet : Labyrinthe}
 
-L'objectif du projet est de programmer un jeu de Labyrinthe de façon à ce que votre programme puisse jouer une partie avec les programmes des autres étudiants.
+L'objectif du projet est de programmer un jeu de Labyrinthe de faÃ§on Ã  ce que votre programme puisse jouer une partie contre les programmes des autres Ã©tudiants.
 
-\section{Organisation générale du projet}
+\section{Organisation gÃ©nÃ©rale du projet}
 
-Ce projet se déroulera en binôme (ou trinome si nombre impair). Le choix des binomes est libre. La soutenance du projet aura lieu en deux temps : 
+Ce projet se dÃ©roulera en binÃ´me (ou trinÃ´me si nombre impair). Le choix des binÃ´mes est libre. La soutenance du projet aura lieu en deux temps : 
 \begin{itemize}
-\item une soutenance orale de 15 minutes (avec supports Power-Point (ou Beamer/\LaTeX) le \textbf{17 Janvier 2016}
-\item un tournoi de Labyrinthe entre les binomes. Le gagnant du tournoi aura l'honneur de rencontrer un programme réalisé par un enseignant et invaincu (par définition) jusqu'à aujourd'hui. Les modalités détaillées de la soutenance seront précisées mi-décembre. Le tournoi sera commun entre les spécialités ROB et MAIN.
+\item une soutenance orale de 15 minutes (avec supports Power-Point (ou Beamer/\LaTeX) le \textbf{17 Janvier 2016} ;
+\item un tournoi de Labyrinthe entre les binÃ´mes. Le gagnant du tournoi aura l'honneur de rencontrer un programme rÃ©alisÃ© par un enseignant et invaincu (par dÃ©finition) jusqu'Ã  aujourd'hui. Les modalitÃ©s dÃ©taillÃ©es de la soutenance seront prÃ©cisÃ©es mi-dÃ©cembre. Le tournoi sera commun entre les spÃ©cialitÃ©s ROB et MAIN.
 \end{itemize}
 
-\subsection{Déroulement du projet}
-Le projet se déroulera à partir du 29 Novembre. Vous bénéficierez de 3 séances de TP encadrées pour la réalisation de ce projet. L'encadrant de TP aura le rôle de chef de projet. C'est donc lui qui vous conseillera et vous guidera pour les étapes importantes, et c'est aussi lui qui validera la réalisation de chacune des étapes du projet.
+\subsection{DÃ©roulement du projet}
+Le projet se dÃ©roulera Ã  partir du 29 Novembre. Vous bÃ©nÃ©ficierez de 3 sÃ©ances de TP encadrÃ©es pour la rÃ©alisation de ce projet. L'encadrant de TP aura le rÃ´le de chef de projet. C'est donc lui qui vous conseillera et vous guidera pour les Ã©tapes importantes, et c'est aussi lui qui validera la rÃ©alisation de chacune des Ã©tapes du projet.
 
 \subsection{Assistance}
-À tout moment il vous est possible de poser une question sur la plateforme Piazza dédiée à l'adresse suivante :
+Ã€ tout moment il vous est possible de poser une question sur la plateforme Piazza dÃ©diÃ©e Ã  l'adresse suivante :
 \begin{center}
 %\url{http://piazza.com/upmc.fr/winter2016/pipopipette/home}
 \url{https://piazza.com/upmc.fr/fall2016/laby/home}
 \end{center}
-Vous allez très rapidement recevoir un email pour vous y inscrire.\\
-Cette plateforme permet à chacun de poser des questions sur un forum dédié au projet. Cela vous permettra de poser vos questions en dehors des séances de TP encadrées et d'obtenir des conseils ou de l'aide. Vous pouvez aussi utiliser ce forum entre vous pour vous aider (vous aider et non pas sous-traiter votre code!). N'hésitez pas à l'utiliser !
+Vous allez trÃ¨s rapidement recevoir un email pour vous y inscrire.\\
+Cette plateforme permet Ã  chacun de poser des questions sur un forum dÃ©diÃ© au projet. Cela vous permettra de poser vos questions en dehors des sÃ©ances de TP encadrÃ©es et d'obtenir des conseils ou de l'aide. Vous pouvez aussi utiliser ce forum entre vous pour vous aider (vous aider et non pas sous-traiter votre code!). N'hÃ©sitez pas Ã  l'utiliser !
 
 
-\subsection{Évaluation}
-Le projet sera évalué sur les critères suivants : 
+\subsection{Ã‰valuation}
+Le projet sera Ã©valuÃ© sur les critÃ¨res suivants : 
 \begin{itemize}
-\item L'avancement du projet au fur et à mesure (validation des étapes).
-\item La soutenance orale.
-\item La qualité du programme final (bugs, fonctionnalités codées, etc.).
+\item L'avancement du projet au fur et Ã  mesure (validation des Ã©tapes);
+\item La soutenance orale;
+\item La qualitÃ© du programme final (bugs, fonctionnalitÃ©s codÃ©es, etc.);
 \item La place au tournoi de Labyrinthe.
 \end{itemize}
 
-\section{Règles du jeu}
+\section{RÃ¨gles du jeu}
 \subsection{Le but du jeu}
-Vous êtes deux adversaires dans un labyrinthe. Un trésor (et un seul)
-est présent au milieu du labyrinthe.
+Vous Ãªtes deux adversaires dans un labyrinthe. Un trÃ©sor (et un seul)
+est prÃ©sent au milieu du labyrinthe.
 
-\textbf{L'objectif est d'être le premier à récupérer le trésor}
+\textbf{L'objectif est d'Ãªtre le premier Ã  rÃ©cupÃ©rer le trÃ©sor.}
 
-\subsection{Données d'une partie}
+\subsection{DonnÃ©es d'une partie}
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{./laby-init.png}
-\caption{\label{fig:init} Exemple d'un labyrinthe en début de partie. La case de coordonnées (0,0) est située en haut à gauche.}
+\caption{\label{fig:init} Exemple d'un labyrinthe en dÃ©but de partie. La case de coordonnÃ©es (0,0) est situÃ©e en haut Ã  gauche.}
 \end{figure}
-En début de partie le serveur de jeu vous envoie les informations suivantes :
+En dÃ©but de partie le serveur de jeu vous envoie les informations suivantes :
 \begin{itemize}
 \item La taille du labyrinthe en hauteur $H$ et longueur $L$ via la fonction \verb|waitForLabyrinth| (cf~\ref{sec:wait}). La taille
-est aléatoire et telle que $L$ et $H$ soient impairs, $13\leq L\leq 17$ et $9\leq H\leq 15$
-\item Le nom du labyrinthe
-\item Les données du labyrinthe : Les positions des murs (infranchissables) et des espaces libres. Sur la figure~\ref{fig:init}, les murs sont indiqués par des carrés noirs. Pour plus de détail, voir la fonction \verb|getLabyrinth| (cf~\ref{sec:getlab}).
+est alÃ©atoire et telle que $L$ et $H$ soient impairs, $13\leq L\leq 17$ et $9\leq H\leq 15$ ;
+\item Le nom du labyrinthe ;
+\item Les donnÃ©es du labyrinthe : Les positions des murs (infranchissables) et des espaces libres. Sur la figure~\ref{fig:init}, les murs sont indiquÃ©s par des carrÃ©s noirs. Pour plus de dÃ©tail, voir la fonction \verb|getLabyrinth| (cf~\ref{sec:getlab}) ;
 \item L'indication du joueur qui commence.
 \end{itemize}
 
 Ensuite, vous pouvez construire le labyrinthe initial sachant que :
 \begin{itemize}
-\item Le joueur qui commence est situé sur la case de coordonnées $x=0$ et $y=H/2$ (division entière).
-\item L'autre joueur est situé sur la case de coordonnées $x=L-1$ et $y=H/2$ (division entière).
-\item Le trésor est situé sur la case de coordonnées $x=L/2$ et $y=H/2$ (division entière).
-\item Le joueur qui commence a un niveau initial d'énergie de $0$, l'autre joueur a un niveau initial d'énergie de $1$.
+\item Le joueur qui commence est situÃ© sur la case de coordonnÃ©es $x=0$ et $y=H/2$ (division entiÃ¨re);
+\item L'autre joueur est situÃ© sur la case de coordonnÃ©es $x=L-1$ et $y=H/2$ (division entiÃ¨re);
+\item Le trÃ©sor est situÃ© sur la case de coordonnÃ©es $x=L/2$ et $y=H/2$ (division entiÃ¨re);
+\item Le joueur qui commence a un niveau initial d'Ã©nergie de $0$, l'autre joueur a un niveau initial d'Ã©nergie de $1$.
 \end{itemize}
-\textbf{Notez que les coordonnées $x=0$ et $y=0$ correspondent à la case située en haut à gauche.}
+\textbf{Notez que les coordonnÃ©es $x=0$ et $y=0$ correspondent Ã  la case situÃ©e en haut Ã  gauche.}
 
-Ensuite, à chaque tour de jeu, vous pouvez soit effectuer un déplacement classique de votre joueur, soit (à certaines conditions) effectuer une rotation du labyrinthe.
+Ensuite, Ã  chaque tour de jeu, vous pouvez soit effectuer un dÃ©placement classique de votre joueur, soit (sous certaines conditions) effectuer une rotation du labyrinthe.
 
-\subsection{Déplacement classique d'un joueur}
+\subsection{DÃ©placement classique d'un joueur}
 \begin{figure}
 \includegraphics[width=\textwidth]{laby-m2.png}\\
 \includegraphics[width=\textwidth]{laby-m1.png}
-\caption{\label{fig:move}Déplacement du joueur 1 vers la droite}
+\caption{\label{fig:move}DÃ©placement du joueur 1 vers la droite}
 \end{figure}
 
-A chaque tour vous pouvez vous déplacer d'une case vers une case libre (c'est à dire sans mur) vers 
+Ã€ chaque tour vous pouvez vous dÃ©placer d'une case vers une case libre (c'est-Ã -dire sans mur) vers 
 le haut, le bas, la gauche ou la droite. Vous pouvez aussi rester sur place. La figure~\ref{fig:move} montre
-un exemple de déplacement.
+un exemple de dÃ©placement.
 \begin{itemize}
-\item A chaque fois que vous faites un déplacement de ce type, vous gagnez une unité d'énergie.
-\item Vous ne pouvez pas vous déplacer sur un mur, par contre, vous pouvez vous déplacer sur votre adversaire,
-ou sur le trésor (dans ce cas vous le récupérez).
-\item Le labyrinthe est circulaire (et même toroïde !), un joueur sortant à gauche se retrouve tout à droite
+\item Ã€ chaque fois que vous faites un dÃ©placement de ce type, vous gagnez une unitÃ© d'Ã©nergie ;
+\item Vous ne pouvez pas vous dÃ©placer sur un mur, par contre, vous pouvez vous dÃ©placer sur votre adversaire,
+ou sur le trÃ©sor (dans ce cas vous le rÃ©cupÃ©rez);
+\item Le labyrinthe est circulaire (et mÃªme toroÃ¯de !), un joueur sortant Ã  gauche se retrouve tout Ã  droite
 et un joueur sortant en haut se retrouve en bas.
 \end{itemize}
 
@@ -275,13 +293,13 @@ et un joueur sortant en haut se retrouve en bas.
 \caption{\label{fig:rot} Rotation de la colonne 3 vers le haut}
 \end{figure}
 
-A chaque tour vous pouvez dépenser 5 unités d'energie pour décaler une ligne
-(ou une colonne) entière du labyrinthe d'une case vers la gauche ou vers la droite
- (haut/bas pour la colonne). La figure~\ref{fig:rot} présente un exemple de rotation.
+Ã€ chaque tour vous pouvez dÃ©penser 5 unitÃ©s d'Ã©nergie pour dÃ©caler une ligne
+(ou une colonne) entiÃ¨re du labyrinthe d'une case vers la gauche ou vers la droite
+ (haut/bas pour la colonne). La figure~\ref{fig:rot} prÃ©sente un exemple de rotation.
  
  \begin{itemize}
- \item La rotation est circulaire : la case sortante d'un côté entre de l'autre
-\item Les joueurs ou le trésor se déplacent avec la rotation du labyrinthe.
+ \item La rotation est circulaire : la case sortante d'un cÃ´tÃ© entre de l'autre ;
+\item Les joueurs ou le trÃ©sor se dÃ©placent avec la rotation du labyrinthe.
  \end{itemize}
 
 \subsection{Conditions de fin de partie}
@@ -289,179 +307,186 @@ A chaque tour vous pouvez dépenser 5 unités d'energie pour décaler une ligne
 Conditions de victoire :
 
 \begin{itemize}
-\item Vous atteignez le trésor en premier
+\item Vous atteignez le trÃ©sor en premier;
 \item Votre adversaire perd avant.
 \end{itemize}
 
-Conditions de défaite :
+Conditions de dÃ©faite :
 \begin{itemize}
-\item Votre adversaire atteint le trésor avant vous
-\item Vous faites un coup illégal (ex : déplacement dans un mur)
-\item Vous tentez de faire une rotation, mais n'avez pas assez d'énergie
-\item Vous ne respectez pas le séquencement du programme (cf section~\ref{sec:sequences})
-\item Vous mettez trop de temps à jouer
+\item Votre adversaire atteint le trÃ©sor avant vous;
+\item Vous faites un coup illÃ©gal (ex : dÃ©placement dans un mur);
+\item Vous tentez de faire une rotation, mais n'avez pas assez d'Ã©nergie;
+\item Vous ne respectez pas le sÃ©quencement du programme (cf section~\ref{sec:sequences});
+\item Vous mettez trop de temps Ã  jouer (max. 10 secondes).
 \end{itemize}
 
 
 \section{Structure du programme}
-Votre programme labyrinthe devra se connecter à un serveur de jeu qui a deux rôles :
+Votre programme Labyrinthe devra se connecter Ã  un serveur de jeu qui a deux rÃ´les :
 \begin{enumerate}
-\item Mettre en relation des programmes afin de les faire jouer entre eux
-\item Vérifier la validité des coups joués et déclarer le joueur gagnant
+\item Mettre en relation des programmes afin de les faire jouer entre eux;
+\item VÃ©rifier la validitÃ© des coups jouÃ©s et dÃ©clarer le joueur gagnant.
 \end{enumerate}
 
 \subsection{Fichiers fournis}
 \label{sec:fourni}
 Tous les fichiers qui vous sont fournis dans le cadre de ce projet sont disponible sur le serveur de Polytech
 aux emplacements \verb|/home/sasl/encad/brajard/projet/CGS_distrib| et \verb|/home/sasl/encad/brajard/projet/CGS_lib|.
-Il vous est conseillé de :
+Il vous est conseillÃ© de :
 \begin{itemize}
-\item Copier sur votre compte les fichiers \verb|template.c| et \verb|makefile| fournis que vous pourrez modifier (tous le contenu du répertoire \verb|CGS_distrib|)\\
-Par exemple, si vous êtes dans le répertoire dans lequel vous souhaitez réaliser votre projet, il suffit de faire :\\
+\item Copier sur votre compte les fichiers \verb|template.c| et \verb|makefile| fournis que vous pourrez modifier (tous le contenu du rÃ©pertoire \verb|CGS_distrib|)\\
+Par exemple, si vous Ãªtes dans le rÃ©pertoire dans lequel vous souhaitez rÃ©aliser votre projet, il suffit de faire :\\
 \verb|cp /home/sasl/encad/brajard/projet/CGS_distrib/* .|
-(n'oubliez pas le \verb|.| à la fin)
-\item Ne pas changer les chemins vers les \textit{header} et \textit{bibliothèques}  indiquées dans le \verb|makefile| (ne pas copier le contenu du sous-répertoire \verb|CGS_lib|). Attention les bibliothèques ont été compilées sur les machine de polytech et ne fonctionnent donc qu'à Polytech (ou sur une machine équivalente).
+(n'oubliez pas le \verb|.| Ã  la fin);
+\item Ne pas changer les chemins vers les \textit{header} et \textit{bibliothÃ¨ques}  indiquÃ©es dans le \verb|makefile| (ne pas copier le contenu du sous-rÃ©pertoire \verb|CGS_lib| car il pourra potentiellement Ãªtre mis Ã  jour si nÃ©cessaire). Attention les bibliothÃ¨ques ont Ã©tÃ© compilÃ©es sur les machine de polytech et ne fonctionnent donc qu'Ã  Polytech (ou sur une machine Ã©quivalente).
 \end{itemize}
 
-On donne ci-après la structure générale de votre programme. Les fonctions appelés et les types utilisés sont détaillés
-dans la section~\ref{sec:api}.  Les modèles de structure et les prototypes des fonctions sont décrits dans le fichier 
-\verb|CGS_distrib/include/labyrinthAPI.h|
-Voici les différentes étapes que devra respecter votre programme pour interagir avec le serveur.
+On donne ci-aprÃ¨s la structure gÃ©nÃ©rale de votre programme. Les fonctions appelÃ©es et les types utilisÃ©s sont dÃ©taillÃ©s
+dans la section~\ref{sec:api}.  Les modÃ¨les de structure et les prototypes des fonctions sont dÃ©crits dans le fichier 
+\verb|CGS_distrib/include/labyrinthAPI.h|\\
+Voici les diffÃ©rentes Ã©tapes que devra respecter votre programme pour interagir avec le serveur.
 
-\subsection{Etapes à respecter dans votre programme}
+\subsection{Ã‰tapes Ã  respecter dans votre programme}
 \label{sec:sequences}
-Ces étapes sont en grande partie (mais pas complètement) codées dans le fichier \verb|template.c| qui vous est fourni en début de projet (voir section~\ref{sec:fourni})
+Ces Ã©tapes sont en grande partie (mais pas complÃ¨tement) codÃ©es dans le fichier \verb|template.c| qui vous est fourni en dÃ©but de projet (voir section~\ref{sec:fourni})
 \begin{enumerate}
-\item Se connecter au serveur en appelant la fonction \verb|connectToServer|
-\item Demander un Labyrinthe en appelant la fonction \verb|waitForLabyrinth| 
+\item Se connecter au serveur en appelant la fonction \verb|connectToServer|;
+\item Demander un Labyrinthe en appelant la fonction \verb|waitForLabyrinth| :
 \begin{itemize}
-\item Pour jouer contre un joueur par défaut toujours disponible, le spécifier avec l'option "training"
+\item Pour jouer contre un joueur par dÃ©faut toujours disponible, le spÃ©cifier avec le paramÃ¨tre "training"
 
-Ex: \texttt{training="DO\_NOTHING\_GAME timeout = n"} (en spécifiant une valeur pour \verb|n| (cf~\ref{sec:default}). D'autres adversaires par défaut peuvent être spécifiés. 
+Ex: \texttt{training="DO\_NOTHING\_GAME timeout=n"} (en spÃ©cifiant une valeur pour \verb|n| (cf~\ref{sec:default}). D'autres adversaires par dÃ©faut peuvent Ãªtre spÃ©cifiÃ©s. 
 
-\item Pour joueur contre un autre programme, vous devez laisser l'option \texttt{training} vide (""). Vous devez alors vous rendre sur la page web du serveur via un navigateur (ex : \url{http://pc4021.polytech.upmc.fr:8088} pour un serveur tournant sur le pc4021) et créer une rencontre entre vous et un autre joueur. Attention la page web n'est accessible que depuis une machine du réseau Poytech'.
+\item Pour joueur contre un autre programme, vous devez laisser l'option \texttt{training} vide (\verb|""|). Vous devez alors vous rendre sur la page web du serveur via un navigateur (ex : \url{http://pc4021.polytech.upmc.fr:8088} pour un serveur tournant sur le pc4021) et crÃ©er une rencontre entre vous et un autre joueur. Attention la page web n'est accessible que depuis une machine du rÃ©seau Poytech'.
 \end{itemize}
-\item Récupérer les données du labyrinthe en appelant la fonction \verb|getLabyrinth|.
-\item Répéter les actions suivantes :
+\item RÃ©cupÃ©rer les donnÃ©es du labyrinthe en appelant la fonction \verb|getLabyrinth|;
+\item RÃ©pÃ©ter les actions suivantes :
 \begin{itemize}
-\item Si c'est à vous de jouer : Envoyer votre coup en appelant la fonction \verb|sendMove|, vous récupérez le code \verb|ret|.
-\item Si c'est à l'adversaire de jouer : Récupérer le coup joué par l'adversaire en appelant la fonction \verb|getMove|, vous récupérez égalelement le code \verb|ret|.
+\item Si c'est Ã  vous de jouer : envoyer votre coup en appelant la fonction \verb|sendMove|, vous rÃ©cupÃ©rez le code \verb|ret|.
+\item Si c'est Ã  l'adversaire de jouer : rÃ©cupÃ©rer le coup jouÃ© par l'adversaire en appelant la fonction \verb|getMove|, vous rÃ©cupÃ©rez Ã©galement le code \verb|ret|.
 \item En fonction de \verb|ret| :
 \begin{itemize}
-\item \verb|ret==MOVE_OK| : vous pouvez continuer à jouer
-\item \verb|ret==MOVE_LOSE| : le joueur qui vient de jouer à perdu.
-\item \verb|ret==MOVE_WIN| : le joueur qui vient de jouer à gagné
+\item \verb|ret==MOVE_OK| : vous pouvez continuer Ã  jouer;
+\item \verb|ret==MOVE_LOSE| : le joueur qui vient de jouer Ã  perdu;
+\item \verb|ret==MOVE_WIN| : le joueur qui vient de jouer Ã  gagnÃ©.
 \end{itemize}
 \end{itemize}
-\item Fermer la connexion au serveur en appelant la fonction \verb|closeConnection|
+\item Fermer la connexion au serveur en appelant la fonction \verb|closeConnection|.
 \end{enumerate}
-De plus, à tout moment, vous pouvez demander l'affichage du jeu à l'écran en appelant la fonction \verb|printLabyrinth|.
+De plus, Ã  tout moment, vous pouvez demander l'affichage du jeu Ã  l'Ã©cran en appelant la fonction \verb|printLabyrinth|.
 
-\subsection{Les joueurs par défaut}
+\subsection{Les joueurs par dÃ©faut}
 \label{sec:default}
-Lors de l'appel de la fonction \verb|waitForLabyrinth|, il est possible de demander un joueur par défaut  ("training player").
+Lors de l'appel de la fonction \verb|waitForLabyrinth|, il est possible de demander un joueur par dÃ©faut  ("training player").
 Vous pourrez alors tester votre programme sans qu'un autre joueur ne se connecte sur le serveur.
-Pour cela, il faut spécifier dans une chaîne de caractère \verb|training|  le nom de ce joueur par défaut, ainsi que les paramètres. Pour l'instant, deux joueurs par défauts sont disponibles : 
+Pour cela, il faut spÃ©cifier dans une chaÃ®ne de caractÃ¨re \verb|training|  le nom de ce joueur par dÃ©faut, ainsi que les paramÃ¨tres. Pour l'instant, deux joueurs par dÃ©fauts sont disponibles : 
 \begin{itemize}
 \item \textbf{DO\_NOTHING} : Ce joueur ne fait aucun mouvement.
 
-Exemple : \verb|training = "DO_NOTHING timeout=10"| pour le joueur DO\_NOTHING avec une limite de temps pour jouer (voir conditions de défaites~\ref{sec:endgame}) de 10 sec (Ce temps peut être changé).
+Exemple : \verb|training = "DO_NOTHING timeout=10"| pour le joueur DO\_NOTHING avec une limite de temps pour jouer (voir conditions de dÃ©faites~\ref{sec:endgame}) de 10 sec (Ce temps peut Ãªtre changÃ©).
 
-\item \textbf{PLAY\_RANDOM} : Ce joueur joue aléatoirement, mais tous ses coups sont valides.
+\item \textbf{PLAY\_RANDOM} : Ce joueur joue alÃ©atoirement, mais tous ses coups sont valides.
 
-Exemple : \verb|training = "PLAY_RANDOM timeout=60 rotation=True"| pour jouer avec 60 s de limite de temps et la possibilité pour le joueur PLAY\_RANDOM de faire les rotations de lignes et colonnes dans le labyrinthe (mettre l'option à \verb|False| si on veut que PLAY\_RANDOM ne fasse que des déplacements classiques.)
+Exemple : \verb|training = "PLAY_RANDOM timeout=60 rotation=True"| pour jouer avec 60 s de limite de temps et la possibilitÃ© pour le joueur PLAY\_RANDOM de faire les rotations de lignes et colonnes dans le labyrinthe (mettre l'option Ã  \verb|False| si on veut que PLAY\_RANDOM ne fasse que des dÃ©placements classiques.)
 
-\item \textbf{...} : D'autres joueurs par défauts viendront s'ajouter en cours de projet.
+\item \textbf{...} : D'autres joueurs par dÃ©fauts viendront s'ajouter en cours de projet.
 
 \end{itemize}
 
 \section{\label{sec:api}API}
 
 
-\subsection{Les structures à utiliser}
+\subsection{Les structures Ã  utiliser}
 
 \subsubsection{La structure \texttt{t\_move}}
-Cette structure décrit un coup joué par vous ou par votre adversaire, elle utilisée dans les fonctions  \verb|sendMove| et \verb|getMove| :
+Cette structure dÃ©crit un coup jouÃ© par vous ou par votre adversaire, elle utilisÃ©e dans les fonctions  \verb|sendMove| et \verb|getMove| :
 \lstinputlisting[language=C, firstline=38, lastline=50]{../API/labyrinthAPI.h}
 Par exemple :
 \begin{itemize}
-\item Une variable \verb|m| décrivant le déplacement d'une case vers la droite a pour valeurs
+\item Une variable \verb|m| dÃ©crivant le dÃ©placement d'une case vers la droite a pour valeurs
 
-\verb|m.type = MOVE_RIGHT| et \verb|m.value = -1| (valeur non utilisée).
-\item Une variable \verb|m| décrivant une rotation de la colonne 3 vers le haut a pour valeurs
+\verb|m.type = MOVE_RIGHT| et \verb|m.value = -1| (valeur non utilisÃ©e).
+\item Une variable \verb|m| dÃ©crivant une rotation de la colonne 3 vers le haut a pour valeurs
 
-\verb|m.type = ROTATE_COLUMN_UP| et  \verb|m.value = 3|. On rappelle ici que la première colonne
-(et la première ligne) est numérotée 0.
+\verb|m.type = ROTATE_COLUMN_UP| et  \verb|m.value = 3|. On rappelle ici que la premiÃ¨re colonne
+(et la premiÃ¨re ligne) est numÃ©rotÃ©e 0.
 \end{itemize}
 
 \subsubsection{La structure \texttt{t\_return\_code}}
-Cette structure décrit le code retour des fonctions \verb|sendMove| et \verb|getMove|. Elle permet de décrire si un coup qui vient d'être joué
-est correct (\verb|MOVE_OK|), gagnant (\verb|MOVE_WIN|) ou perdant (\verb|MOVE_LOSE|). Cette valeur doit être testée
-dans votre programme pour savoir si vous devez rejouer ou si la partie est teminée.
+Cette structure dÃ©crit le code retour des fonctions \verb|sendMove| et \verb|getMove|. Elle permet de dÃ©crire si un coup qui vient d'Ãªtre jouÃ©
+est correct (\verb|MOVE_OK|), gagnant (\verb|MOVE_WIN|) ou perdant (\verb|MOVE_LOSE|). Cette valeur doit Ãªtre testÃ©e
+dans votre programme pour savoir si vous devez rejouer ou si la partie est teminÃ©e.
 
-%\subsubsection{L'énumération \texttt{t\_gameType}}
-%Cette énumération donne les choix de jeux possible (jouer seul ou contre un autre programme)
-%Pour le moment seuls deux types de jeux sont prévus :
+%\subsubsection{L'Ã©numÃ©ration \texttt{t\_gameType}}
+%Cette Ã©numÃ©ration donne les choix de jeux possible (jouer seul ou contre un autre programme)
+%Pour le moment seuls deux types de jeux sont prÃ©vus :
 %\begin{itemize}
 %\item \verb|DO_NOTHING_GAME| : pour jouer seul contre un adversaire qui ne fait rien.
 %\item \verb|REGULAR_GAME| : pour jouer contre un autre programme
 %\end{itemize}
-%Dans le futur, d'autres types de jeu seront mis à disposition pour jouer seul.
+%Dans le futur, d'autres types de jeu seront mis Ã  disposition pour jouer seul.
 %\lstinputlisting[language=C, firstline=53, lastline=62]{../API/labyrinthAPI.h}
 
 
 \subsection{Fonctions fournies}
  
 \subsubsection{\texttt{connectToServer}}
+Permet de se connecter au serveur (Ã  faire une seule fois, en dÃ©but de programme).
 \lstinputlisting[language=C, firstline=53, lastline=66]{../API/labyrinthAPI.h}
-Le numéro de port et le nom du serveur vous seront donné lors de la première séance.
+Le numÃ©ro de port et le nom du serveur vous seront donnÃ© lors de la premiÃ¨re sÃ©ance.
 
 
 
 \subsubsection{\texttt{closeConnection}}
+Permet de se dÃ©connecter du serveur (Ã  la fin du programme).
 \lstinputlisting[language=C, firstline=70, lastline=77]{../API/labyrinthAPI.h}
 
 
 \subsubsection{\texttt{waitForLabyrinth}}
+Permet d'attendre une partie Labyrinth, et de rÃ©cupÃ©rer son nom et sa taille. Permet aussi de spÃ©cifier si on veut jouer contre un joueur d'entrainement.
 \label{sec:wait}
-\lstinputlisting[language=C, firstline=79, lastline=106]{../API/labyrinthAPI.h}
-Les arguments \texttt{labyrinthName}, \texttt{sizeX} et \texttt{sizeY} sont passés via des pointeurs et leurs valeurs
-seront donc données en sortie de fonction.
+\lstinputlisting[language=C, firstline=79, lastline=107]{../API/labyrinthAPI.h}
+Les arguments \texttt{labyrinthName}, \texttt{sizeX} et \texttt{sizeY} sont passÃ©s via des pointeurs et leurs valeurs
+seront donc donnÃ©es en sortie de fonction.
 
 
 \subsubsection{\texttt{getLabyrinth}}
+Permet de rÃ©cupÃ©rer les donnÃ©es initiales du labyrinthe.
 \label{sec:getlab}
 \lstinputlisting[language=C, firstline=108, lastline=119]{../API/labyrinthAPI.h}
-L'argument \texttt{lab} est passé via un pointeur et 
-la valeur sera donc données en sortie de fonction. Le tableau \texttt{lab} rempli par cette
-fonction est un tableau à 1 dimension de taille $L\times H$ qui contient des caractères. Les caractères sont
-des $0$ pour les cases libres et $1$ pour les murs. Il est rempli dans le sens des lignes, c'est à dire que les $L$
-premiers caractères correspondent aux $L$ cases de la ligne 0, les $L$ suivants correspondent à la ligne 1, etc.
-Les $L$ derniers caractères du tableau \verb|lab| correspondent ainsi à la ligne $H-1$.
+L'argument \texttt{lab} est passÃ© via un pointeur et 
+la valeur sera donc donnÃ©es en sortie de fonction. Le tableau \texttt{lab} rempli par cette
+fonction est un tableau Ã  1 dimension de taille $L\times H$ qui contient des entier (sur 8 bits). Les cases valent $0$ pour les cases libres et $1$ pour les murs. Il est rempli dans le sens des lignes, c'est-Ã -dire que les $L$
+premiÃ¨res valeurs correspondent aux $L$ cases de la ligne 0, les $L$ suivantes correspondent Ã  la ligne 1, etc.
+Les $L$ derniÃ¨res valeurs du tableau \verb|lab| correspondent ainsi Ã  la ligne $H-1$.
 
 
 \subsubsection{\texttt{getMove}}
+Permet de rÃ©cupÃ©rer le coup jouÃ© par l'adversaire.
 \lstinputlisting[language=C, firstline=123, lastline=135]{../API/labyrinthAPI.h}
-L'argument \texttt{move} est passé via un pointeur et 
-la valeur sera donc donnée en sortie de fonction.
+L'argument \texttt{move} est passÃ© via un pointeur et 
+la valeur sera donc donnÃ©e en sortie de fonction.
 
 
 \subsubsection{\texttt{sendMove}}
+Permet de jouer un coup.
 \lstinputlisting[language=C, firstline=139, lastline=151]{../API/labyrinthAPI.h}
-L'argument \texttt{move} est passé en entrée de la fonction
+L'argument \texttt{move} est passÃ© en entrÃ©e de la fonction
 
 \subsubsection{\texttt{printLabyrinth}}
+Permet d'afficher le labyrinthe.
 \lstinputlisting[language=C, firstline=155, lastline=159]{../API/labyrinthAPI.h}
 
-\section{Les étapes}
-Votre projet sera suivi par votre responsable de TP qui s'assurera que vous complèterez les différentes étapes d'achèvement de votre projet. Les étapes (dans l'ordre) sont les suivantes : 
+\section{Les Ã©tapes}
+Votre projet sera suivi par votre responsable de TP qui s'assurera que vous complÃ¨terez les diffÃ©rentes Ã©tapes d'achÃ¨vement de votre projet. Les Ã©tapes (dans l'ordre) sont les suivantes : 
 \begin{enumerate}
- \item Programme qui ne fait rien (équivalent du "do nothing"). Ce programme consiste en une petite modification du fichier \verb|template.c| fourni de façon à intégrer la boucle du jeu et les conditions de fins de partie.
- \item Programme où vous indiquez "à la main" le coup que vous voulez jouer. Ce programme (avec un timeout adapté pour vous laisser le temps) vous permettra d'indiquer le coup joué à la main (à l'aide par exemple d'un \verb|scanf|). Le but étant de se familiariser avec le jeu. Inutile de "sécuriser" votre appel à la fonction \verb|scanf|.
- \item Programme qui joue de façon aléatoire. C'est une étape importante, car il faudra mettre en place les structures qui permettront à votre programme de connaître l'ensemble des coups possibles (prise en compte des murs, et des rotations). Notez qu'à cette étape, votre programme sera capable de participer au tournoi prévu fin janvier (même si ses chances de victoire seront minces).
- \item Programme qui joue de façon intelligente avec l'algorithme A*. Cette étape consiste à programmer un algorithme A*
- de façon à ce que votre programme aille vers le trésor le plus rapidement possible, mais sans effectuer aucune rotation.
- \item (si possible) Programme qui joue de façon très intelligente. Ce programme devra intégrer la notion de chemin le plus court déterminé à l'étape précédente mais pourra également effectuer des rotations de labyrinthe. Cette dans cette étape là que vous déterminez une stratégie pour votre programme.
+ \item Programme qui ne fait rien (Ã©quivalent du "do nothing"). Ce programme consiste en une petite modification du fichier \verb|template.c| fourni de faÃ§on Ã  intÃ©grer la boucle du jeu et les conditions de fins de partie. Le programme doit jouer le coup vide (\verb|DO_NOTHING|).
+ \item Programme oÃ¹ vous indiquez "Ã  la main" le coup que vous voulez jouer. Ce programme (avec un timeout adaptÃ© pour vous laisser le temps) vous permettra d'indiquer le coup jouÃ© Ã  la main (Ã  l'aide par exemple d'un \verb|scanf|). Le but Ã©tant de se familiariser avec le jeu. Inutile de "sÃ©curiser" votre appel Ã  la fonction \verb|scanf|.
+ \item Programme qui joue de faÃ§on alÃ©atoire. C'est une Ã©tape importante, car il faudra mettre en place les structures qui permettront Ã  votre programme de connaÃ®tre l'ensemble des coups possibles (prise en compte des murs, et des rotations). Notez qu'Ã  cette Ã©tape, votre programme sera capable de participer au tournoi prÃ©vu fin janvier (mÃªme si ses chances de victoire seront minces).
+ \item Programme qui joue de faÃ§on intelligente avec l'algorithme A*. Cette Ã©tape consiste Ã  programmer un algorithme A*
+ de faÃ§on Ã  ce que votre programme aille vers le trÃ©sor le plus rapidement possible, mais sans effectuer aucune rotation.
+ \item (si possible) Programme qui joue de faÃ§on trÃ¨s intelligente. Ce programme devra intÃ©grer la notion de chemin le plus court dÃ©terminÃ© Ã  l'Ã©tape prÃ©cÃ©dente mais pourra Ã©galement effectuer des rotations de labyrinthe. C'est dans cette Ã©tape lÃ  que vous dÃ©terminez une stratÃ©gie pour votre programme.\\
+ Pour prendre en considÃ©ration les coups possibles de l'adversaire, des algorithmes de type min-max pourront Ãªtre mis en \oe ivre.
  \end{enumerate}
 
 
