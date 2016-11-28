@@ -316,7 +316,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		# Get the labyrinth
 		self.sendData("OK")
 		self.sendData(self.game.getData())
-		self.sendData('0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
+		self.sendData('0' if self.game.playerWhoPlays is self._player else '1')  # send '0' if we begin, '1' otherwise
 
 
 

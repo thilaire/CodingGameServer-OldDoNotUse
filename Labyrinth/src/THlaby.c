@@ -20,6 +20,7 @@ typedef struct {
 	int trX,trY;		/* treasure position */
 	int X,Y;			/* our position */
 	int opX,opY;		/* opponent position */
+	int us;             /* our number player*/
 	int player;			/* gives who plays (0: us, 1: the opponent) */
 } t_laby;
 
@@ -32,16 +33,62 @@ void waitLab( t_laby* lab, char* training)
 
 	/* get the labyrinth */
 	lab->data = (char*) malloc( lab->sizeX * lab->sizeY );
-	lab->player = getLabyrinth( lab->data);
+	lab->us = getLabyrinth( lab->data);
+    lab->player = 0;    /* player 0 always starts */
+
+    /* change the data of the labyrinth (now 0 is empty, -1 is wall) */
+    char* data = lab->data;
+    for (int i=0; i<lab->sizeX*lab->sizeY; i++,data++)
+        *data = -(*data);
 
 	/* initialize the positions */
 	lab->trX = lab->sizeX/2;
 	lab->trY = lab->sizeY/2;
-    lab->opX = lab->player ? 0 : lab->sizeX - 1;
-    lab->X = !lab->player ? 0 : lab->sizeX - 1;
+    lab->opX = lab->us ? 0 : lab->sizeX - 1;
+    lab->X = !lab->us ? 0 : lab->sizeX - 1;
 	lab->opY = lab->sizeY/2;
 	lab->Y = lab->sizeY/2;
 }
+
+const int deltaX[4] = {0,0,-1,+1};
+const int deltaY[4] = {-1,1,0,0};
+
+void pseudoAstar( t_laby* lab)
+{
+    char* data = lab->data;
+    int d = 1;
+    int progress = 1;
+
+    data[ lab->trY * lab->sizeX + lab->trX ] = d;
+
+    while (progress)
+    {
+        progress = 0;
+        for(int x=0; x<lab->sizeX; x++)
+        for(int y=0; y<lab->sizeY; y++)
+        {
+            /* si on est sur une case de distance d, alors on s'occupe de ses voisins */
+            if (data[ y * lab->sizeX + x]==d)
+            {
+                for(int dir=0; dir<4; dir++)
+                {
+                    int nx = (x+deltaX[dir]+lab->sizeX) % lab->sizeX;
+                    int ny = (y+deltaY[dir]+lab->sizeY) % lab->sizeY;
+                    /* si c'est un mur, on le tag à la distance d */
+                    if (data[ ny*lab->sizeX+nx ]==0)
+                    {
+                        data[ ny*lab->sizeX+nx ] = d+1;
+                        progress = 1;
+                    }
+                }
+            }
+
+        }
+        d++;
+    }
+}
+
+
 
 
 /* rotate a line of the labyrinth */
@@ -71,13 +118,13 @@ void playMove( t_laby* lab, t_move move)
 		rotateColumn(lab, move.value, -1);
 	else {
 		/* pointer to the position of the current player */
-		int *pX = lab->player ? &lab->opX : &lab->X;
-		int *pY = lab->player ? &lab->opY : &lab->Y;
+		int *pX = lab->player==lab->us ? &lab->X : &lab->opX;
+		int *pY = lab->player==lab->us ? &lab->Y : &lab->opY;
 
 		if (move.type == MOVE_UP)
-			*pY = (*pY - 1) % lab->sizeY;
+			*pY = (*pY + lab->sizeY - 1) % lab->sizeY;
 		else if (move.type == MOVE_DOWN)
-			*pY = (*pY + lab->sizeY + 1) % lab->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
+			*pY = (*pY  + 1) % lab->sizeY;    // add sizeY to avoid negative value (modulo of negative value is negative in C...)
 		else if (move.type == MOVE_RIGHT)
 			*pX = (*pX + 1) % lab->sizeX;
 		else if (move.type == MOVE_LEFT)
@@ -102,14 +149,41 @@ void myPrintLaby( t_laby* l)
 			/* me */
 			else if ((x == l->X) && (y == l->Y))
 				printf("@");
-			else if (l->data[y*l->sizeX+x])
+			else if (l->data[y*l->sizeX+x]==-1)
 				printf("X");
+			else if (l->data[y*l->sizeX+x]==0)
+				printf(".");
+			else if (l->data[y*l->sizeX+x]>9)
+			    printf("+");
 			else
-				printf("-");
+			    printf("%d",l->data[y*l->sizeX+x]);
 		}
 		printf("\n");
 	}
 }
+
+/* trouve le meilleur coup, juste en suivant le coup qui nous rapproche du trésor */
+t_move bestMove( t_laby* lab)
+{
+    t_move m;
+    /* on regarde les 4 voisins */
+    for(int dir=0; dir<4; dir++)
+    {
+        /* position du voisin */
+        int nx = (lab->X+deltaX[dir]+lab->sizeX) % lab->sizeX;
+        int ny = (lab->Y+deltaY[dir]+lab->sizeY) % lab->sizeY;
+
+        if (lab->data[ny*lab->sizeX+nx]>0 && lab->data[ny*lab->sizeX+nx] < lab->data[ lab->Y*lab->sizeX+lab->X])
+        {
+            m.type = MOVE_UP+dir;
+            return m;
+        }
+    }
+    printf("On est coincé!\n");
+    m.type = DO_NOTHING;
+    return m;
+}
+
 
 
 int main()
@@ -119,9 +193,9 @@ int main()
 	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
 
-    char toto[100];
+//char toto[100];
 
-	debug=1;	/* enable debug */
+	//debug=1;	/* enable debug */
 
 	/* connection to the server */
 	connectToServer( "localhost", 1234, "THlaby");
@@ -132,14 +206,18 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=False");
+		waitLab( &laby, "PLAY_RANDOM timeout=1000 rotate=False");
 
 		do {
 			/* display the labyrinth */
 			printLabyrinth();
-			myPrintLaby(&laby);  /* to compare */
 
-			if (laby.player==1)	/* The opponent plays */
+            pseudoAstar(&laby);
+  			//myPrintLaby(&laby);  /* to compare */
+
+            //scanf("%s",toto);
+
+			if (laby.player!=laby.us)	/* The opponent plays */
 			{
 				ret = getMove( &move);
 				playMove( &laby, move);
@@ -147,7 +225,7 @@ int main()
 			else
 			{
 				//.... choose what to play
-                move.type = DO_NOTHING;
+                move = bestMove(&laby);
 				ret = sendMove(move);
 				playMove( &laby, move);
 			}
@@ -155,14 +233,12 @@ int main()
 			/* change player */
 			laby.player = ! laby.player;
 
-			scanf("%s",toto);
-
 
 
 		} while (ret==MOVE_OK);
 
-		if ( (laby.player==0 && ret==MOVE_WIN) || (laby.player==1 && ret==MOVE_LOSE) )
-			printf("\n Unfortunately, the opponent wins\n");
+		if ( (laby.player==laby.us && ret==MOVE_WIN) || (laby.player!=laby.us && ret==MOVE_LOSE) )
+			printf("\n Unfortunately, we loose... :-(\n");
 		else
 			printf("\n Héhé, I win!!\n");
 
