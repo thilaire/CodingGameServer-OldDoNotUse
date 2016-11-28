@@ -1,6 +1,18 @@
-/*
- * General connection protocol
- */
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
+
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
+Status: still in dev...
+
+File: Protocol.txt
+   General connection protocol
+
+
+
 
 1) Client opens TCP connection on server HOST and port PORT         (layrinth.c: connectToServer, socketPlayer.py: handle)
 
@@ -20,6 +32,7 @@
 4b) Server acknowledges (send "OK")
 4c) Server sends "%s" the datas of the game (an array for example)
 4d) Server sends "%d" who plays next (0 => it's the client's turn, 1 => it's the opponent's turn)
+                (also indicates if the player is player 0 or player 1, since player 0 always starts)
 
 
 Now the client can send any of the following command (until the end of the game):
