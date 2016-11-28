@@ -206,7 +206,7 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "PLAY_RANDOM timeout=1000 rotate=False");
+		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=True");
 
 		do {
 			/* display the labyrinth */
