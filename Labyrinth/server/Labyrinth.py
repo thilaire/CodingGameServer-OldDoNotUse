@@ -190,7 +190,8 @@ class Labyrinth(Game):
 		# the players and they will immediately requires some Labyrinth's properties)
 		super().__init__(player1, player2, **options)
 
-		self._playerEnergy[self._whoPlays] = INITIAL_ENERGY_FIRST
+		self._playerEnergy[0] = INITIAL_ENERGY_FIRST
+
 
 	@property
 	def playerPos(self):
@@ -245,7 +246,7 @@ class Labyrinth(Game):
 
 		# add player names
 
-		# index of lines where player dispplay is add
+		# index of lines where player display is add
 		iline = [self.H // 2 - 2, self.H // 2 + 2]
 		colors = [Fore.BLUE, Fore.RED]
 		for i, pl in enumerate(self._players):
@@ -351,6 +352,7 @@ class Labyrinth(Game):
 
 		return MOVE_LOSE, "Rotation not yet implemented"
 
+
 	def getData(self):
 		"""
 		Return the datas of the labyrinth (when ask with the GET_GAME_DATA message)
@@ -360,6 +362,7 @@ class Labyrinth(Game):
 			for x in range(self.L):
 				msg.append("0" if self.lab[x][y] else "1")
 		return "".join(msg)
+
 
 	def getDataSize(self):
 		"""

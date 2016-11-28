@@ -27,5 +27,5 @@ MOVE_OK = 0
 MOVE_WIN = 1
 MOVE_LOSE = -1       # TODO: find a better constant name
 
-# Formating string indicating  the length of the message
+# Formatting string indicating  the length of the message
 SIZE_FMT = "%04d"

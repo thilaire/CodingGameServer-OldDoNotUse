@@ -181,6 +181,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			logger.debug("Receive: '%s' from %s ", data, self.client_address[0])
 		return data
 
+
 	def sendData(self, data):
 		"""
 		Send data (with self.request.sendall) and log it
@@ -206,9 +207,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Returns the game of the player (self.game is a shortcut for self.game)
 		"""
 		return self._player.game
-
-
-
 
 
 	def getPlayerName(self):
@@ -259,7 +257,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			self.sendData("Bad protocol, should send 'WAIT_GAME %s' command")
 			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %s' command")
 
-		# parse the game type
+		# parse the game type (in the form "NAME key1=value1 key2=value2"
 		name = ""
 		options = {}
 		try:
@@ -267,6 +265,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			if terms:
 				if "=" in terms[0]:
 					name = ""
+					# TODO: virer les potientiels espaces (autour du =, par exemple), en appliquant split aux clés et valeurs
 					options = dict([token.split('=') for token in terms])
 				else:
 					name = terms[0]
@@ -283,8 +282,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				# create game (no need to store it in a variable)
 				Game.getTheGameClass().gameFactory(name, self._player, options)
 			except ValueError as err:
-				self.sendData("The training player sent by '%s' command is not valid (%s)" % (data,err))
-				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data,err))
+				self.sendData("The training player sent by '%s' command is not valid (%s)" % (data, err))
+				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data, err))
 
 		# just send back OK
 		self.sendData("OK")
@@ -318,6 +317,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData("OK")
 		self.sendData(self.game.getData())
 		self.sendData('0' if self.game.playerWhoPlays == self._player else '1')  # send '0' if we begin, '1' otherwise
+
+
 
 
 # TODO: régler ce problème (connection fermée au moment où le serveur envoie un message (exception BrokenPipeError à attraper)

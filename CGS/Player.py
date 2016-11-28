@@ -39,9 +39,6 @@ class Player:
 		# game
 		self._game = None
 
-		# regular
-		self._isRegular = False
-
 
 	def HTMLrepr(self):
 		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
@@ -69,5 +66,33 @@ class Player:
 
 
 	@property
+	def opponent(self):
+		"""
+		Returns the opponent of a player
+		"""
+		if self._game.players[0] is self:
+			return self._game.players[1]
+		else:
+			return self._game.players[0]
+
+
+
+
+class TrainingPlayer(Player):
+	"""
+		Class for training players
+	"""
+
+	@property
 	def isRegular(self):
-		return self._isRegular
+		return False
+
+
+	def playMove(self):
+		"""
+		method that returns the move to play
+
+		TO BE OVERLOADED BY THE CHILD CLASS
+
+		"""
+		pass

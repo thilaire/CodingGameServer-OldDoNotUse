@@ -56,7 +56,6 @@ class RegularPlayer(Player):
 
 		# call the superclass constructor
 		super().__init__(name)
-		self._isRegular = True
 
 		# create the logger of the player
 		self._logger = logging.getLogger(name)
@@ -80,6 +79,10 @@ class RegularPlayer(Player):
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
+
+	@property
+	def isRegular(self):
+		return True
 
 
 	@classmethod

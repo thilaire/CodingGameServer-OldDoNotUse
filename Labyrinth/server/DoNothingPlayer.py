@@ -16,20 +16,20 @@ File: DoNothingPlayer.py
 
 """
 
-from CGS.Player import Player
+from CGS.Player import TrainingPlayer
 from .Constants import DO_NOTHING
 
 
-class DoNothingPlayer(Player):
+class DoNothingPlayer(TrainingPlayer):
 
+	# noinspection PyUnusedLocal
 	def __init__(self, **options):
 		super().__init__('Do_nothing')
 
 		# no options, so nothing to do with options
 
-	# static method, just because this dummy player does nothing (and does not use `self`)
-	@staticmethod
-	def playMove():
+
+	def playMove(self):
 		"""
 		Plays the move -> here DO_NOTHING
 		Returns the move (string %d %d)

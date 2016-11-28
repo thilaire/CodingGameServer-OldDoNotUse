@@ -15,16 +15,16 @@ File: playRandomPlayer.py
 	-> defines a dummy player that play randomly every time (but do not loose)
 """
 
-from CGS.Player import Player
+from CGS.Player import TrainingPlayer
 from random import choice, randint
 from .Constants import MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, DO_NOTHING
 from .Constants import ROTATE_COLUMN_DOWN, ROTATE_COLUMN_UP, ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_ENERGY
 from .Constants import Ddx, Ddy
-import logging
 
-boolConv = { 'true':True, 'false':False }
+boolConv = {'true': True, 'false': False}
 
-class PlayRandomPlayer(Player):
+
+class PlayRandomPlayer(TrainingPlayer):
 
 	def __init__(self, **options):
 		super().__init__('Play_Random')
@@ -42,16 +42,16 @@ class PlayRandomPlayer(Player):
 		"""
 		Plays the move -> here a random move
 		Returns the move (string %d %d)
-
-		A non-regular player is player #1 (the opponent is #0)
-
 		"""
+		# get our player number
+		us = 0 if (self.game.players[0] is self) else 1
+
 		# build the list of the possible moves
 		moves = []
 
 		# move
 		for move_type in (MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT):
-			x, y = self.game.playerPos[1]
+			x, y = self.game.playerPos[us]
 			x = (x + Ddx[move_type]) % self.game.L
 			y = (y + Ddy[move_type]) % self.game.H
 
@@ -59,7 +59,7 @@ class PlayRandomPlayer(Player):
 				moves.append("%d 0" % move_type)
 
 		# rotate line or column
-		if self.game.playerEnergy[1] >= ROTATE_ENERGY and self.rotate:
+		if self.game.playerEnergy[us] >= ROTATE_ENERGY and self.rotate:
 			line = randint(0, self.game.H-1)
 			col = randint(0, self.game.L-1)
 			moves.append("%d %d" % (ROTATE_COLUMN_DOWN, col))
@@ -72,5 +72,6 @@ class PlayRandomPlayer(Player):
 			return choice(moves)
 		else:
 			# sometimes, he cannot move...
+			# TODO: send comment 'I cannot move, help me...'
 			return "%d 0" % DO_NOTHING
 

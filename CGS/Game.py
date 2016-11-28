@@ -26,6 +26,33 @@ from datetime import datetime
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
 
 
+
+def crc24(octets):
+	"""
+	Compute a CRC 24 bits hash
+	Credits Karl Knechtel
+	http://stackoverflow.com/questions/4544154/crc24-from-c-to-python
+	"""
+	INIT = 0xB704CE
+	POLY = 0x1864CFB
+	crc = INIT
+	for octet in octets:
+		crc ^= (octet << 16)
+		for i in range(8):
+			crc <<= 1
+			if crc & 0x1000000:
+				crc ^= POLY
+	return crc & 0xFFFFFF
+
+
+def hex6(x):
+	"""
+	Returns (a string) the hexadecimal of x (but with 6 digits, without the trailing 0x)
+	"""
+	h = "000000" + hex(x)[2:]       # add zeros before the hexadecimal (without 0x)
+	return h[-6:]   # get the 6 last characters
+
+
 class Game:
 	"""
 	Game class
@@ -45,14 +72,14 @@ class Game:
 	allGames = {}   #
 	_theGameClass = None
 
-	type_dict = {}          # dictionary of the possible non-regular Players (TO BE OVERLOADED BY INHERITED CLASSES)
+	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)
 
 	def __init__(self, player1, player2, **options):
 		"""
 		Create a Game
-		:param player1: 1st Player
-		:param player2: 2nd Player
-		:param options: dictionary of options
+		Parameters:
+		- player1, player2: two Player (the order will be changed according who begins)
+		- options: dictionary of options
 			- 'seed': seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
 			- 'timeout': timeout of the game (if not given, the default timeout is used)
 		"""
@@ -66,22 +93,37 @@ class Game:
 			raise ValueError("Players already play in a game")
 
 		# players
-		self._players = (player1, player2)
+		# we randomly decide the order of the players
+		self._players = choice([(player1, player2), (player2, player1)])
 
 		# get a seed if the seed is not given; seed the random numbers generator
 		if 'seed' not in options:
 			set_seed(None)  # (from doc):  If seed is omitted or None, current system time is used
-			seed = randint(0, int(1e9))
+			seed = randint(0, 16777215)     # between 0 and 2^24-1
 		else:
 			try:
 				seed = int(options['seed'])
+				if not 0 <= seed <= 16777215:
+					raise ValueError("The 'seed' value must be between 0 and 16777215 ('seed=%s'." % options['seed'])
 			except ValueError:
 				raise ValueError("The 'seed' value is invalid ('seed=%s')" % options['seed'])
 		set_seed(seed)
 
 
-		# (unique) name (unix date + seed + players name)
-		self._name = str(int(time())) + '-' + str(seed) + '-' + player1.name + '-' + player2.name
+		# (unique) name composed by
+		# - the first 6 characters are the seed (in hexadecimal),
+		# - the 6 next characters are hash (CRC24) of the time and names (hexadecimal)
+		ok = False
+		while not ok:   # we need a loop just in case we are unlucky and two existing games have the same hash
+			name = str(int(time())) + player1.name + player2.name
+			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name,'utf8')))[2:]
+			ok = self._name not in self.allGames
+			if not ok:
+				# just in case we are unlucky, we need to log it (probably it will never happens)
+				logger = logging.getLogger()
+				g1 = str(self.allGames[self._name].seed) + '-' + self.allGames[self._name].players[0].name + self.allGames[self._name].players[1].name
+				g2 = str(seed) + '-' + player1.name + '-' + player2.name
+				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
 
 		# create the logger of the game
 		self._logger = logging.getLogger(self.name)
@@ -94,7 +136,7 @@ class Game:
 		self._logger.addHandler(file_handler)
 
 		self.logger.info("=================================")
-		self.logger.info("Game %s just starts with '%s' and '%s'.", self.name, player1.name, player2.name)
+		self.logger.info("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
 
 		# add itself to the dictionary of games
 		self.allGames[self.name] = self
@@ -103,8 +145,8 @@ class Game:
 		player1.game = self
 		player2.game = self
 
-		# determine who starts
-		self._whoPlays = choice((0, 1))
+		# determine who starts (player #0 ALWAYS starts)
+		self._whoPlays = 0
 
 		# Event to manage payMove and getMove from the players
 		self._getMoveEvent = Event()
@@ -135,43 +177,8 @@ class Game:
 		return self._name
 
 
-	@classmethod
-	def getFromName(cls, name):
-		"""
-		Get a game form its name (unix date + seed + players name)
-		:param name: (string) name of the game
-		:return: the game (the object) or None if this game doesn't exist
-		"""
-		if name in cls.allGames:
-			return cls.allGames[name]
-		else:
-			return None
-		# return cls.allGames.get(name, None)
 
 
-
-	@classmethod
-	def setTheGameClass(cls, theGameClass):
-		"""
-			Setter for the Game we are playing (in order to let that attribute be available for everyone)
-			Set when the game is known and imported
-		"""
-		cls._theGameClass = theGameClass
-
-	@classmethod
-	def getTheGameClass(cls):
-		"""
-		Getter for the Game we are playing (in order to let that class be available for everyone)
-		Returns the class of the game we are playing (used to create those games)
-		"""
-		return cls._theGameClass
-
-	@classmethod
-	def getTheGameName(cls):
-		"""
-		Getter for the name of the Game we are playing
-		"""
-		return cls._theGameClass.__name__
 
 	def partialEndOfGame(self, whoLooses):
 		"""
@@ -184,7 +191,7 @@ class Game:
 		if not self._players[1 - nWhoLooses].isRegular:
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
-			self._players[nWhoLooses].game = None
+			whoLooses.game = None
 
 
 	def endOfGame(self, whoWins, msg):
@@ -229,12 +236,18 @@ class Game:
 		return self._players[self._whoPlays]
 
 
+	@property
+	def players(self):
+		"""
+		Returns the players
+		"""
+		return self._players
 
 
 	def getLastMove(self):
 		"""
 		Wait for the move of the player playerWhoPlays
-		If it doesn't answer in TIMEOUT_TURN seconds, then he losts
+		If it doesn't answer in TIMEOUT_TURN seconds, then he lost
 		Returns:
 			- last move: (string) string describing the opponent last move (exactly the string it sends)
 			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
@@ -265,7 +278,8 @@ class Game:
 				return self._lastMove, MOVE_LOSE
 
 		else:
-			# otherwise, we call the opponent player's playMove method
+			# the opponent is a training player
+			# so we call its playMove method
 			move = self._players[self._whoPlays].playMove()
 			self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
 			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
@@ -314,7 +328,7 @@ class Game:
 		if self._players[1 - self._whoPlays].isRegular:
 			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
 
-		# check for timeout when the opponent is a non-regular player
+		# check for timeout when the opponent is a training player
 		if not self._players[1 - self._whoPlays].isRegular:
 			if (datetime.now()-self._lastMoveTime).total_seconds() > self._timeout:
 				# Timeout !!
@@ -340,7 +354,7 @@ class Game:
 			self._getMoveEvent.clear()
 			self.logger.debug("Receive getMove event")
 		else:
-			# if thge opponent is a non-regular player, we store the time (to compute the timeout)
+			# if the opponent is a training player, we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()
 
 
@@ -389,7 +403,42 @@ class Game:
 			raise ValueError("The training player name '%s' is not valid." % name)
 
 
+	@classmethod
+	def getFromName(cls, name):
+		"""
+		Get a game form its name (seed + hash of time + players name)
+		Parameters:
+		- name: (string) name of the game
 
+		Returns the game (the object) or None if this game doesn't exist
+		"""
+		return cls.allGames.get(name, None)
+
+
+	@classmethod
+	def setTheGameClass(cls, theGameClass):
+		"""
+			Setter for the Game we are playing (in order to let that attribute be available for everyone)
+			Set when the game is known and imported
+		"""
+		cls._theGameClass = theGameClass
+
+
+	@classmethod
+	def getTheGameClass(cls):
+		"""
+		Getter for the Game we are playing (in order to let that class be available for everyone)
+		Returns the class of the game we are playing (used to create those games)
+		"""
+		return cls._theGameClass
+
+
+	@classmethod
+	def getTheGameName(cls):
+		"""
+		Getter for the name of the Game we are playing
+		"""
+		return cls._theGameClass.__name__
 
 
 	def updateGame(self, move):
