@@ -58,7 +58,7 @@ def runWebServer(host, port, quiet):
 	TEMPLATE_PATH.reverse()
 	# Start the web server
 	install(log_to_logger)
-	weblogger.info("Run the web server on port %d...", port)
+	weblogger.message("Run the web server on port %d...", port)
 
 	default_app().catchall = True       # all the exceptions/errors are catched, and re-routed to error500
 	run(host=host, port=port, quiet=quiet)

@@ -16,14 +16,10 @@ File: Player.py
 
 """
 
-import logging
-from logging.handlers import RotatingFileHandler
-from os import makedirs
 from threading import Event
-
-from CGS.Game import Game
+from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
-
+from CGS.Game import Game
 
 class RegularPlayer(Player):
 	"""
@@ -58,16 +54,7 @@ class RegularPlayer(Player):
 		super().__init__(name)
 
 		# create the logger of the player
-		self._logger = logging.getLogger(name)
-		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
-		if not self._logger.handlers:
-			makedirs(Game.getTheGameName() + '/logs/players/', exist_ok=True)
-			file_handler = RotatingFileHandler(Game.getTheGameName() + '/logs/players/'+name+'.log', 'a', 1000000, 1)
-			file_handler.setLevel(logging.INFO)
-			file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
-			file_handler.setFormatter(file_formatter)
-			self._logger.addHandler(file_handler)
-
+		self._logger = configurePlayerLogger(name, Game.getTheGameName())
 
 		self.logger.info("=================================")
 		self.logger.info(name + " just log in (from " + address + ".")

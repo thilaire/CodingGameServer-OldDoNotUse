@@ -20,11 +20,10 @@ import logging
 from random import seed as set_seed, randint, choice
 from time import time
 from threading import Event
-from os import makedirs
 from datetime import datetime
 
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
-
+from CGS.Logger import configureGameLogger
 
 
 def crc24(octets):
@@ -126,17 +125,10 @@ class Game:
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
 
 		# create the logger of the game
-		self._logger = logging.getLogger(self.name)
-		# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
-		makedirs(type(self).__name__ + '/logs/games/', exist_ok=True)
-		file_handler = logging.FileHandler(type(self).__name__ + '/logs/games/' + self.name + '.log')
-		# file_handler.setLevel(logging.INFO)     #TODO: changer le niveau ??
-		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
-		file_handler.setFormatter(file_formatter)
-		self._logger.addHandler(file_handler)
+		self._logger = configureGameLogger(self.name, self.getTheGameName())
 
-		self.logger.info("=================================")
-		self.logger.info("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
+		#self.logger.info("=================================")
+		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
 
 		# add itself to the dictionary of games
 		self.allGames[self.name] = self
@@ -204,8 +196,7 @@ class Game:
 			- msg: (sting) message explaining why it's the end of the game
 		"""
 		# log it
-		self.logger.info("%s won the game (%s) !" % (self._players[whoWins].name, msg))
-		self.logger.info("The game '%s' is now finished", self.name)
+		self.logger.message("The game '%s' is now finished, %s won against %s (%s)", self.name, self._players[whoWins].name, self._players[1-whoWins].name, msg)
 
 		if self._players[whoWins].isRegular:
 			self._players[whoWins].logger.info("We won the game (%s) !" % msg)
@@ -261,9 +252,9 @@ class Game:
 		# wait for the move of the opponent if the opponent is a regular player
 		elif self._players[self._whoPlays].isRegular:
 
-			self.logger.debug("Wait for playMove event")
+			self.logger.low_debug("Wait for playMove event")
 			if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
-				self.logger.debug("Receive playMove event")
+				self.logger.low_debug("Receive playMove event")
 				self._playMoveEvent.clear()
 
 				self._getMoveEvent.set()
@@ -281,7 +272,7 @@ class Game:
 			# the opponent is a training player
 			# so we call its playMove method
 			move = self._players[self._whoPlays].playMove()
-			self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
+			self.logger.info("'%s' plays %s" % (self.playerWhoPlays.name, move))
 			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
 			# and update the game
 			return_code, msg = self.updateGame(move)
@@ -322,7 +313,7 @@ class Game:
 			return MOVE_WIN, "Opponent has disconnected"
 
 		# log that move
-		self.logger.debug("'%s' plays %s" % (self.playerWhoPlays.name, move))
+		self.logger.info("'%s' plays %s" % (self.playerWhoPlays.name, move))
 		if self._players[self._whoPlays].isRegular:
 			self._players[self._whoPlays].logger.info("I play %s" % move)
 		if self._players[1 - self._whoPlays].isRegular:
@@ -349,10 +340,10 @@ class Game:
 			self._playMoveEvent.set()
 
 			# and then wait that the opponent get the move
-			self.logger.debug("Wait for getMove event")
+			self.logger.low_debug("Wait for getMove event")
 			self._getMoveEvent.wait()
 			self._getMoveEvent.clear()
-			self.logger.debug("Receive getMove event")
+			self.logger.low_debug("Receive getMove event")
 		else:
 			# if the opponent is a training player, we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()

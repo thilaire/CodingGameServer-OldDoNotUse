@@ -115,7 +115,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 						head = SIZE_FMT % len(str(self.game).encode())
 						self.request.sendall(str(head).encode('utf-8'))
 						self.request.sendall(str(self.game).encode())
-						logger.debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
+						self.logger.low_debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
 					elif data.startswith("SEND_COMMENT "):
 						# receive comment
@@ -128,9 +128,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 		except ProtocolError as err:
 			# log the protocol error
 			if self._player is None:
-				logger.error("Error with client (%s): '%s'", self.client_address[0], err)
+				logger.info("Error with client (%s): '%s'", self.client_address[0], err)
 			else:
-				self._player.logger.error("Error with %s (%s): '%s'", self._player.name, self.client_address[0], err)
+				self.logger.info("Error with %s (%s): '%s'", self._player.name, self.client_address[0], err)
 			# ends the game
 			if self.game is not None:
 				self.game.partialEndOfGame(self._player)
@@ -144,9 +144,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 		except Exception as err:
 			# log all the other errors
-			logger.error(err, exc_info=True)
-			raise err
-			# TODO: send a email when we are in production !
+			self.logger.error(err, exc_info=True)
+
 
 
 	def finish(self):
@@ -156,17 +155,17 @@ class PlayerSocketHandler(BaseRequestHandler):
 		try:
 
 			if self._player is not None:
-				self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
+				self.logger.info("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
 				RegularPlayer.removePlayer(self._player.name)
 				del self._player
 
 			else:
-				logger.debug("Connection closed with client %s", self.client_address[0])
+				logger.info("Connection closed with client %s", self.client_address[0])
 
 		except Exception as err:
 			# log all the other errors
-			logger.error(err, exc_info=True)
-			raise err
+			self.logger.error(err, exc_info=True)
+
 
 
 	def receiveData(self, size=1024):
@@ -182,9 +181,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 			raise DisconnectionError()
 		# log it
 		if self._player:
-			logger.debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
+			self.logger.low_debug("Receive: '%s' from %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug("Receive: '%s' from %s ", data, self.client_address[0])
+			logger.low_debug("Receive: '%s' from %s ", data, self.client_address[0])
 		return data
 
 
@@ -202,9 +201,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# TODO: change this (do not send any empty message? always send X octets messages?)
 			self.request.sendall(''.encode('utf-8'))
 		if self._player:
-			logger.debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
+			self.logger.low_debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
 		else:
-			logger.debug("Send '%s' to %s", data, self.client_address[0])
+			logger.low_debug("Send '%s' to %s", data, self.client_address[0])
 
 
 	@property
@@ -214,6 +213,13 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		return self._player.game
 
+
+	@property
+	def logger(self):
+		if self._player:
+			return self._player.logger
+		else:
+			return logger
 
 	def getPlayerName(self):
 		"""
@@ -264,32 +270,33 @@ class PlayerSocketHandler(BaseRequestHandler):
 			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %s' command")
 
 		# parse the game type (in the form "NAME key1=value1 key2=value2"
-		name = ""
+		trainingPlayerName = ""
 		options = {}
 		try:
 			terms = shlex.split(data[10:])
 			if terms:
 				if "=" in terms[0]:
-					name = ""
+					trainingPlayerName = ""
 					# TODO: virer les potientiels espaces (autour du =, par exemple), en appliquant split aux clés et valeurs
 					options = dict([token.split('=') for token in terms])
 				else:
-					name = terms[0]
+					trainingPlayerName = terms[0]
 					options = dict([token.split('=') for token in terms[1:]])
 		except ValueError:
 			self.sendData("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
 			raise ProtocolError("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
 
-		logger.debug("%s -> Name=%s Dict=%s" % (terms, name, options))
 
-		if name:
+		if trainingPlayerName:
 			# Create a particular Game
 			try:
 				# create game (no need to store it in a variable)
-				Game.getTheGameClass().gameFactory(name, self._player, options)
+				g = Game.getTheGameClass().gameFactory(trainingPlayerName, self._player, options)
 			except ValueError as err:
 				self.sendData("The training player sent by '%s' command is not valid (%s)" % (data, err))
 				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data, err))
+			# log it
+			self.logger.debug("The game %s starts with training player `%s` and options=%s" % (g.name, trainingPlayerName, options))
 
 		# just send back OK
 		self.sendData("OK")
