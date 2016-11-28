@@ -23,7 +23,7 @@ from email.utils import parseaddr   # parse email to validate it (can validate w
 from colorlog import ColoredFormatter  # logging with colors
 from colorama import Fore
 from os import makedirs
-
+from smtplib import SMTP, SMTPAuthenticationError
 
 # see 'Logging.txt' for the different logging levels
 LOW_DEBUG_LEVEL = 5
@@ -108,7 +108,18 @@ def configureRootLogger(args):
 		if not address:
 			print(Fore.RED + "Error: The email address is not valid" + Fore.RESET)
 			quit()
-		# TODO: check if the password/email/smtp works
+		# check if the password/email/smtp works
+		smtpserver = SMTP(smtp, port)
+		smtpserver.ehlo()
+		smtpserver.starttls()
+		try:
+			smtpserver.login( address, password)
+		except SMTPAuthenticationError as err:
+			print(Fore.RED + "Error: The email/smtp:port/password is not valid address is not valid (%s)" % err + Fore.RESET)
+			quit()
+		finally:
+			smtpserver.close()
+
 		# add an other handler to redirect errors through emails
 		mail_handler = SMTPHandler((smtp, port), address, [address], "Error in CGS (%s)" % gethostname(),
 		                           (address, password), secure=())
