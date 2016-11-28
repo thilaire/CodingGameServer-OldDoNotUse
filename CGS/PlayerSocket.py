@@ -26,6 +26,7 @@ from CGS.Game import Game
 from CGS.Constants import MOVE_LOSE
 import shlex
 
+
 logger = logging.getLogger()  # general logger ('root')
 
 
@@ -152,15 +153,20 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		Call when the connection is closed
 		"""
+		try:
 
-		if self._player is not None:
-			self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
-			RegularPlayer.removePlayer(self._player.name)
-			del self._player
+			if self._player is not None:
+				self._player.logger.debug("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
+				RegularPlayer.removePlayer(self._player.name)
+				del self._player
 
-		else:
-			logger.debug("Connection closed with client %s", self.client_address[0])
+			else:
+				logger.debug("Connection closed with client %s", self.client_address[0])
 
+		except Exception as err:
+			# log all the other errors
+			logger.error(err, exc_info=True)
+			raise err
 
 
 	def receiveData(self, size=1024):

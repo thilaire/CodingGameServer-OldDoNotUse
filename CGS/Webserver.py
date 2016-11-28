@@ -60,7 +60,7 @@ def runWebServer(host, port, quiet):
 	install(log_to_logger)
 	weblogger.info("Run the web server on port %d...", port)
 
-	default_app().catchall = True
+	default_app().catchall = True       # all the exceptions/errors are catched, and re-routed to error500
 	run(host=host, port=port, quiet=quiet)
 
 
@@ -181,5 +181,6 @@ def error404():
 @error(500)
 def errror500(err):
 	# TODO: useful ? to be checked
-	weblogger.error(err)
+	weblogger.error(err, exc_info=True)
+
 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"

@@ -109,10 +109,10 @@ int read_inbuf(const char *fct, char *buf, size_t nbuf){
 		bzero(stream_size,HEAD_SIZE);
 		r = read(sockfd, stream_size, HEAD_SIZE);
 		if (r<0)
-			dispError (fct, "Cannot read message's length");
+			dispError (fct, "Cannot read message's length (server has failed?)");
 		r = sscanf (stream_size,"%lu",&length);
 		if (r!=1)
-			dispError (fct, "Cannot read message length");
+			dispError (fct, "Cannot read message's length (server has failed?)");
 		dispDebug (fct, "prepare to receive a message of length :%lu",length);
 	}
 	int mini = length>nbuf ? nbuf : length ;

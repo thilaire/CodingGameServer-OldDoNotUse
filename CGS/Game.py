@@ -116,7 +116,7 @@ class Game:
 		ok = False
 		while not ok:   # we need a loop just in case we are unlucky and two existing games have the same hash
 			name = str(int(time())) + player1.name + player2.name
-			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name,'utf8')))[2:]
+			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name, 'utf8')))[2:]
 			ok = self._name not in self.allGames
 			if not ok:
 				# just in case we are unlucky, we need to log it (probably it will never happens)
