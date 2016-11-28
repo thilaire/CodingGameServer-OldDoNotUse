@@ -8,7 +8,7 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: beta version
 
 File: labyrinthAPI.h
 	Contains the client API for the Labyrinth game

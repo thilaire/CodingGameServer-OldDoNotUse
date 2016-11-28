@@ -6,7 +6,7 @@ particular API (e.g. Labyrinth)
 
 #ifndef __RET_TYPE__
 #define __RET_TYPE__
-//TODO: le nom des constantes n'est pas terrible...
+
 typedef enum
 {
 	MOVE_OK = 0,
