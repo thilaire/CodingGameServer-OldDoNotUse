@@ -95,7 +95,6 @@ void pseudoAstar( t_laby* lab)
 void rotateLine( t_laby* lab, int line, int delta)
 {
     printf("Not implemented yet!\n");
-    exit(0);
 }
 
 /* rotate a column of the labyrinth */
@@ -206,7 +205,7 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=True");
+		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=False");
 
 		do {
 			/* display the labyrinth */
