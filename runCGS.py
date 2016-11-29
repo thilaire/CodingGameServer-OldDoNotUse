@@ -108,6 +108,5 @@ if __name__ == "__main__":
 
 
 
-# TODO: gérer les comments (les mettre dans les listes des players, puis les ressortir à chaque DISP_GAME); pas plus de x comments entre deux tours, sinon on perd !
 # TODO: rajouter un timeout pour le dataReceive (il y a ça dans la classe BaseRequestHandler)
 # TODO: mettre en forme les emails (qd ça vient du webserver)

@@ -129,7 +129,7 @@ class Game:
 		# create the logger of the game
 		self._logger = configureGameLogger(self.name, self.getTheGameName())
 
-		# self.logger.info("=================================")
+		self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
 
 		# add itself to the dictionary of games
