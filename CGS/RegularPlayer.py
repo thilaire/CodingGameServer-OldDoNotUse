@@ -21,6 +21,7 @@ from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
 from CGS.Game import Game
 
+
 class RegularPlayer(Player):
 	"""
 	A RegularPlayer
@@ -92,11 +93,6 @@ class RegularPlayer(Player):
 		else:
 			return None
 		# return cls.allPlayers.get(name, None)
-
-
-	@property
-	def logger(self):
-		return self._logger
 
 
 	@property

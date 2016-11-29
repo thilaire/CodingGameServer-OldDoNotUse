@@ -29,3 +29,6 @@ MOVE_LOSE = -1       # TODO: find a better constant name
 
 # Formatting string indicating  the length of the message
 SIZE_FMT = "%04d"
+
+# Maximum number of comments per player
+MAX_COMMENTS = 5

@@ -22,8 +22,9 @@ from time import time
 from threading import Event
 from datetime import datetime
 
-from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN
+from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
 from CGS.Logger import configureGameLogger
+from CGS.Comments import CommentQueue
 
 
 def crc24(octets):
@@ -120,14 +121,15 @@ class Game:
 			if not ok:
 				# just in case we are unlucky, we need to log it (probably it will never happens)
 				logger = logging.getLogger()
-				g1 = str(self.allGames[self._name].seed) + '-' + self.allGames[self._name].players[0].name + self.allGames[self._name].players[1].name
+				og = self.allGames[self._name]  # other game
+				g1 = str(og.seed) + '-' + og.players[0].name + og.players[1].name
 				g2 = str(seed) + '-' + player1.name + '-' + player2.name
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
 
 		# create the logger of the game
 		self._logger = configureGameLogger(self.name, self.getTheGameName())
 
-		#self.logger.info("=================================")
+		# self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
 
 		# add itself to the dictionary of games
@@ -162,14 +164,13 @@ class Game:
 		# timestamp of the last move
 		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
 
+		# list of comments
+		self._comments = CommentQueue(MAX_COMMENTS)
 
 
 	@property
 	def name(self):
 		return self._name
-
-
-
 
 
 	def partialEndOfGame(self, whoLooses):
@@ -196,12 +197,10 @@ class Game:
 			- msg: (sting) message explaining why it's the end of the game
 		"""
 		# log it
-		self.logger.message("The game '%s' is now finished, %s won against %s (%s)", self.name, self._players[whoWins].name, self._players[1-whoWins].name, msg)
-
-		if self._players[whoWins].isRegular:
-			self._players[whoWins].logger.info("We won the game (%s) !" % msg)
-		if self._players[1 - whoWins].isRegular:
-			self._players[1 - whoWins].logger.info("We loose the game (%s) !" % msg)
+		self.logger.message("The game '%s' is now finished, %s won against %s (%s)",
+		                    self.name, self._players[whoWins].name, self._players[1-whoWins].name, msg)
+		self._players[whoWins].logger.info("We won the game (%s) !" % msg)
+		self._players[1 - whoWins].logger.info("We loose the game (%s) !" % msg)
 
 		# the players do not play anymore
 		if self._players[0].game is not None:
@@ -367,9 +366,30 @@ class Game:
 		- player: player who sends the comment
 		- comment: (string) comment
 		"""
-		self.logger.debug("Player %s send this comment: '%s", player.name, comment)
+		# log it
+		self.logger.info("[%s] : '%s'", player.name, comment)
+		for n in (0, 1):
+			self.players[n].logger.info("[%s] : %s" % (player.name, comment))
 
-	# TODO: DO SOMETHING WITH THAT COMMENT
+		# append comment
+		nPlayer = 0 if player is self._players[0] else 1
+		self._comments.append(comment, nPlayer)
+
+
+
+
+	def display(self, player):
+		"""
+		Parameters:
+			- player: player who ask for display
+
+		Returns a string version of the game, composed of:
+		- the game information (from __str__ of the inherited class)
+		- the comments
+		"""
+		nPlayer = 0 if player is self._players[0] else 1
+		return str(self) + "\n" + self._comments.getString(nPlayer, [p.name for p in self._players]) + "\n"*4
+
 
 
 	@classmethod

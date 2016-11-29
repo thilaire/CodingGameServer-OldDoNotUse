@@ -25,6 +25,35 @@ typedef struct {
 } t_laby;
 
 
+
+char* citation[] ={
+"You can do anything, but not everything.",
+"Failure is the condiment that gives success its flavor..",
+"You miss 100 percent of the shots you never take.",
+"Do not let what you cannot do interfere with what you can do.",
+"You must be the change you wish to see in the world.",
+"Don’t cry because it’s over, smile because it happened.",
+"Believe those who are seeking the truth. Doubt those who find it.",
+"I’d rather live with a good question than a bad answer.",
+"I have never in my life learned anything from any man who agreed with me.",
+"The man who has confidence in himself gains the confidence of others.",
+"The cure for boredom is curiosity. There is no cure for curiosity.",
+"Advice is what we ask for when we already know the answer but wish we didn’t.",
+"Remember that happiness is a way of travel, not a destination.",
+"It is never too late to be what you might have been.",
+"All our dreams can come true, if we have the courage to pursue them.",
+"The best way to predict the future is to invent it.",
+"Life is 10% what happens to me and 90% how I react to it.",
+"An obstacle is often a stepping stone."
+};
+
+
+
+const char* dirString[] = { "UP", "DOWN", "LEFT", "RIGHT"};
+
+const int deltaX[4] = {0,0,-1,+1};
+const int deltaY[4] = {-1,1,0,0};
+
 void waitLab( t_laby* lab, char* training)
 {
 	char labName[50];					/* name of the labyrinth  - don't care about it*/
@@ -50,8 +79,7 @@ void waitLab( t_laby* lab, char* training)
 	lab->Y = lab->sizeY/2;
 }
 
-const int deltaX[4] = {0,0,-1,+1};
-const int deltaY[4] = {-1,1,0,0};
+
 
 void pseudoAstar( t_laby* lab)
 {
@@ -191,8 +219,8 @@ int main()
 	t_laby laby;						/* data of the labyrinth */
 	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
-
-//char toto[100];
+    int nmove;                          /* number of moves */
+    char toto[100];
 
 	//debug=1;	/* enable debug */
 
@@ -206,8 +234,9 @@ int main()
 
 		/* wait for a game, and retrieve informations about it */
 		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=False");
+        nmove = 0;
 
-		do {
+        do {
 			/* display the labyrinth */
 			printLabyrinth();
 
@@ -225,8 +254,15 @@ int main()
 			{
 				//.... choose what to play
                 move = bestMove(&laby);
+
+				sprintf(toto, "For my play #%d, I choose to go %s", nmove, dirString[(int)move.type-MOVE_UP]);
+				sendComment(toto);
+				if ((nmove*nmove+12*nmove+7+laby.sizeX)%18 == 5)   /* sometimes */
+				    sendComment(citation[(nmove*laby.sizeY+13)%18]);
+
 				ret = sendMove(move);
 				playMove( &laby, move);
+				nmove++;
 			}
 
 			/* change player */

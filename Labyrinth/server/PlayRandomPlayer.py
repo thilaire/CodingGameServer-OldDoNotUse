@@ -71,7 +71,7 @@ class PlayRandomPlayer(TrainingPlayer):
 		if moves:
 			return choice(moves)
 		else:
-			# sometimes, he cannot move...
-			# TODO: send comment 'I cannot move, help me...'
+			# sometimes, we cannot move...
+			self.game.sendComment(self, "I am blocked... I cannot move...")
 			return "%d 0" % DO_NOTHING
 

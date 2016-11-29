@@ -28,7 +28,10 @@ from smtplib import SMTP, SMTPAuthenticationError
 # see 'Logging.txt' for the different logging levels
 LOW_DEBUG_LEVEL = 5
 MESSAGE_LEVEL = 35
-activity_level = {'prod': (MESSAGE_LEVEL, logging.WARNING, logging.ERROR), 'dev': (logging.INFO, logging.DEBUG), 'debug': (logging.DEBUG, LOW_DEBUG_LEVEL)}
+activity_level = {
+	'prod': (MESSAGE_LEVEL, logging.WARNING, logging.ERROR),
+	'dev': (logging.INFO, logging.DEBUG),
+	'debug': (logging.DEBUG, LOW_DEBUG_LEVEL)}
 player_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 
@@ -113,7 +116,7 @@ def configureRootLogger(args):
 		smtpserver.ehlo()
 		smtpserver.starttls()
 		try:
-			smtpserver.login( address, password)
+			smtpserver.login(address, password)
 		except SMTPAuthenticationError as err:
 			print(Fore.RED + "Error: The email/smtp:port/password is not valid address is not valid (%s)" % err + Fore.RESET)
 			quit()

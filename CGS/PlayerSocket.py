@@ -112,9 +112,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 						# returns a (long) string describing the labyrinth
 						self.sendData("OK")
 						# we do not use sendData here, because we do not want to log the full message...
-						head = SIZE_FMT % len(str(self.game).encode())
+						msg = self.game.display(self._player).encode()
+						head = SIZE_FMT % len(msg)
 						self.request.sendall(str(head).encode('utf-8'))
-						self.request.sendall(str(self.game).encode())
+						self.request.sendall(msg)
 						self.logger.low_debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
 					elif data.startswith("SEND_COMMENT "):

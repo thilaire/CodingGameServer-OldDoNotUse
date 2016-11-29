@@ -16,6 +16,13 @@ File: Player.py
 
 """
 
+import logging
+
+
+# disabled logger (so training players have a logger, even if it doesn't log anything)
+logger = logging.getLogger("disable-logger")
+logger.disabled = True
+
 
 
 class Player:
@@ -39,6 +46,9 @@ class Player:
 		# game
 		self._game = None
 
+		# logger
+		self._logger = logger
+
 
 	def HTMLrepr(self):
 		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
@@ -48,6 +58,10 @@ class Player:
 		# TODO: return a dictionary to fill a template
 		return self.HTMLrepr()
 
+
+	@property
+	def logger(self):
+		return self._logger
 
 
 	@property
