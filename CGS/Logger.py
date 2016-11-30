@@ -26,7 +26,7 @@ from os import makedirs, scandir, remove, listdir
 from os.path import getmtime, getsize
 from smtplib import SMTP, SMTPAuthenticationError
 from operator import itemgetter
-import functools
+from functools import wraps
 from threading import Lock
 
 
@@ -50,20 +50,22 @@ game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEV
 
 mode = 'prod'   # default mode, set by configureRootLogger
 
+# From http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
+def non_blocking_lock(fn):
+    """Decorator. Prevents the function from being called multiple times simultaneously.
+    If thread A is executing the function and thread B attempts to call the
+    function, thread B will immediately receive a return value of None instead.
+    """
+    lock = Lock()
+    @wraps(fn)
+    def locker(*args, **kwargs):
+        if lock.acquire(False):
+            try:
+                return fn(*args, **kwargs)
+            finally:
+                lock.release()
 
-
-# decorator for synchronizing off a thread mutex
-# see https://github.com/GrahamDumpleton/wrapt/blob/develop/blog/07-the-missing-synchronized-decorator.md
-def synchronized(lock=None):
-    def _decorator(wrapped):
-        @functools.wraps(wrapped)
-        def _wrapper(*args, **kwargs):
-            with lock:
-                return wrapped(*args, **kwargs)
-        return _wrapper
-    return _decorator
-
-
+    return locker
 
 
 # function used to log message at low_debug and message levels
@@ -117,7 +119,7 @@ def configureRootLogger(args):
 	logger.addHandler(steam_handler)
 
 	# Manage errors (send an email) when we are in production
-	if mode == 'prod' and False:        # TODO: enlever le False qd on saura passer le proxy
+	if mode == 'prod' and not args['--no-email']:        # TODO: enlever le False qd on saura passer le proxy
 		# get the password (and disable warning message)
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
 		def custom_fallback(prompt="Password: ", stream=None):
@@ -162,9 +164,46 @@ def configureRootLogger(args):
 	return logger
 
 
-lockPlayer = Lock()
-# TODO: do something more efficient than adding a mutex around configurePlayerLogger (the same for configureGameLogger)
-@synchronized(lockPlayer)
+
+
+def removeOldestFile(path, maxSize):
+	"""
+	Remove the oldest log file in path if the folder size is greater than MAX_SIZE
+	Parameters:
+	- path: (string) path where to look for .log files
+	- maxSize: (int) maximum size (in octets) of the folder
+
+	Use listdir, but can be based on scandir (Python 3.5+) for efficiency
+	"""
+	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
+	while sum(getsize(path+f) for f in listdir(path)) > (maxSize):
+		#files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
+		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
+		# TODO: vérfier que le joueur/game que l'on supprime ne soit pas encore un train de jouer...
+		# (n'est plus dans Player.allPlayers / Games.allPGames)
+		# sinon, il ne sera plus loggué
+		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
+		# (renvoie un ValueError)
+		oldest = min(files, key=itemgetter(1))[0]
+		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
+		remove(path+oldest)
+
+
+# The two following functions just call removeOldestFile, but each with a different non-blocking lock
+# so that these functions are just called when nobodyelse uses then
+# (if removeOldestFilePlayer is already run by A, then no other thread can run it (it will just do nothing instead)
+# so that we do not have two functions that try to delete oldest files in the same time
+# (one is enough; several causes troubles)
+@non_blocking_lock
+def removeOldestFilePlayer(path):
+	return removeOldestFile(path, MAX_PLAYERS_FOLDER)
+
+
+@non_blocking_lock
+def removeOldestFileGame(path):
+	return removeOldestFile(path, MAX_GAMES_FOLDER)
+
+
 def configurePlayerLogger(playerName, gameType):
 	"""
 	Configure a player logger
@@ -177,17 +216,7 @@ def configurePlayerLogger(playerName, gameType):
 	path = gameType + '/logs/players/'
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
-	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_PLAYERS_FOLDER-MAX_PLAYER_SIZE):     # -> for Python 3.5 (fastest!)
-	while sum(getsize(path+f) for f in listdir(path)) > (MAX_PLAYERS_FOLDER - MAX_PLAYER_SIZE):
-		#files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
-		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
-		# TODO: vérfier que le joueur que l'on supprime ne soit pas encore un train de jouer...(n'est plus dans Player.allPlayers)
-		# sinon, il ne sera plus loggué
-		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
-		# (renvoie un ValueError)
-		oldest = min(files, key=itemgetter(1))[0]
-		logging.getLogger('DEL').warning("Remove the file `%s`" % (path+oldest))
-		remove(path+oldest)
+	removeOldestFilePlayer(path)
 
 	# add an handler to write the log to a file (MAX_PLAYER_SIZE octets max) *if* it doesn't exist
 	if not logger.handlers:
@@ -201,10 +230,6 @@ def configurePlayerLogger(playerName, gameType):
 	return logger
 
 
-
-lockGame = Lock()
-
-@synchronized(lockGame)
 def configureGameLogger(name, gameType):
 	"""
 	Configure a game logger
@@ -218,16 +243,7 @@ def configureGameLogger(name, gameType):
 	path = gameType + '/logs/games/'
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
-	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_GAMES_FOLDER-MAX_GAME_SIZE):     # -> for Python 3.5
-	while sum(getsize(path + f) for f in listdir(path)) > (MAX_GAMES_FOLDER-MAX_GAME_SIZE):
-		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
-		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
-		# TODO: vérfier que la partie que l'on supprime est bien terminée...(n'est plus dans Game.allGames)
-		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
-		# (renvoie un ValueError)
-		oldest = min(files, key=itemgetter(1))[0]
-		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
-		remove(path+oldest)
+	removeOldestFileGame(path)
 
 	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
 	makedirs(path, exist_ok=True)
