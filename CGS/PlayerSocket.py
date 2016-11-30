@@ -136,7 +136,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 			if self.game is not None:
 				self.game.partialEndOfGame(self._player)
 			# answers the client about the error
-			self.sendData(str(err))
+			try:
+				self.sendData(str(err))
+			except:
+				pass
 
 		except DisconnectionError:
 			# ends the game
@@ -154,12 +157,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Call when the connection is closed
 		"""
 		try:
-
 			if self._player is not None:
 				self.logger.info("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
 				RegularPlayer.removePlayer(self._player.name)
 				del self._player
-
 			else:
 				logger.info("Connection closed with client %s", self.client_address[0])
 
@@ -212,7 +213,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 		"""
 		Returns the game of the player (self.game is a shortcut for self.game)
 		"""
-		return self._player.game
+		if self._player:
+			return self._player.game
+		else:
+			return None
 
 
 	@property

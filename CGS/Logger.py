@@ -22,8 +22,21 @@ from socket import gethostname      # get name of the machine
 from email.utils import parseaddr   # parse email to validate it (can validate wrong emails)
 from colorlog import ColoredFormatter  # logging with colors
 from colorama import Fore
-from os import makedirs
+from os import makedirs, scandir, remove, listdir
+from os.path import getmtime, getsize
 from smtplib import SMTP, SMTPAuthenticationError
+from operator import itemgetter
+import functools
+from threading import Lock
+
+
+# Max File Size (in octets)
+MAX_ACTIVITY_SIZE = 1e6     # 1Mo for the activity.log file
+MAX_PLAYER_SIZE = 50e3       # 50ko each player
+MAX_PLAYERS_FOLDER = 5e6     # 5Mo for the players/ folder
+MAX_GAME_SIZE = 10e3         # 10ko each game
+MAX_GAMES_FOLDER = 5e6       # 5Mo for the games/ folder
+
 
 # see 'Logging.txt' for the different logging levels
 LOW_DEBUG_LEVEL = 5
@@ -36,6 +49,21 @@ player_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_L
 game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 
 mode = 'prod'   # default mode, set by configureRootLogger
+
+
+
+# decorator for synchronizing off a thread mutex
+# see https://github.com/GrahamDumpleton/wrapt/blob/develop/blog/07-the-missing-synchronized-decorator.md
+def synchronized(lock=None):
+    def _decorator(wrapped):
+        @functools.wraps(wrapped)
+        def _wrapper(*args, **kwargs):
+            with lock:
+                return wrapped(*args, **kwargs)
+        return _wrapper
+    return _decorator
+
+
 
 
 # function used to log message at low_debug and message levels
@@ -58,7 +86,7 @@ def configureRootLogger(args):
 	Returns the logger
 	"""
 	gameName = args['<gameName>']
-	global mode
+	global mode  # TODO: faire mieux que ça...
 	mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
 
 	# add the COMM_DEBUG and MESSAGE logging levels
@@ -73,7 +101,7 @@ def configureRootLogger(args):
 
 	# add an handler to redirect the log to a file (1Mo max)
 	makedirs(gameName + '/logs/', exist_ok=True)
-	file_handler = RotatingFileHandler(gameName + '/logs/activity.log', 'a', 1e6, 1)
+	file_handler = RotatingFileHandler(gameName + '/logs/activity.log', mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
 	file_handler.setLevel(activity_level[mode][1])
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)
@@ -89,7 +117,7 @@ def configureRootLogger(args):
 	logger.addHandler(steam_handler)
 
 	# Manage errors (send an email) when we are in production
-	if mode == 'prod':
+	if mode == 'prod' and False:        # TODO: enlever le False qd on saura passer le proxy
 		# get the password (and disable warning message)
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
 		def custom_fallback(prompt="Password: ", stream=None):
@@ -134,8 +162,10 @@ def configureRootLogger(args):
 	return logger
 
 
-
-def configurePlayerLogger(playerName, gameName):
+lockPlayer = Lock()
+# TODO: do something more efficient than adding a mutex around configurePlayerLogger (the same for configureGameLogger)
+@synchronized(lockPlayer)
+def configurePlayerLogger(playerName, gameType):
 	"""
 	Configure a player logger
 	Parameters:
@@ -144,11 +174,25 @@ def configurePlayerLogger(playerName, gameName):
 	Returns the logger
 	"""
 	logger = logging.getLogger(playerName)
+	path = gameType + '/logs/players/'
 
-	# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
+	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
+	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_PLAYERS_FOLDER-MAX_PLAYER_SIZE):     # -> for Python 3.5 (fastest!)
+	while sum(getsize(path+f) for f in listdir(path)) > (MAX_PLAYERS_FOLDER - MAX_PLAYER_SIZE):
+		#files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
+		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
+		# TODO: vérfier que le joueur que l'on supprime ne soit pas encore un train de jouer...(n'est plus dans Player.allPlayers)
+		# sinon, il ne sera plus loggué
+		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
+		# (renvoie un ValueError)
+		oldest = min(files, key=itemgetter(1))[0]
+		logging.getLogger('DEL').warning("Remove the file `%s`" % (path+oldest))
+		remove(path+oldest)
+
+	# add an handler to write the log to a file (MAX_PLAYER_SIZE octets max) *if* it doesn't exist
 	if not logger.handlers:
-		makedirs(gameName + '/logs/players/', exist_ok=True)
-		file_handler = RotatingFileHandler(gameName + '/logs/players/' + playerName + '.log', 'a', 1e6, 1)
+		makedirs(path, exist_ok=True)
+		file_handler = RotatingFileHandler(path + playerName + '.log', mode='a', maxBytes=MAX_PLAYER_SIZE, backupCount=1)
 		file_handler.setLevel(player_level[mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
@@ -157,6 +201,10 @@ def configurePlayerLogger(playerName, gameName):
 	return logger
 
 
+
+lockGame = Lock()
+
+@synchronized(lockGame)
 def configureGameLogger(name, gameType):
 	"""
 	Configure a game logger
@@ -167,10 +215,23 @@ def configureGameLogger(name, gameType):
 	Returns the logger
 	"""
 	logger = logging.getLogger(name)
+	path = gameType + '/logs/games/'
 
-	# add an handler to write the log to a file (1Mo max) *if* it doesn't exist
-	makedirs(gameType + '/logs/games/', exist_ok=True)
-	file_handler = logging.FileHandler(gameType + '/logs/games/' + name + '.log')
+	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
+	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_GAMES_FOLDER-MAX_GAME_SIZE):     # -> for Python 3.5
+	while sum(getsize(path + f) for f in listdir(path)) > (MAX_GAMES_FOLDER-MAX_GAME_SIZE):
+		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
+		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
+		# TODO: vérfier que la partie que l'on supprime est bien terminée...(n'est plus dans Game.allGames)
+		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
+		# (renvoie un ValueError)
+		oldest = min(files, key=itemgetter(1))[0]
+		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
+		remove(path+oldest)
+
+	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
+	makedirs(path, exist_ok=True)
+	file_handler = RotatingFileHandler(path + name + '.log', mode='a', maxBytes=MAX_GAME_SIZE, backupCount=1)
 	file_handler.setLevel(game_level[mode])
 	file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)

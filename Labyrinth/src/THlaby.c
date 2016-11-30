@@ -225,7 +225,10 @@ int main()
 	//debug=1;	/* enable debug */
 
 	/* connection to the server */
-	connectToServer( "localhost", 1234, "THlaby");
+	char name[100];
+	sprintf(name, "THlaby%d",getpid());
+	connectToServer( "localhost", 1234, name);
+	//connectToServer( "localhost", 1234, "THlaby");
 
 	/* play over and over...
 	(this loop is not necessary if you only want to play one game, but will be useful for tournament)*/
