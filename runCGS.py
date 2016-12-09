@@ -50,6 +50,7 @@ Options:
   -H HOST --host=HOST      Servers host [default: localhost].
   -e EMAIL --email=EMAIL   Email address used in prod to send info when the server fails [default: pythoncgs@gmail.com]
   -s SMTP --smtp=SMTP      SMTP server:port used in prod to send the email [default: smtp.gmail.com:587]
+  --no-email               Do not send email in production [default: False]
   --debug                  Debug mode (log and display everything)
   --dev                    Development mode (log everything, display infos, warnings and errors)
   --prod                   Production mode (log only infos, warnings and errors, display nothing, and send emails) [default: True]
@@ -87,10 +88,11 @@ if __name__ == "__main__":
 	logger = configureRootLogger(args)
 
 	# Start !
+	mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
 	logger.message("")
-	logger.message("#======================================#")
-	logger.message("# Coding Game Server is going to start #")
-	logger.message("#======================================#")
+	logger.message("#=====================================================#")
+	logger.message("# Coding Game Server is going to start (mode=`%s`) #" % mode)
+	logger.message("#=====================================================#")
 	logger.message("")
 
 	# Run the webserver
