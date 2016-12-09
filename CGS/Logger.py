@@ -118,8 +118,15 @@ def configureRootLogger(args):
 	steam_handler.setFormatter(formatter)
 	logger.addHandler(steam_handler)
 
+	# An other handler to log the errors (only) in errors.log
+	error_handler = RotatingFileHandler(gameName + '/logs/errors.log', mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
+	error_handler.setLevel(logging.ERROR)
+	error_formatter = logging.Formatter('----------------------\n%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
+	error_handler.setFormatter(error_formatter)
+	logger.addHandler(error_handler)
+
 	# Manage errors (send an email) when we are in production
-	if mode == 'prod' and not args['--no-email']:        # TODO: enlever le False qd on saura passer le proxy
+	if mode == 'prod' and not args['--no-email']:
 		# get the password (and disable warning message)
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
 		def custom_fallback(prompt="Password: ", stream=None):
