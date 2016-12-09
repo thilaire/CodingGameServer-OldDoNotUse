@@ -47,9 +47,10 @@ void dispError(const char* fct, const char* msg, ...);
  * Parameters:
  * - fct: name of the function where the error raises (__FUNCTION__ can be used)
  * - msg: message to display
+ * - level : debug level (print if debug>=level, level=0 always print)
  * - ...: extra parameters to give to printf...
 */
-void dispDebug(const char* fct, const char* msg, ...);
+void dispDebug(const char* fct,int level, const char* msg, ...);
 
 
 

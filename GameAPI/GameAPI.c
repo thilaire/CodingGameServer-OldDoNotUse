@@ -43,7 +43,7 @@ TODO: explain...
 
 int sockfd = -1;		/* socket descriptor, equal to -1 when we are not yet connected */
 char buffer[MAX_LENGTH];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message; TODO: is it useful?) */
-int debug=0;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
+int debug=1;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
 char stream_size[HEAD_SIZE] ; 
 /* Display Error message and exit
  *
@@ -72,12 +72,13 @@ void dispError(const char* fct, const char* msg, ...)
  *
  * Parameters:
  * - fct: name of the function where the error raises (__FUNCTION__ can be used)
+ * - level : debug level (print if debug>=level, level=0 always print)
  * - msg: message to display
  * - ...: extra parameters to give to printf...
 */
-void dispDebug(const char* fct, const char* msg, ...)
+void dispDebug(const char* fct, int level, const char* msg, ...)
 {
-  if (debug)
+  if (debug>=level)
 	{
 		printf("\e[35m\u26A0\e[0m (%s) ", fct);
 
@@ -113,7 +114,7 @@ int read_inbuf(const char *fct, char *buf, size_t nbuf){
 		r = sscanf (stream_size,"%lu",&length);
 		if (r!=1)
 			dispError (fct, "Cannot read message's length (server has failed?)");
-		dispDebug (fct, "prepare to receive a message of length :%lu",length);
+		dispDebug (fct, 3, "prepare to receive a message of length :%lu",length);
 	}
 	int mini = length>nbuf ? nbuf : length ;
 	bzero(buf,nbuf);
@@ -145,7 +146,7 @@ void sendString( const char* fct, const char* str, ...) {
 
 	/* send our message */
 	int r = write(sockfd, buffer, strlen(buffer));
-	dispDebug( fct, "Send '%s' to the server", buffer);
+	dispDebug( fct,2, "Send '%s' to the server", buffer);
 	if (r < 0)
 		dispError( fct, "Cannot write to the socket (%s)",buffer);
 
@@ -159,7 +160,7 @@ void sendString( const char* fct, const char* str, ...) {
 	if (strcmp(buffer,"OK"))
 		dispError( fct, "Error: The server does not acknowledge, but answered:\n%s",buffer);
 
-	dispDebug( fct, "Receive acknowledgment from the server");
+	dispDebug( fct,3, "Receive acknowledgment from the server");
 }
 
 
@@ -179,7 +180,7 @@ void connectToCGS( const char* fct, char* serverName, int port, char* name)
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
 	
-	dispDebug( fct, "Initiate connection with %s (port: %d)", serverName, port);
+	dispDebug( fct,2, "Initiate connection with %s (port: %d)", serverName, port);
 
 	/* Create a socket point, TCP/IP protocol, connected */
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -190,7 +191,7 @@ void connectToCGS( const char* fct, char* serverName, int port, char* name)
 	server = gethostbyname(serverName);
 	if (server == NULL)
 		dispError( fct, "Unable to find the server by its name");
-	dispDebug( fct, "Open connection with the server %s", serverName);
+	dispDebug( fct,1, "Open connection with the server %s", serverName);
 
 	/* Allocate sockaddr */
 	bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -252,7 +253,7 @@ void waitForGame( const char* fct, char* training, char* gameName, char* data)
 	if (r>0)
 		dispError( fct, "Too long answer from 'WAIT_GAME' command (sending:%s)");
 
-	dispDebug(fct, "Receive Labyrinth name=%s", buffer);
+	dispDebug(fct,1, "Receive Labyrinth name=%s", buffer);
 	strcpy( gameName, buffer);
 
 	/* read Labyrinth size */
@@ -261,7 +262,7 @@ void waitForGame( const char* fct, char* training, char* gameName, char* data)
 	if (r>0)
 	  dispError( fct, "Answer from 'WAIT_GAME' too long");
 
-	dispDebug( fct, "Receive Labyrinth sizes=%s", buffer);
+	dispDebug( fct,2, "Receive Labyrinth sizes=%s", buffer);
 	strcpy( data, buffer);
 }
 
@@ -287,7 +288,7 @@ int getGameData( const char* fct, char* data,size_t ndata)
 	if (r>0)
 		dispError( fct, "too long answer from 'GET_GAME_DATA' command");
 
-	dispDebug( fct, "Receive labyrinth's data:%s", data);
+	dispDebug( fct,2, "Receive labyrinth's data:%s", data);
 
 
 	/* TODO: copier le buffer dans data
@@ -302,7 +303,7 @@ int getGameData( const char* fct, char* data,size_t ndata)
 	if (r>0)
 		dispError( fct, "too long answer from 'GET_GAME_DATA' ");
 
-	dispDebug( fct, "Receive these player who begins=%s", buffer);
+	dispDebug( fct,2, "Receive these player who begins=%s", buffer);
 
 	return buffer[0]-'0';
 }
@@ -328,18 +329,18 @@ t_return_code getCGSMove( const char* fct, char* move ,size_t nmove)
 	int r = read_inbuf(fct,move, nmove);
 	if (r>0)
 		dispError( fct, "too long answer from 'GET_MOVE' command");
-	dispDebug(__FUNCTION__, "Receive that move:%s", move);
+	dispDebug(__FUNCTION__,1, "Receive that move:%s", move);
 
 	/* read the return code*/
 	//bzero(buffer,1000);
 	r = read_inbuf(fct,buffer, MAX_LENGTH);
 	if (r>0)
 		dispError( fct, "Too long answer from 'GET_MOVE' command");
-	dispDebug(__FUNCTION__, "Receive that return code:%s", buffer);
+	dispDebug(__FUNCTION__,2, "Receive that return code:%s", buffer);
 
 	/* extract result */
 	sscanf( buffer, "%d", &result);
-	dispDebug(__FUNCTION__,"results=%d",result);
+	dispDebug(__FUNCTION__,2,"results=%d",result);
 	return result;
 }
 
@@ -366,7 +367,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
 	if (r>0)
 		dispError( fct, "Too long answer from 'PLAY_MOVE' command");
 
-	dispDebug( fct, "Receive that return code: %s", buffer);
+	dispDebug( fct,2, "Receive that return code: %s", buffer);
 
 	/* extract result */
 	sscanf( buffer, "%d", &result);
@@ -377,7 +378,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
 	if (r>0)
 		dispError( fct, "Too long answer from 'PLAY_MOVE' command ");
 
-	dispDebug( fct, "Receive that message: %s", buffer);
+	dispDebug( fct,1, "Receive that message: %s", buffer);
 
 	
 	/*TODO: that message is not handle or given to the user..
@@ -398,7 +399,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
  */
 void printGame( const char* fct)
 {
-	dispDebug( fct, "Try to get string to display Game");
+  dispDebug( fct,2, "Try to get string to display Game");
 
 	/* send command */
 	sendString( fct, "DISP_GAME");
@@ -423,7 +424,7 @@ void printGame( const char* fct)
  */
 void sendCGSComment( const char* fct, char* comment)
 {
-	dispDebug( fct, "Try to send a comment");
+  dispDebug( fct,2, "Try to send a comment");
 
 	/* max 100. car */
 	if (strlen(comment)>100)
