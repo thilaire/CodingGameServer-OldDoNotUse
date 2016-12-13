@@ -102,6 +102,8 @@ void closeConnection();
  *   (player that does not move)
  * - "PLAY_RANDOM" for a player that make random (legal) moves 
  *   (option "rotation=False/True")
+ * - "ASTAR" for a player that move the shortest way to the treasure
+ *   (without making any rotation)
  */
 void waitForLabyrinth( char* training, char* labyrinthName,
 		       int* sizeX, int* sizeY);

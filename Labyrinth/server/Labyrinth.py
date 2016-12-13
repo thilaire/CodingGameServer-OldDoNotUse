@@ -27,7 +27,7 @@ from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, RO
 	DO_NOTHING, Ddx, Ddy, INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND, ROTATE_ENERGY
 from .DoNothingPlayer import DoNothingPlayer
 from .PlayRandomPlayer import PlayRandomPlayer
-
+from .AstarPlayer import AstarPlayer
 
 
 def xshift(L, x, dx):
@@ -154,7 +154,7 @@ class Labyrinth(Game):
 	"""
 
 	# dictionary of the possible training Players (non-regular players)
-	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer}   # type -> class of the Player
+	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer, "ASTAR": AstarPlayer}   # type -> class of the Player
 
 
 	def __init__(self, player1, player2, **options):
@@ -192,6 +192,10 @@ class Labyrinth(Game):
 
 		self._playerEnergy[0] = INITIAL_ENERGY_FIRST
 
+
+	@property
+	def treasure(self):
+		return self._treasure
 
 	@property
 	def playerPos(self):
