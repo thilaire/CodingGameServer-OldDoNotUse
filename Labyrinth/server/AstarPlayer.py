@@ -6,13 +6,13 @@
 |                       |
 * --------------------- *
 
-Authors: T. Hilaire, J. Brajard
+Authors: J. Brajard
 Licence: GPL
 Status: still in dev...
 
-File: playRandomPlayer.py
-	Contains the class playRandomPlayer
-	-> defines a dummy player that play randomly every time (but do not loose)
+File: AstarPlayer.py
+	Contains the class AstarPlayer
+	-> defines a player that uses Astar algorithm to move along the shortest path (but do not move the walls)
 """
 
 from CGS.Player import TrainingPlayer
@@ -55,16 +55,18 @@ class AstarPlayer(TrainingPlayer):
 		loop = True
 
 		#Loop if data are style to explore
+		d = 0
 		while loop:
 			loop = False
 			for x in range(self.game.L):
 				for y in range(self.game.H):
-					if delta[x][y] >= 0:
+					if delta[x][y] == d:
 						for (xn,yn) in self.neighbours(x,y):
 							if self.game.lab[xn][yn] and delta[xn][yn] == -1:
 								loop = True
-								delta[xn][yn] = delta[x][y]+1
+								delta[xn][yn] = d+1
 
+			d = d+1
 		#Our position
 		xp,yp = self.game.playerPos[us]
 		moves = dict()
@@ -81,5 +83,5 @@ class AstarPlayer(TrainingPlayer):
 			bestmove = min(moves, key=moves.get)
 			return "%d 0" % bestmove
 		else:
-			self.game.sendComment(self, "I am blocked... I cannot move...")
+			self.game.sendComment(self, "I am blocked... I cannot move... Aaarg! You got me!!")
 			return "%d 0" % DO_NOTHING

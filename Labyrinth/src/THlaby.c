@@ -236,7 +236,7 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "PLAY_RANDOM timeout=10 rotate=False");
+		waitLab( &laby, "ASTAR timeout=10 rotate=False");
         nmove = 0;
 
         do {
