@@ -55,16 +55,18 @@ class AstarPlayer(TrainingPlayer):
 		loop = True
 
 		#Loop if data are style to explore
+		d = 0
 		while loop:
 			loop = False
 			for x in range(self.game.L):
 				for y in range(self.game.H):
-					if delta[x][y] >= 0:
+					if delta[x][y] == d:
 						for (xn,yn) in self.neighbours(x,y):
 							if self.game.lab[xn][yn] and delta[xn][yn] == -1:
 								loop = True
-								delta[xn][yn] = delta[x][y]+1
+								delta[xn][yn] = d+1
 
+			d = d+1
 		#Our position
 		xp,yp = self.game.playerPos[us]
 		moves = dict()
