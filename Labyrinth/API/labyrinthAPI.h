@@ -101,7 +101,7 @@ void closeConnection();
  * - "DO_NOTHING" to play against DO_NOTHING player 
  *   (player that does not move)
  * - "PLAY_RANDOM" for a player that make random (legal) moves 
- *   (option "rotation=False/True")
+ *   (option "rotate=False/True")
  * - "ASTAR" for a player that move the shortest way to the treasure
  *   (without making any rotation)
  */
