@@ -22,13 +22,13 @@ from socket import gethostname      # get name of the machine
 from email.utils import parseaddr   # parse email to validate it (can validate wrong emails)
 from colorlog import ColoredFormatter  # logging with colors
 from colorama import Fore
-from os import makedirs, scandir, remove, listdir
-from os.path import getmtime, getsize
+from os import makedirs, remove, listdir
+from os.path import getmtime, getsize, join
 from smtplib import SMTP, SMTPAuthenticationError
 from operator import itemgetter
 from functools import wraps
 from threading import Lock
-
+from jinja2 import Template
 
 # Max File Size (in octets)
 MAX_ACTIVITY_SIZE = 1e6     # 1Mo for the activity.log file
@@ -48,24 +48,30 @@ activity_level = {
 player_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 
-mode = 'prod'   # default mode, set by configureRootLogger
+
+# global variables used as configuration variables #TODO: store them in a class
+class Config:
+	mode = 'prod'   # default mode, set by configureRootLogger
+	logPath = 'logs/'   # path where to store the log
+
 
 # From http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
 def non_blocking_lock(fn):
-    """Decorator. Prevents the function from being called multiple times simultaneously.
+	"""Decorator. Prevents the function from being called multiple times simultaneously.
     If thread A is executing the function and thread B attempts to call the
     function, thread B will immediately receive a return value of None instead.
     """
-    lock = Lock()
-    @wraps(fn)
-    def locker(*args, **kwargs):
-        if lock.acquire(False):
-            try:
-                return fn(*args, **kwargs)
-            finally:
-                lock.release()
+	lock = Lock()
 
-    return locker
+	@wraps(fn)
+	def locker(*args, **kwargs):
+		if lock.acquire(False):
+			try:
+				return fn(*args, **kwargs)
+			finally:
+				lock.release()
+
+	return locker
 
 
 # function used to log message at low_debug and message levels
@@ -88,8 +94,8 @@ def configureRootLogger(args):
 	Returns the logger
 	"""
 	gameName = args['<gameName>']
-	global mode  # TODO: faire mieux que ça...
-	mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
+	Config.mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
+	Config.logPath = join(gameName, Template(args['--log']).render(hostname=gethostname()))
 
 	# add the COMM_DEBUG and MESSAGE logging levels
 	logging.addLevelName(LOW_DEBUG_LEVEL, "COM_DEBUG")
@@ -102,9 +108,9 @@ def configureRootLogger(args):
 	logger.setLevel(LOW_DEBUG_LEVEL)
 
 	# add an handler to redirect the log to a file (1Mo max)
-	makedirs(gameName + '/logs/', exist_ok=True)
-	file_handler = RotatingFileHandler(gameName + '/logs/activity.log', mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
-	file_handler.setLevel(activity_level[mode][1])
+	makedirs(Config.logPath, exist_ok=True)
+	file_handler = RotatingFileHandler(join(Config.logPath, 'activity.log'), mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
+	file_handler.setLevel(activity_level[Config.mode][1])
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)
 	logger.addHandler(file_handler)
@@ -112,21 +118,21 @@ def configureRootLogger(args):
 	# Add an other handler to redirect some logs to the console
 	# (with colors, depending on the level DEBUG/INFO/WARNING/ERROR/CRITICAL)
 	steam_handler = logging.StreamHandler()
-	steam_handler.setLevel(activity_level[mode][0])
+	steam_handler.setLevel(activity_level[Config.mode][0])
 	LOGFORMAT = "  %(log_color)s[%(name)s]%(reset)s | %(log_color)s%(message)s%(reset)s"
 	formatter = ColoredFormatter(LOGFORMAT)
 	steam_handler.setFormatter(formatter)
 	logger.addHandler(steam_handler)
 
 	# An other handler to log the errors (only) in errors.log
-	error_handler = RotatingFileHandler(gameName + '/logs/errors.log', mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
+	error_handler = RotatingFileHandler(join(Config.logPath, 'errors.log'), mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
 	error_handler.setLevel(logging.ERROR)
 	error_formatter = logging.Formatter('----------------------\n%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	error_handler.setFormatter(error_formatter)
 	logger.addHandler(error_handler)
 
 	# Manage errors (send an email) when we are in production
-	if mode == 'prod' and not args['--no-email']:
+	if Config.mode == 'prod' and not args['--no-email']:
 		# get the password (and disable warning message)
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
 		def custom_fallback(prompt="Password: ", stream=None):
@@ -163,7 +169,7 @@ def configureRootLogger(args):
 		# add an other handler to redirect errors through emails
 		mail_handler = SMTPHandler((smtp, port), address, [address], "Error in CGS (%s)" % gethostname(),
 		                           (address, password), secure=())
-		mail_handler.setLevel(activity_level[mode][2])
+		mail_handler.setLevel(activity_level[Config.mode][2])
 		# mail_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 		# mail_handler.setFormatter(mail_formatter)
 		logger.addHandler(mail_handler)
@@ -182,9 +188,9 @@ def removeOldestFile(path, maxSize):
 
 	Use listdir, but can be based on scandir (Python 3.5+) for efficiency
 	"""
-	#while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
-	while sum(getsize(path+f) for f in listdir(path)) > (maxSize):
-		#files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
+	# while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
+	while sum(getsize(path+f) for f in listdir(path)) > maxSize:
+		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
 		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
 		# TODO: vérfier que le joueur/game que l'on supprime ne soit pas encore un train de jouer...
 		# (n'est plus dans Player.allPlayers / Games.allPGames)
@@ -211,7 +217,7 @@ def removeOldestFileGame(path):
 	return removeOldestFile(path, MAX_GAMES_FOLDER)
 
 
-def configurePlayerLogger(playerName, gameType):
+def configurePlayerLogger(playerName):
 	"""
 	Configure a player logger
 	Parameters:
@@ -220,7 +226,7 @@ def configurePlayerLogger(playerName, gameType):
 	Returns the logger
 	"""
 	logger = logging.getLogger(playerName)
-	path = gameType + '/logs/players/'
+	path = join(Config.logPath, 'players/')
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFilePlayer(path)
@@ -229,7 +235,7 @@ def configurePlayerLogger(playerName, gameType):
 	if not logger.handlers:
 		makedirs(path, exist_ok=True)
 		file_handler = RotatingFileHandler(path + playerName + '.log', mode='a', maxBytes=MAX_PLAYER_SIZE, backupCount=1)
-		file_handler.setLevel(player_level[mode])
+		file_handler.setLevel(player_level[Config.mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
 		logger.addHandler(file_handler)
@@ -237,17 +243,16 @@ def configurePlayerLogger(playerName, gameType):
 	return logger
 
 
-def configureGameLogger(name, gameType):
+def configureGameLogger(name):
 	"""
 	Configure a game logger
 	Parameters:
 	- name: (string) name of the game
-	- type: (string) type of the game (ex: 'Labyrinth')
 
 	Returns the logger
 	"""
 	logger = logging.getLogger(name)
-	path = gameType + '/logs/games/'
+	path = join(Config.logPath, 'games/')
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFileGame(path)
@@ -255,7 +260,7 @@ def configureGameLogger(name, gameType):
 	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
 	makedirs(path, exist_ok=True)
 	file_handler = RotatingFileHandler(path + name + '.log', mode='a', maxBytes=MAX_GAME_SIZE, backupCount=1)
-	file_handler.setLevel(game_level[mode])
+	file_handler.setLevel(game_level[Config.mode])
 	file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)
 	logger.addHandler(file_handler)

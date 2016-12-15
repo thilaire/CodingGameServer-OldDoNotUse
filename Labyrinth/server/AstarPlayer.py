@@ -16,9 +16,7 @@ File: AstarPlayer.py
 """
 
 from CGS.Player import TrainingPlayer
-from random import choice, randint
 from .Constants import MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, DO_NOTHING
-from .Constants import ROTATE_COLUMN_DOWN, ROTATE_COLUMN_UP, ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_ENERGY
 from .Constants import Ddx, Ddy
 
 boolConv = {'true': True, 'false': False}
@@ -31,14 +29,14 @@ class AstarPlayer(TrainingPlayer):
 
 
 
-	def neighbours(self,x,y):
+	def neighbours(self, x, y):
 		"""
 		:param x: coordinate of a point
 		:param y: coordinate of a point
 		:return: list of neighbours of the point (x,y)
 		"""
-		return [ ((x + Ddx[move_type]) % self.game.L, (y + Ddy[move_type]) % self.game.H)\
-				for move_type in (MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT)]
+		return [((x + Ddx[move_type]) % self.game.L, (y + Ddy[move_type]) % self.game.H)
+		        for move_type in (MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT)]
 
 	def playMove(self):
 		"""
@@ -54,23 +52,21 @@ class AstarPlayer(TrainingPlayer):
 
 		loop = True
 
-		#Loop if data are style to explore
+		# Loop if data are style to explore
 		d = 0
 		while loop:
 			loop = False
 			for x in range(self.game.L):
 				for y in range(self.game.H):
 					if delta[x][y] == d:
-						for (xn,yn) in self.neighbours(x,y):
+						for (xn, yn) in self.neighbours(x, y):
 							if self.game.lab[xn][yn] and delta[xn][yn] == -1:
 								loop = True
 								delta[xn][yn] = d+1
 
-			d = d+1
-		#Our position
-		xp,yp = self.game.playerPos[us]
+			d += 1
+		# Find the best move
 		moves = dict()
-		#Find the best move
 		for move_type in (MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT):
 			x, y = self.game.playerPos[us]
 			x = (x + Ddx[move_type]) % self.game.L

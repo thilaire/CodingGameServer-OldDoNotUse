@@ -19,7 +19,6 @@ File: Player.py
 from threading import Event
 from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
-from CGS.Game import Game
 
 
 class RegularPlayer(Player):
@@ -55,7 +54,7 @@ class RegularPlayer(Player):
 		super().__init__(name)
 
 		# create the logger of the player
-		self._logger = configurePlayerLogger(name, Game.getTheGameName())
+		self._logger = configurePlayerLogger(name)
 
 		self.logger.info("=================================")
 		self.logger.info(name + " just log in (from " + address + ".")

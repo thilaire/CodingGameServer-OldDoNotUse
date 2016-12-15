@@ -138,7 +138,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# answers the client about the error
 			try:
 				self.sendData(str(err))
-			except:
+			except ConnectionError:
 				pass
 
 		except DisconnectionError:

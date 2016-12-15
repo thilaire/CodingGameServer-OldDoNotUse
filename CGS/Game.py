@@ -127,7 +127,7 @@ class Game:
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
 
 		# create the logger of the game
-		self._logger = configureGameLogger(self.name, self.getTheGameName())
+		self._logger = configureGameLogger(self.name)
 
 		self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)

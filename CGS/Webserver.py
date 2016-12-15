@@ -25,7 +25,7 @@ from bottle import run, response, install, default_app			    # webserver (bottle
 from os.path import isfile, join
 from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
-
+from CGS.Logger import Config
 from functools import wraps										# use to wrap a logger for bottle
 
 
@@ -157,17 +157,17 @@ def player(playerName):
 # display the logs
 @route('/logs')
 def log():
-	return static_file('activity.log', root=Game.getTheGameName()+'/logs/')
+	return static_file('activity.log', root=Config.logPath)
 
 
 @route('/logs/player/<playerName>')
 def logP(playerName):
-	return static_file(playerName+'.log', root=Game.getTheGameName()+'/logs/players/')
+	return static_file(playerName+'.log', root=join(Config.logPath, 'players'))
 
 
 @route('/logs/game/<gameName>')
 def logG(gameName):
-	return static_file(gameName+'.log', root=Game.getTheGameName()+'/logs/games/')
+	return static_file(gameName+'.log', root=join(Config.logPath, 'games'))
 
 
 # handle errors
