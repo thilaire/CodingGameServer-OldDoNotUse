@@ -189,6 +189,8 @@ def removeOldestFile(path, maxSize):
 	Use listdir, but can be based on scandir (Python 3.5+) for efficiency
 	"""
 	# while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
+	# TODO:  write a try..catch if path does not exist
+
 	while sum(getsize(path+f) for f in listdir(path)) > maxSize:
 		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
 		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
@@ -227,6 +229,7 @@ def configurePlayerLogger(playerName):
 	logger = logging.getLogger(playerName)
 	path = join(Config.logPath, 'players/')
 	makedirs(path, exist_ok=True)
+	# TODO: put makedirs after removefiles and write a try..catch in removeFiles
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFilePlayer(path)
@@ -254,6 +257,7 @@ def configureGameLogger(name):
 	logger = logging.getLogger(name)
 	path = join(Config.logPath, 'games/')
 	makedirs(path, exist_ok=True)
+	# TODO: put makedirs after removefiles and write a try..catch in removeFiles
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFileGame(path)
