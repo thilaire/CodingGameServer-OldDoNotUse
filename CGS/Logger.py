@@ -189,6 +189,8 @@ def removeOldestFile(path, maxSize):
 	Use listdir, but can be based on scandir (Python 3.5+) for efficiency
 	"""
 	# while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
+	# TODO:  write a try..catch if path does not exist
+
 	while sum(getsize(path+f) for f in listdir(path)) > maxSize:
 		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
 		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
@@ -200,7 +202,6 @@ def removeOldestFile(path, maxSize):
 		oldest = min(files, key=itemgetter(1))[0]
 		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
 		remove(path+oldest)
-
 
 # The two following functions just call removeOldestFile, but each with a different non-blocking lock
 # so that these functions are just called when nobodyelse uses then
@@ -228,12 +229,14 @@ def configurePlayerLogger(playerName):
 	logger = logging.getLogger(playerName)
 	path = join(Config.logPath, 'players/')
 	makedirs(path, exist_ok=True)
+	# TODO: put makedirs after removefiles and write a try..catch in removeFiles
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFilePlayer(path)
 
 	# add an handler to write the log to a file (MAX_PLAYER_SIZE octets max) *if* it doesn't exist
 	if not logger.handlers:
+
 		file_handler = RotatingFileHandler(path + playerName + '.log', mode='a', maxBytes=MAX_PLAYER_SIZE, backupCount=1)
 		file_handler.setLevel(player_level[Config.mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
@@ -254,11 +257,13 @@ def configureGameLogger(name):
 	logger = logging.getLogger(name)
 	path = join(Config.logPath, 'games/')
 	makedirs(path, exist_ok=True)
+	# TODO: put makedirs after removefiles and write a try..catch in removeFiles
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFileGame(path)
 
 	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
+
 	file_handler = RotatingFileHandler(path + name + '.log', mode='a', maxBytes=MAX_GAME_SIZE, backupCount=1)
 	file_handler.setLevel(game_level[Config.mode])
 	file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
