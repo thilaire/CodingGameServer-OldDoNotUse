@@ -114,8 +114,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 						# we do not use sendData here, because we do not want to log the full message...
 						msg = self.game.display(self._player).encode()
 						head = SIZE_FMT % len(msg)
-						self.request.sendall(str(head).encode('utf-8'))
-						self.request.sendall(msg)
+						try:
+							self.request.sendall(str(head).encode('utf-8'))
+							self.request.sendall(msg)
+						except BrokenPipeError:
+							raise DisconnectionError()
 						self.logger.low_debug("Send string to display to player %s (%s)", self._player.name, self.client_address[0])
 
 					elif data.startswith("SEND_COMMENT "):
@@ -175,7 +178,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Receive data (from self.request.recv)
 		and log it
 		"""
-		data = str(self.request.recv(size).strip(), "utf-8")
+		try:
+			data = str(self.request.recv(size).strip(), "utf-8")
+		except ConnectionResetError:
+			raise DisconnectionError()
+
 		# check if the client has closed the connection
 		# (don't know why, but when the connection is cloded by the client when the server wait with recv, we cannot
 		# use the self.server._closed attribute...)
@@ -194,18 +201,21 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Send data (with self.request.sendall) and log it
 		:param data: (str) data to send
 		"""
-		head = SIZE_FMT % len(data.encode("utf-8"))
-		self.request.sendall(str(head).encode('utf-8'))
-		if data:
-			self.request.sendall(data.encode('utf-8'))
-		else:
-			# that's a trick when we want to send an empty message...
-			# TODO: change this (do not send any empty message? always send X octets messages?)
-			self.request.sendall(''.encode('utf-8'))
-		if self._player:
-			self.logger.low_debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
-		else:
-			logger.low_debug("Send '%s' to %s", data, self.client_address[0])
+		try:
+			head = SIZE_FMT % len(data.encode("utf-8"))
+			self.request.sendall(str(head).encode('utf-8'))
+			if data:
+				self.request.sendall(data.encode('utf-8'))
+			else:
+				# that's a trick when we want to send an empty message...
+				# TODO: change this (do not send any empty message? always send X octets messages?)
+				self.request.sendall(''.encode('utf-8'))
+			if self._player:
+				self.logger.low_debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
+			else:
+				logger.low_debug("Send '%s' to %s", data, self.client_address[0])
+		except BrokenPipeError:
+			raise DisconnectionError()
 
 
 	@property
@@ -336,30 +346,3 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData(self.game.getData())
 		self.sendData('0' if self.game.playerWhoPlays is self._player else '1')  # send '0' if we begin, '1' otherwise
 
-
-
-
-# TODO: régler ce problème (connection fermée au moment où le serveur envoie un message (exception BrokenPipeError à attraper)
-#   [root] | [Errno 32] Broken pipe
-# Traceback (most recent call last):
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 85, in handle
-#     self.sendData(str(return_code))
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 190, in sendData
-#     self.request.sendall(str(head).encode('utf-8'))
-# BrokenPipeError: [Errno 32] Broken pipe
-# Traceback (most recent call last):
-#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 628, in process_request_thread
-#     self.finish_request(request, client_address)
-#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 357, in finish_request
-#     self.RequestHandlerClass(request, client_address, self)
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 54, in __init__
-#     super().__init__(request, client_address, server)
-#   File "/usr/local/Cellar/python3/3.5.1/Frameworks/Python.framework/Versions/3.5/lib/python3.5/socketserver.py", line 684, in __init__
-#     self.handle()
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 147, in handle
-#     raise err
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 85, in handle
-#     self.sendData(str(return_code))
-#   File "/Users/thib/Progs/CodingGameServer/CGS/PlayerSocket.py", line 190, in sendData
-#     self.request.sendall(str(head).encode('utf-8'))
-# BrokenPipeError: [Errno 32] Broken pipe
