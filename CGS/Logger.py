@@ -227,13 +227,13 @@ def configurePlayerLogger(playerName):
 	"""
 	logger = logging.getLogger(playerName)
 	path = join(Config.logPath, 'players/')
+	makedirs(path, exist_ok=True)
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFilePlayer(path)
 
 	# add an handler to write the log to a file (MAX_PLAYER_SIZE octets max) *if* it doesn't exist
 	if not logger.handlers:
-		makedirs(path, exist_ok=True)
 		file_handler = RotatingFileHandler(path + playerName + '.log', mode='a', maxBytes=MAX_PLAYER_SIZE, backupCount=1)
 		file_handler.setLevel(player_level[Config.mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
@@ -253,12 +253,12 @@ def configureGameLogger(name):
 	"""
 	logger = logging.getLogger(name)
 	path = join(Config.logPath, 'games/')
+	makedirs(path, exist_ok=True)
 
 	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
 	removeOldestFileGame(path)
 
 	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
-	makedirs(path, exist_ok=True)
 	file_handler = RotatingFileHandler(path + name + '.log', mode='a', maxBytes=MAX_GAME_SIZE, backupCount=1)
 	file_handler.setLevel(game_level[Config.mode])
 	file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
