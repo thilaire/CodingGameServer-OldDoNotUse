@@ -47,6 +47,7 @@ activity_level = {
 	'debug': (logging.DEBUG, LOW_DEBUG_LEVEL)}
 player_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
+error_level = {'prod': logging.ERROR, 'dev': MESSAGE_LEVEL, 'debug': MESSAGE_LEVEL}
 
 
 # global variables used as configuration variables #TODO: store them in a class
@@ -126,7 +127,7 @@ def configureRootLogger(args):
 
 	# An other handler to log the errors (only) in errors.log
 	error_handler = RotatingFileHandler(join(Config.logPath, 'errors.log'), mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
-	error_handler.setLevel(logging.ERROR)
+	error_handler.setLevel(error_level[Config.mode])
 	error_formatter = logging.Formatter('----------------------\n%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	error_handler.setFormatter(error_formatter)
 	logger.addHandler(error_handler)
