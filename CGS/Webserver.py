@@ -84,7 +84,9 @@ def static_file_from_templates(fileName):
 def favicon():
 	return static_file_from_templates('favicon.ico')
 
-
+# ================
+#   main page
+# ================
 @route('/')
 @route('/index.html')
 @view("index.html")
@@ -98,10 +100,11 @@ def index():
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
 	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList}
 
+# =======
+#  Games
+# =======
 
-# TODO: route vers xxx.html au lieu de xxx !
-
-@route('/new_game')
+@route('/new_game')     # TODO: route vers xxx.html au lieu de xxx !
 @view("new_game.html")
 def new_game():
 	"""
@@ -136,6 +139,20 @@ def create_new_game():
 		redirect('/')
 
 
+@route('/game/<gameName>')
+def game(gameName):
+	g = Game.getFromName(gameName)
+	if g:
+		# TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
+		return g.HTMLpage()
+	else:
+		return template('noGame.html', gameName=gameName)
+
+
+
+# ============
+#  Tournament
+# ============
 
 @route('/new_tournament')
 @view("new_tournament.html")
@@ -176,18 +193,13 @@ def tournament(tournamentName):
 	if t:
 		return t.HTMLpage()
 	else:
-		return template('noTournament.html')
+		return template('noTournament.html', tournamentName=tournamentName)
 
 
-@route('/game/<gameName>')
-def game(gameName):
-	g = Game.getFromName(gameName)
-	if g:
-		# TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
-		return g.HTMLpage()
-	else:
-		return template('noGame.html', gameName=gameName)
 
+# =========
+#  Player
+# =========
 
 @route('/player/<playerName>')
 def player(playerName):
@@ -199,23 +211,26 @@ def player(playerName):
 		return template('noPlayer.html', player=playerName)
 
 
-# display the logs
+# ======
+#  logs
+#=======
+
 @route('/logs')
 def log():
 	return static_file('activity.log', root=Config.logPath)
-
 
 @route('/logs/player/<playerName>')
 def logP(playerName):
 	return static_file(playerName+'.log', root=join(Config.logPath, 'players'))
 
-
 @route('/logs/game/<gameName>')
 def logG(gameName):
 	return static_file(gameName+'.log', root=join(Config.logPath, 'games'))
 
+# =======
+#  errors
+# ========
 
-# handle errors
 @error(404)
 @view('error404.html')
 def error404():

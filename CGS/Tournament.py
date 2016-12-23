@@ -34,7 +34,7 @@ class Tournament:
 		# name of the tournament
 		self._name = sub('\W+', '', name)
 		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
-		if name != self._name or len(name)>20:
+		if name != self._name or len(name) > 20:
 			raise ValueError("The name of the tournament is not valid (must be 20 characters max, and only in [a-zA-Z0-9_]")
 
 		# number max. of players
@@ -114,3 +114,4 @@ class Tournament:
 		Returns the tournament (the object) or None if it doesn't exist
 		"""
 		return cls.allTournaments.get(name, None)
+
