@@ -69,7 +69,7 @@ class Game:
 
 	"""
 
-	allGames = {}   #
+	allGames = {}   # TODO: private member ? (idem for all other classes with ther allXxxxx)
 	_theGameClass = None
 
 	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)
@@ -171,6 +171,9 @@ class Game:
 	@property
 	def name(self):
 		return self._name
+
+	def HTMLrepr(self):
+		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % (self.name, self.name, self.players[0].name, self.players[1].name)
 
 
 	def partialEndOfGame(self, whoLooses):

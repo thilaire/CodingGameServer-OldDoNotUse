@@ -23,11 +23,11 @@ from bottle import route, request, jinja2_view as view, jinja2_template as templ
 from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
 from bottle import run, response, install, default_app			    # webserver (bottle)
 from os.path import isfile, join
+from functools import wraps										# use to wrap a logger for bottle
 from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
-from functools import wraps										# use to wrap a logger for bottle
-
+from CGS.Tournament import Tournament
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -94,8 +94,12 @@ def index():
 	"""
 	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in RegularPlayer.allPlayers.values()])
 	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game.allGames.values()])
-	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList}
+	HTMLTournamentList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Tournament.allTournaments.values()])
+	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
+	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList}
 
+
+# TODO: route vers xxx.html au lieu de xxx !
 
 @route('/new_game')
 @view("new_game.html")
@@ -111,14 +115,14 @@ def new_game():
 @route('/create_new_game', method='POST')
 def create_new_game():
 	"""
-	Page to create a new game
+	Receive the form to create a new game
+	-> create the game (ie run it)
 	"""
-	# get Player 1
+	# get Players
 	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
 	player2 = RegularPlayer.getFromName(request.forms.get('player2'))
 
-	# add the options (timeout, seed, etc.)
-
+	# TODO: add some options (timeout, seed, etc.) in the html, and send them to the constructor
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the labyrinth object created here
@@ -132,6 +136,47 @@ def create_new_game():
 		redirect('/')
 
 
+
+@route('/new_tournament')
+@view("new_tournament.html")
+def new_tournament():
+	"""
+	Page to create a new tournament
+	"""
+	return {}   # empty dictionary for the moment
+
+
+@route('/create_new_tournament', method='POST')
+def create_new_tournament():
+	"""
+	Receive the form to create a new tournament
+	"""
+	# get the options
+	name = request.forms.get('name')
+	nbMaxPlayers = request.forms.get('nbMaxPlayers')
+	rounds = request.forms.get('rounds')
+	mode = request.forms.get('mode')
+
+	# create the tournament
+	d = {'name': name, 'nbMaxPlayers': nbMaxPlayers, 'rounds': rounds, 'mode': mode}
+	try:
+		# or directly pass request.form...
+		t = Tournament(**d)
+	except ValueError as e:
+		# TODO: redirect to an error page
+		# TODO: log this
+		return "Error. Impossible to create a tournament with " + str(d) + ":'" + str(e) + "'"
+	else:
+		redirect('/')
+
+
+@route('/tournament/<tournamentName>')
+def tournament(tournamentName):
+	t = Tournament.getFromName(tournamentName)
+	if t:
+		return t.HTMLpage()
+	else:
+		return template('noTournament.html')
 
 
 @route('/game/<gameName>')

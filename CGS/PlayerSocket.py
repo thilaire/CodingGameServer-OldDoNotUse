@@ -24,6 +24,7 @@ from CGS.RegularPlayer import RegularPlayer
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
 from CGS.Constants import MOVE_LOSE
+from CGS.Tournament import Tournament
 import shlex
 
 
@@ -273,34 +274,43 @@ class PlayerSocketHandler(BaseRequestHandler):
 	def waitForGame(self):
 		"""
 		Waits for a message "WAIT_GAME %s" and then wait for a game (with an Event)
-		%s is a string like "NAME key1=value1 key2=value1 ..." (could be empty)
-        NAME can be empty. It gives the type of the game (training against a specific player)
-		Returns nothing
+		%s is a string like (options is like "key1=value1 key2=value2 ...")
+		- "{options}": regular game (with options)
+		- "TOURNAMENT NAME {options}": tournament
+		- or "NAME {options}": play agains training player
+        Returns nothing
 		"""
-
 		# get the WAIT_GAME message
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME"):
 			self.sendData("Bad protocol, should send 'WAIT_GAME %s' command")
 			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %s' command")
 
-		# parse the game type (in the form "NAME key1=value1 key2=value2"
+		# parse the game type (in the form "TOURNAMENT NAME key1=value1..." or "NAME key1=value1 key2=value2")
 		trainingPlayerName = ""
+		tournamentName = ""
 		options = {}
 		try:
 			terms = shlex.split(data[10:])
 			if terms:
 				if "=" in terms[0]:
 					trainingPlayerName = ""
+					tournamentName = ""
 					# TODO: virer les potientiels espaces (autour du =, par exemple), en appliquant split aux clés et valeurs
 					options = dict([token.split('=') for token in terms])
+				elif terms[0] == 'TOURNAMENT':
+					trainingPlayerName = ""
+					tournamentName = terms[1]
+					options = dict([token.split('=') for token in terms[2:]])
 				else:
 					trainingPlayerName = terms[0]
+					tournamentName = ""
 					options = dict([token.split('=') for token in terms[1:]])
 		except ValueError:
-			self.sendData("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
-			raise ProtocolError("The training sent by '%s' command is not valid (should be 'NAME key1=value1 key2=value2'" % data)
-
+			strerr = "The string sent with 'WAIT_GAME' is not valid (should be '{options}'," \
+			         " 'NAME {options}' or 'TOURNAMENT NAME {options}', but is '%s' instead)"
+			self.sendData(strerr)
+			raise ProtocolError(strerr)
 
 		if trainingPlayerName:
 			# Create a particular Game
@@ -312,6 +322,13 @@ class PlayerSocketHandler(BaseRequestHandler):
 				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data, err))
 			# log it
 			self.logger.debug("The game %s starts with training player `%s` and options=%s" % (g.name, trainingPlayerName, options))
+		elif tournamentName:
+			try:
+				# register the player in the tournament
+				Tournament.registerPlayer(self._player, tournamentName)
+			except ValueError as err:
+				self.sendData("The tournament '%s' cannot be joined: %s" % (tournamentName, err))
+				raise ProtocolError("The tournament '%s' cannot be joined: %s" % (tournamentName, err))
 
 		# just send back OK
 		self.sendData("OK")

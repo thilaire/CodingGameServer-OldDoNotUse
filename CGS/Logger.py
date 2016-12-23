@@ -204,6 +204,7 @@ def removeOldestFile(path, maxSize):
 		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
 		remove(path+oldest)
 
+
 # The two following functions just call removeOldestFile, but each with a different non-blocking lock
 # so that these functions are just called when nobodyelse uses then
 # (if removeOldestFilePlayer is already run by A, then no other thread can run it (it will just do nothing instead)

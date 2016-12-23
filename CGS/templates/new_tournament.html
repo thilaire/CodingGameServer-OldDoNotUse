@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Create a new tournament</title>
+</head>
+<body>
+
+	<!--suppress HtmlUnknownTarget -->
+    <form action="create_new_tournament" method="POST">
+        <label>
+            Name: <input name="name" type="text"/>
+        </label>
+        <br>
+        <label>
+            Nb max players: <input name="nbMaxPlayers" type="number"/>
+        </label>
+        <label>
+            Nb rounds:
+            <select name="rounds">
+                <option value="1">1 (who starts is random)</option>
+                <option value="2">2 (both starts)</option>
+                <option value="3">3 (only 2 if equality)</option>
+            </select>
+        </label>
+        <label>
+            Mode:
+            <select name="mode">
+                <option value="tournament">Tournament</option>
+                <option value="championship">Championship</option>
+                <option value="two-phases">Two phases tournament</option>
+            </select>
+        </label>
+
+		<button name="send">Create Tournament</button>
+
+	</form>
+</body>
+</html>
