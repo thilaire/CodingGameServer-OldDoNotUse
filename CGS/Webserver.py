@@ -143,7 +143,7 @@ def create_new_game():
 def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
-		# TODO: use a template, and call for g.fullData() that returns a dictionary with all the possible informations about the game
+		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
 		return g.HTMLpage()
 	else:
 		return template('noGame.html', gameName=gameName)
@@ -189,9 +189,15 @@ def create_new_tournament():
 
 @route('/tournament/<tournamentName>')
 def tournament(tournamentName):
+	"""
+	Web page for a tournament
+	redirect to `noTournament.html` if tournament doesn't exist
+	Parameters:
+	- tournamentName: name of the tournament
+	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		return t.HTMLpage()
+		return template('tournament.html', {'t': t})
 	else:
 		return template('noTournament.html', tournamentName=tournamentName)
 
@@ -203,6 +209,10 @@ def tournament(tournamentName):
 
 @route('/player/<playerName>')
 def player(playerName):
+	"""
+	Web page for a player
+	Redirects to `noPlayer.html` if the player doesn't exist
+	"""
 	pl = RegularPlayer.getFromName(playerName)
 	if pl:
 		# TODO: use a template

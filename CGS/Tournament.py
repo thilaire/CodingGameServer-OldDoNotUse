@@ -61,14 +61,34 @@ class Tournament:
 		return self._name
 
 	@property
+	def nbMaxPlayers(self):
+		return self._nbMaxPlayers
+
+	@property
+	def mode(self):
+		return self._mode
+
+	@property
+	def rounds(self):
+		return self._rounds
+
+	@property
+	def players(self):
+		return self._players
+
+	@property
 	def isOpen(self):
 		return self._open
 
 	def HTMLrepr(self):
 		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
 
-	def HTMLpage(self):
-		return "\n ".join(p.name for p in self._players) + "This is the page of the tournament " + self.name
+	def HTMLdict(self):
+		"""
+		Returns a dictionary that contains all the usefull informations about the tournament
+		"""
+		d = {'name': self.name}
+
 
 
 	def addPlayer(self, player):
@@ -77,8 +97,12 @@ class Tournament:
 		Parameter:
 		- player: (Player) player to be added in the tournament
 		"""
-		self._players.append(player)
-		# TODO: log it (in player.logger and self.logger)
+		if len(self._players) < self._nbMaxPlayers:
+			self._players.append(player)
+			# TODO: log it (in player.logger and self.logger)
+		else:
+			raise ValueError("The tournament '%s' already has its maximum number of players" % self.name)
+
 
 
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tournament</title>
+</head>
+<body>
+Tournament {{t.name}}
+<hr/>
+Parameters:
+<ul>
+    <li>nb Max Players = {{t.nbMaxPlayer}}</li>
+    <li>nb rounds = {{t.rounds}}</li>
+    <li>mode = {{t.mode}}</li>
+</ul>
+<hr/>
+{{ t.players | length }} are registred:
+<ul>
+    {% for player in t.players %}
+        <li>{{ player.HTMLrepr() }}</a></li>
+    {% endfor %}
+</ul>
+{% if t.isOpen %}
+    <form action="run_tournament" method="POST">
+    <button name="send">Run Tournament !!</button>
+    </form>
+{% endif %}
+</body>
+</html>

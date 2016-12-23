@@ -101,6 +101,9 @@ if __name__ == "__main__":
 		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True}
 	).start()
 
+	# TODO: remove this... Just for debug
+	from CGS.Tournament import Tournament
+	t = Tournament('toto', 12, 3, 'tournament')
 
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)
