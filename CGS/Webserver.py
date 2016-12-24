@@ -28,6 +28,7 @@ from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
+from CGS.TournamentMode import TournamentMode
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -84,6 +85,7 @@ def static_file_from_templates(fileName):
 def favicon():
 	return static_file_from_templates('favicon.ico')
 
+
 # ================
 #   main page
 # ================
@@ -100,10 +102,10 @@ def index():
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
 	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList}
 
+
 # =======
 #  Games
 # =======
-
 @route('/new_game')     # TODO: route vers xxx.html au lieu de xxx !
 @view("new_game.html")
 def new_game():
@@ -149,18 +151,16 @@ def game(gameName):
 		return template('noGame.html', gameName=gameName)
 
 
-
 # ============
 #  Tournament
 # ============
-
 @route('/new_tournament')
 @view("new_tournament.html")
 def new_tournament():
 	"""
 	Page to create a new tournament
 	"""
-	return {}   # empty dictionary for the moment
+	return {'HTMLmode': TournamentMode.HTMLSelect()}   # empty dictionary for the moment
 
 
 @route('/create_new_tournament', method='POST')
@@ -202,11 +202,9 @@ def tournament(tournamentName):
 		return template('noTournament.html', tournamentName=tournamentName)
 
 
-
 # =========
 #  Player
 # =========
-
 @route('/player/<playerName>')
 def player(playerName):
 	"""
@@ -229,18 +227,20 @@ def player(playerName):
 def log():
 	return static_file('activity.log', root=Config.logPath)
 
+
 @route('/logs/player/<playerName>')
 def logP(playerName):
 	return static_file(playerName+'.log', root=join(Config.logPath, 'players'))
+
 
 @route('/logs/game/<gameName>')
 def logG(gameName):
 	return static_file(gameName+'.log', root=join(Config.logPath, 'games'))
 
+
 # =======
 #  errors
 # ========
-
 @error(404)
 @view('error404.html')
 def error404():

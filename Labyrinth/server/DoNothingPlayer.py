@@ -22,7 +22,6 @@ from .Constants import DO_NOTHING
 
 class DoNothingPlayer(TrainingPlayer):
 
-	# noinspection PyUnusedLocal
 	def __init__(self, **options):
 		super().__init__('Do_nothing')
 

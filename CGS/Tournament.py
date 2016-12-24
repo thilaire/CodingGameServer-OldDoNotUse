@@ -17,6 +17,7 @@ File: Tournament.py
 """
 
 from re import sub
+from CGS.TournamentMode import TournamentMode
 
 
 class Tournament:
@@ -28,7 +29,7 @@ class Tournament:
 		Create a Tournament
 		Parameters:
 		- name: (string) name of the tournament (used for the
-		- nbMaxPlayers: (integer) number maximum of players in the tournament
+		- nbMaxPlayers: (integer) number maximum of players in the tournament (0 for no limit)
 		- rounds: (integer) number of rounds for 2 opponent (1 to 3)
 		"""
 		# name of the tournament
@@ -37,12 +38,22 @@ class Tournament:
 		if name != self._name or len(name) > 20:
 			raise ValueError("The name of the tournament is not valid (must be 20 characters max, and only in [a-zA-Z0-9_]")
 
-		# number max. of players
-		self._nbMaxPlayers = nbMaxPlayers
+		# number max. of player
+		try:
+			self._nbMaxPlayers = int(nbMaxPlayers)
+		except ValueError:
+			raise ValueError("The nb maximum of players is not valid")
+		if self._nbMaxPlayers < 0:
+			raise ValueError("The nb maximum of players should be positive")
+
+		# tournament mode (championship, single-elimination, etc.)
+		self._mode = TournamentMode.getFromName(mode)
+		if self._mode is None:
+			raise ValueError("The mode is incorrect, should be in")
 
 		self._players = []          # list of engaged player
 		self._rounds = rounds       # nb of rounds
-		self._mode = mode           # mode
+
 		self._open = True           # True if the mode is open
 
 		# TODO: check if the mode is valid
@@ -97,7 +108,7 @@ class Tournament:
 		Parameter:
 		- player: (Player) player to be added in the tournament
 		"""
-		if len(self._players) < self._nbMaxPlayers:
+		if self._nbMaxPlayers == 0 or len(self._players) < self._nbMaxPlayers:
 			self._players.append(player)
 			# TODO: log it (in player.logger and self.logger)
 		else:
