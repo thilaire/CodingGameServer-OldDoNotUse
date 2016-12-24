@@ -21,7 +21,7 @@ Parameters:
     {% endfor %}
 </ul>
 {% if t.isOpen %}
-    <form action="run_tournament" method="POST">
+    <form action="run_tournament/{{t.name}}" method="POST">
     <button name="send">Run Tournament !!</button>
     </form>
 {% endif %}

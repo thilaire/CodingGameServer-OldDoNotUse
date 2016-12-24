@@ -202,6 +202,21 @@ def tournament(tournamentName):
 		return template('noTournament.html', tournamentName=tournamentName)
 
 
+@route('/run_tournament/<tournamentName>')
+def runTournament(tournamentName):
+	"""
+	Receive the run tournament form
+	redirect to `tournament/<tournamentName>` if tournament exists (otherwise `noTournament.html`)
+	Parameters:
+	- tournamentName: name of the tournament
+	"""
+	t = Tournament.getFromName(tournamentName)
+	if t:
+		t.run()
+		redirect('tournament/'+tournamentName)
+	else:
+		return template('noTournament.html', tournamentName=tournamentName)
+
 # =========
 #  Player
 # =========

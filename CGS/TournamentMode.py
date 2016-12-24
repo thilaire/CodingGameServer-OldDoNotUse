@@ -24,6 +24,9 @@ class TournamentMode:
 	def __init__(self):
 		pass
 
+	@property
+	def name(self):
+		return self._name
 
 	@classmethod
 	def HTMLSelect(cls):
