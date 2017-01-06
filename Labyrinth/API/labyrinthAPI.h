@@ -95,8 +95,10 @@ void closeConnection();
  *   invalid keys are ignored, invalid values leads to error
  *   the following options are common to every training player
  *   (when NAME is not empty):
- *        - timeout: allows an define the timeout
+ *        - 'timeout': allows an define the timeout
  *                   when training (in seconds)
+ *        - 'seed': allows to set the seed of the random generator
+ *        - 'start': allows to set who starts ('0' or '1')
  * the NAME could be:
  * - "DO_NOTHING" to play against DO_NOTHING player 
  *   (player that does not move)

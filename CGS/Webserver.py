@@ -121,7 +121,7 @@ def new_game():
 def create_new_game():
 	"""
 	Receive the form to create a new game
-	-> create the game (ie run it)
+	-> create the game (ie runPhase it)
 	"""
 	# get Players
 	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
@@ -159,8 +159,9 @@ def game(gameName):
 def new_tournament():
 	"""
 	Page to create a new tournament
+	Build from HTMLFormDict class method of TournamentMode (build from all the tournament modes)
 	"""
-	return {'HTMLmode': TournamentMode.HTMLSelect()}   # empty dictionary for the moment
+	return TournamentMode.HTMLFormDict()
 
 
 @route('/create_new_tournament', method='POST')
@@ -205,14 +206,14 @@ def tournament(tournamentName):
 @route('/run_tournament/<tournamentName>')
 def runTournament(tournamentName):
 	"""
-	Receive the run tournament form
+	Receive the runPhase tournament form
 	redirect to `tournament/<tournamentName>` if tournament exists (otherwise `noTournament.html`)
 	Parameters:
 	- tournamentName: name of the tournament
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		t.run()
+		t.runPhase()
 		redirect('tournament/'+tournamentName)
 	else:
 		return template('noTournament.html', tournamentName=tournamentName)

@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
 	# TODO: remove this... Just for debug
 	from CGS.Tournament import Tournament
-	t = Tournament('toto', 12, 3, 'Single-elimination Tournament')
+	t = Tournament('toto', 12, 3, 'SingleEliminationTournament')
 
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)
@@ -115,5 +115,4 @@ if __name__ == "__main__":
 
 # TODO: rajouter un timeout pour le dataReceive (il y a ça dans la classe BaseRequestHandler)
 # TODO: mettre en forme les emails (qd ça vient du webserver)
-# TODO: rajouter une option pour spécifier où mettre les logs (avec <gameName> comme template)
 # TODO: GameAPI.c rajouter le nom du joueur et de la partie dans les affichages de debug (utile qd on lance plusieurs joueurs sur sa machine)

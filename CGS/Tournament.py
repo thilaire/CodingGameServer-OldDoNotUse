@@ -18,7 +18,7 @@ File: Tournament.py
 
 from re import sub
 from CGS.TournamentMode import TournamentMode
-
+from CGS.Game import Game
 
 class Tournament:
 
@@ -31,6 +31,7 @@ class Tournament:
 		- name: (string) name of the tournament (used for the
 		- nbMaxPlayers: (integer) number maximum of players in the tournament (0 for no limit)
 		- rounds: (integer) number of rounds for 2 opponent (1 to 3)
+		- mode: (string) name of the tournament mode ("championship", etc.)
 		"""
 		# name of the tournament
 		self._name = sub('\W+', '', name)
@@ -38,7 +39,7 @@ class Tournament:
 		if name != self._name or len(name) > 20:
 			raise ValueError("The name of the tournament is not valid (must be 20 characters max, and only in [a-zA-Z0-9_]")
 
-		# number max. of player
+		# maximum number of players
 		try:
 			self._nbMaxPlayers = int(nbMaxPlayers)
 		except ValueError:
@@ -46,17 +47,17 @@ class Tournament:
 		if self._nbMaxPlayers < 0:
 			raise ValueError("The nb maximum of players should be positive")
 
+		self._players = []          # list of engaged players
+		self._rounds = rounds       # nb of rounds
+
+		self._isRunning = False
+
 		# tournament mode (championship, single-elimination, etc.)
-		self._mode = TournamentMode.getFromName(mode)()
+		self._mode = TournamentMode.getFromName(mode)(self._players)
 		if self._mode is None:
 			raise ValueError("The mode is incorrect, should be in")
 
-		self._players = []          # list of engaged player
-		self._rounds = rounds       # nb of rounds
 
-		self._open = True           # True if the mode is open
-
-		# TODO: check if the mode is valid
 		# TODO: check the number of rounds
 
 		# add itself to the dictionary of tournaments
@@ -88,8 +89,8 @@ class Tournament:
 		return self._players
 
 	@property
-	def isOpen(self):
-		return self._open
+	def isRunning(self):
+		return self._isRunning
 
 	def HTMLrepr(self):
 		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
@@ -102,6 +103,8 @@ class Tournament:
 		Parameter:
 		- player: (Player) player to be added in the tournament
 		"""
+		if self._isRunning:
+			raise ValueError("The tournament '%s' is already running" % self.name)
 		if self._nbMaxPlayers == 0 or len(self._players) < self._nbMaxPlayers:
 			self._players.append(player)
 			# TODO: log it (in player.logger and self.logger)
@@ -145,9 +148,16 @@ class Tournament:
 		"""
 		return cls.allTournaments.get(name, None)
 
-	def run(self):
-		"""Run a tournament
+	def runPhase(self):
+		"""Launch a phase of the tournament
 		"""
-		#TODO: récupérer la liste des match à joueur pour cette phase, en demandant à self.mode
-		# créer tous les matchs (éventuellement plusieurs tours par match)
-		pass
+		self._isRunning = True
+		# get the list of 2-tuple (player1,player2) of players who will player together in that phase
+		matches = self.mode.getPlayersForNextPhase()
+		# run the games
+		for round in self.rounds:
+			for p1,p2 in matches:
+				if round==3 or self.rounds==1:
+					self._games.append(Game(p1,p2))         # random God choose who starts
+				else:
+					self._games.append(Game(p1,p2,start=round-1))

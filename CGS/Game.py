@@ -94,7 +94,16 @@ class Game:
 
 		# players
 		# we randomly decide the order of the players
-		self._players = choice([(player1, player2), (player2, player1)])
+		if 'start' not in options:
+			pl = choice((0,1))
+		else:
+			try:
+				pl = int(options['start'])
+			except ValueError:
+				raise ValueError("The 'start' option must be '0' or '1'")
+		self._players = (player1, player2) if pl == 0 else (player2, player1)
+
+
 
 		# get a seed if the seed is not given; seed the random numbers generator
 		if 'seed' not in options:

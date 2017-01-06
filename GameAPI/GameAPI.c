@@ -17,9 +17,12 @@ Status: still in dev... (not even a beta)
 File: GameAPI.c
 	Functions for the Game API (connexion to the Coding Game Server)
 
-TODO: explain...
 
 */
+
+/* TODO: rajouter une fonction getComment pour récupérer les commentaires de l'adversaire */
+/* TODO: permettre de tenter de se connecter à une liste de serveurs; ou bien simplement renvoyer 0 si la connection a échoué */
+
 
 #include <stdio.h>
 #include <stdlib.h>

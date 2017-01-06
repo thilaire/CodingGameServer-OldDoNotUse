@@ -9,7 +9,7 @@ Tournament {{t.name}}
 <hr/>
 Parameters:
 <ul>
-    <li>nb Max Players = {{t.nbMaxPlayer}}</li>
+    <li>nb Max Players = {{t.nbMaxPlayers}}</li>
     <li>nb rounds = {{t.rounds}}</li>
     <li>mode = {{t.mode}}</li>
 </ul>
@@ -17,7 +17,7 @@ Parameters:
 {{ t.players | length }} are registred:
 <ul>
     {% for player in t.players %}
-        <li>{{ player.HTMLrepr() }}</a></li>
+        <li>{{ player.HTMLrepr() }}</li>
     {% endfor %}
 </ul>
 {% if t.isOpen %}

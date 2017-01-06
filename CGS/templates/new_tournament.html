@@ -3,32 +3,40 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Create a new tournament</title>
+    <script type="text/javascript">
+        function updateModeForm(sel)
+        {
+            {{ JavascriptModeOptions }}
+             var mode = sel.value;
+             document.getElementById(mode).style.display="block";
+        }
+        window.onload = updateModeForm;
+    </script>
+
 </head>
 <body>
 
-
     <form action="create_new_tournament" method="POST">
-        <label>
-            Name: <input name="name" type="text"/>
-        </label>
-        <br>
-        <label>
-            Nb max players (0 for no limit): <input name="nbMaxPlayers" type="number"/>
-        </label>
-        <label>
-            Nb rounds:
-            <select name="rounds">
-                <option value="1">1 (who starts is random)</option>
-                <option value="2">2 (both starts)</option>
-                <option value="3">3 (only 2 if equality)</option>
-            </select>
-        </label>
-        <label>
-            Mode: {{ HTMLmode }}
-        </label>
+        Name: <input name="name" type="text" required/>
+        <br/>
+        Nb max players (0 for no limit): <input name="nbMaxPlayers" type="number" value="0"/>
+        <br/>
+        Nb rounds:
+        <select name="rounds">
+            <option value="1">1 (who starts is random)</option>
+            <option value="2">2 (both starts)</option>
+            <option value="3">3 (only 2 if equality)</option>
+        </select>
+
+        <fieldset>
+            <legend>Tournament mode</legend>
+            Mode: <select name='mode' onchange='updateModeForm(this);'>{{ HTMLmodes }}</select>
+            {{ HTMLmodeOptions }}
+        </fieldset>
 
 		<button name="send">Create Tournament</button>
 
 	</form>
+
 </body>
 </html>
