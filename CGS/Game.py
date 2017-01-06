@@ -211,6 +211,11 @@ class Game:
 		# remove from the list of Games
 		del self.allGames[self.name]
 
+		# close the logger file
+		for handler in self.logger.handlers[:]:
+			handler.close()
+			self.logger.removeHandler(handler)
+
 
 
 	@property

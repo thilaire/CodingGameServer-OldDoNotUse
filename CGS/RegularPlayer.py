@@ -77,7 +77,9 @@ class RegularPlayer(Player):
 		pl = cls.getFromName(name)
 		if pl is not None:
 			del cls.allPlayers[name]
-
+			for handler in pl.logger.handlers[:]:
+				handler.close()
+				pl.logger.removeHandler(handler)
 
 	@classmethod
 	def getFromName(cls, name):

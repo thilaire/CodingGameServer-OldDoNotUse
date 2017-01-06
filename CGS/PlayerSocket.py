@@ -148,6 +148,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# ends the game
 			if self.game is not None:
 				self.game.partialEndOfGame(self._player)
+			# close the logger file
+			if self._player:
+				for handler in self._player.logger.handlers[:]:
+					handler.close()
+					self.logger.removeHandler(handler)
 
 		except Exception as err:
 			# log all the other errors
