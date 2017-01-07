@@ -178,7 +178,7 @@ def create_new_tournament():
 	# create the tournament
 	d = {'name': name, 'nbMaxPlayers': nbMaxPlayers, 'rounds': rounds, 'mode': mode}
 	try:
-		# or directly pass request.form...
+		# TODO: directly pass request.form... (so that the other options are passed)
 		t = Tournament(**d)
 	except ValueError as e:
 		# TODO: redirect to an error page
@@ -203,7 +203,7 @@ def tournament(tournamentName):
 		return template('noTournament.html', tournamentName=tournamentName)
 
 
-@route('/run_tournament/<tournamentName>')
+@route('/run_tournament/<tournamentName>', method='POST')
 def runTournament(tournamentName):
 	"""
 	Receive the runPhase tournament form
@@ -214,13 +214,15 @@ def runTournament(tournamentName):
 	t = Tournament.getFromName(tournamentName)
 	if t:
 		t.runPhase()
-		redirect('tournament/'+tournamentName)
+		redirect('/tournament/'+tournamentName)
 	else:
 		return template('noTournament.html', tournamentName=tournamentName)
+
 
 # =========
 #  Player
 # =========
+
 @route('/player/<playerName>')
 def player(playerName):
 	"""
@@ -237,7 +239,7 @@ def player(playerName):
 
 # ======
 #  logs
-#=======
+# =======
 
 @route('/logs')
 def log():

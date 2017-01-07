@@ -17,20 +17,30 @@
 <body>
 
     <form action="create_new_tournament" method="POST">
-        Name: <input name="name" type="text" required/>
+        <label>
+            Name:
+            <input name="name" type="text" required/>
+        </label>
         <br/>
-        Nb max players (0 for no limit): <input name="nbMaxPlayers" type="number" value="0"/>
+        <label>
+            Nb max players (0 for no limit):
+            <input name="nbMaxPlayers" type="number" value="0"/>
+        </label>
         <br/>
         Nb rounds:
-        <select name="rounds">
-            <option value="1">1 (who starts is random)</option>
-            <option value="2">2 (both starts)</option>
-            <option value="3">3 (only 2 if equality)</option>
-        </select>
+        <label>
+            <select name="rounds">
+                <option value="1">1 (who starts is random)</option>
+                <option value="2">2 (both starts)</option>
+                <option value="3">3 (only 2 if equality)</option>
+            </select>
+        </label>
 
         <fieldset>
             <legend>Tournament mode</legend>
+            <label>
             Mode: <select name='mode' onchange='updateModeForm(this);'>{{ HTMLmodes }}</select>
+            </label>
             {{ HTMLmodeOptions }}
         </fieldset>
 

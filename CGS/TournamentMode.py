@@ -57,12 +57,14 @@ class TournamentMode:
 		modes = "\n".join("<option value='%s'>%s</option>" % (sc.__name__, sc._name) for sc in cls.__subclasses__())
 
 		# HTMLmodeOptions
-		options = "\n".join('<div display="none" id="%s">%s</div>' % (sc.__name__, sc._HTMLoptions) for sc in cls.__subclasses__())
+		options = "\n".join('<div display="none" id="%s">%s</div>' %
+		                    (sc.__name__, sc._HTMLoptions) for sc in cls.__subclasses__())
 
 		# JavascriptModeOptions
-		jOptions = "\n".join('document.getElementById("%s").style.display="none";' % (sc.__name__) for sc in cls.__subclasses__())
+		jOptions = "\n".join('document.getElementById("%s").style.display="none";' %
+		                     (sc.__name__,) for sc in cls.__subclasses__())
 
-		return { "HTMLmodes": modes, "HTMLmodeOptions": options, "JavascriptModeOptions": jOptions}
+		return {"HTMLmodes": modes, "HTMLmodeOptions": options, "JavascriptModeOptions": jOptions}
 
 
 
@@ -78,6 +80,10 @@ class TournamentMode:
 		return d.get(name, None)
 
 
+	# to be overloaded
+	def MatchsGenerator(self):
+		pass
+
 
 
 class Championship(TournamentMode):
@@ -87,6 +93,24 @@ class Championship(TournamentMode):
 	_name = "Championship"
 	_HTMLoptions = ""
 
+	def MatchsGenerator(self):
+		"""
+		Use the round robin tournament algorithm
+		see http://en.wikipedia.org/wiki/Round-robin_tournament and
+		http://stackoverflow.com/questions/11245746/league-fixture-generator-in-python/11246261#11246261
+		"""
+		# copy the player list
+		# TODO: vérifier s'ils sont tous encore là ?
+		rotation = list(self._players)
+		# if player number is odd, we use None as a fake player
+		if len(rotation) % 2:
+			rotation.append(None)
+		# then we iterate using round robin algorithm
+		for i in range(0, len(rotation) - 1):
+			# generate list of pairs (player1,player2)
+			yield zip(*[iter(rotation)] * 2)
+			# prepare the next list by rotating the list
+			rotation = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
 
 
 class SingleEliminationTournament(TournamentMode):

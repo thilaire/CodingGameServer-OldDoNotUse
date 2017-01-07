@@ -20,10 +20,14 @@ Parameters:
         <li>{{ player.HTMLrepr() }}</li>
     {% endfor %}
 </ul>
-{% if t.isOpen %}
+{% if not t.isRunning %}
     <form action="run_tournament/{{t.name}}" method="POST">
     <button name="send">Run Tournament !!</button>
     </form>
+{% else %}
+    {% for p1,p2 in t.games.keys() %}
+    {{ p1.HTMLrepr() }} vs {{ p2.HTMLrepr() }}
+    {% endfor %}
 {% endif %}
 </body>
 </html>

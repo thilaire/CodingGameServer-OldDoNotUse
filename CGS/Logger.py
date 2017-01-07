@@ -110,7 +110,8 @@ def configureRootLogger(args):
 
 	# add an handler to redirect the log to a file (1Mo max)
 	makedirs(Config.logPath, exist_ok=True)
-	file_handler = RotatingFileHandler(join(Config.logPath, 'activity.log'), mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
+	file_handler = RotatingFileHandler(join(Config.logPath, 'activity.log'), mode='a',
+	                                   maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
 	file_handler.setLevel(activity_level[Config.mode][1])
 	file_formatter = logging.Formatter('%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	file_handler.setFormatter(file_formatter)
@@ -126,7 +127,8 @@ def configureRootLogger(args):
 	logger.addHandler(steam_handler)
 
 	# An other handler to log the errors (only) in errors.log
-	error_handler = RotatingFileHandler(join(Config.logPath, 'errors.log'), mode='a', maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
+	error_handler = RotatingFileHandler(join(Config.logPath, 'errors.log'), mode='a',
+	                                    maxBytes=MAX_ACTIVITY_SIZE, backupCount=1)
 	error_handler.setLevel(error_level[Config.mode])
 	error_formatter = logging.Formatter('----------------------\n%(asctime)s [%(name)s] | %(message)s', "%m/%d %H:%M:%S")
 	error_handler.setFormatter(error_formatter)

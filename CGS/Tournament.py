@@ -20,6 +20,7 @@ from re import sub
 from CGS.TournamentMode import TournamentMode
 from CGS.Game import Game
 
+
 class Tournament:
 
 	allTournaments = {}        # dictionary of all the tournament
@@ -65,6 +66,9 @@ class Tournament:
 			raise ValueError("A tournament with the same name already exist")
 		self.allTournaments[name] = self
 
+		# list of current games
+		self._games = {}
+
 		# TODO: add a logger
 
 
@@ -94,6 +98,10 @@ class Tournament:
 
 	def HTMLrepr(self):
 		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
+
+	@property
+	def games(self):
+		return self._games
 
 
 
@@ -129,7 +137,7 @@ class Tournament:
 		t = cls.allTournaments[tournamentName]
 
 		# check if the tournament is open
-		if not t.isOpen:
+		if t.isRunning:
 			# TODO: log it in t.logger
 			raise ValueError("The tournament '%s' is now closed." % tournamentName)
 
@@ -153,11 +161,14 @@ class Tournament:
 		"""
 		self._isRunning = True
 		# get the list of 2-tuple (player1,player2) of players who will player together in that phase
-		matches = self.mode.getPlayersForNextPhase()
+		matches = self.mode.MatchsGenerator()
+		# build the dictionary of the games (keys: pair of players, value: list of score (tuple) and current game
+		self._games = {(p1, p2): [(0, 0), None] for p1, p2 in matches if p1 and p2}
 		# run the games
-		for round in self.rounds:
-			for p1,p2 in matches:
-				if round==3 or self.rounds==1:
-					self._games.append(Game(p1,p2))         # random God choose who starts
+		for r in self.rounds:
+			for p1, p2 in self._games.keys():
+				# TODO: vérifier que les deux joueurs sont encore là ????
+				if r == 3 or self.rounds == 1:
+					self._games[(p1, p2)][1] = Game(p1, p2)         # random God choose who starts
 				else:
-					self._games.append(Game(p1,p2,start=round-1))
+					self._games[(p1, p2)][1] = Game(p1, p2, start=r-1)

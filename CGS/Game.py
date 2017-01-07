@@ -95,7 +95,7 @@ class Game:
 		# players
 		# we randomly decide the order of the players
 		if 'start' not in options:
-			pl = choice((0,1))
+			pl = choice((0, 1))
 		else:
 			try:
 				pl = int(options['start'])
@@ -182,7 +182,8 @@ class Game:
 		return self._name
 
 	def HTMLrepr(self):
-		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % (self.name, self.name, self.players[0].name, self.players[1].name)
+		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
+		       (self.name, self.name, self.players[0].name, self.players[1].name)
 
 
 	def partialEndOfGame(self, whoLooses):

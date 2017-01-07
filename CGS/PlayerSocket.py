@@ -321,7 +321,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				self.sendData("The training player sent by '%s' command is not valid (%s)" % (data, err))
 				raise ProtocolError("The training player sent by '%s' command is not valid (%s)" % (data, err))
 			# log it
-			self.logger.debug("The game %s starts with training player `%s` and options=%s" % (g.name, trainingPlayerName, options))
+			self.logger.debug("The game %s starts with training player `%s` and options=%s" %
+			                  (g.name, trainingPlayerName, options))
 		elif tournamentName:
 			try:
 				# register the player in the tournament

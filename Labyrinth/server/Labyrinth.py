@@ -154,7 +154,9 @@ class Labyrinth(Game):
 	"""
 
 	# dictionary of the possible training Players (non-regular players)
-	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer, "ASTAR": AstarPlayer}   # type -> class of the Player
+	# TODO: build it automatically from Player.__subclasses__()
+	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer,
+	             "ASTAR": AstarPlayer}   # type -> class of the Player
 
 
 	def __init__(self, player1, player2, **options):
