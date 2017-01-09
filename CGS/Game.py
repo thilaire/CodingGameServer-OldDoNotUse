@@ -82,6 +82,8 @@ class Game:
 		- options: dictionary of options
 			- 'seed': seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
 			- 'timeout': timeout of the game (if not given, the default timeout is used)
+			- 'start': who starts the game (0 or 1); random when not precised
+			# TODO: add a delay/pause option (in second)
 		"""
 
 		# check if we can create the game (are the players available)
@@ -141,9 +143,6 @@ class Game:
 		self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
 
-		# add itself to the dictionary of games
-		self.allGames[self.name] = self
-
 		# advertise the players that they enter in a game
 		player1.game = self
 		player2.game = self
@@ -175,6 +174,10 @@ class Game:
 
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
+
+		# and last, add itself to the dictionary of games
+		self.allGames[self.name] = self
+
 
 
 	@property

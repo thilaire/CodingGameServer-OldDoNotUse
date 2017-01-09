@@ -59,13 +59,12 @@ class RegularPlayer(Player):
 		self.logger.info("=================================")
 		self.logger.info(name + " just log in (from " + address + ".")
 
-		# add itself to the dictionary of (regular) players
-		self.allPlayers[name] = self
-
 		# waitGame event
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
+		# and last, add itself to the dictionary of (regular) players
+		self.allPlayers[name] = self
 
 	@property
 	def isRegular(self):

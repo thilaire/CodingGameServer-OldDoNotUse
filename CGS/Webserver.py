@@ -28,7 +28,7 @@ from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
-from CGS.TournamentMode import TournamentMode
+from CGS import TournamentMode        # HERE we import all the tournaments type
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -130,7 +130,7 @@ def create_new_game():
 	# TODO: add some options (timeout, seed, etc.) in the html, and send them to the constructor
 	try:
 		# the constructor will check if player1 and player2 are available to play
-		# no need to store the labyrinth object created here
+		# no need to store the game object created here
 		Game.getTheGameClass()(player1, player2)
 
 	except ValueError as e:
@@ -150,6 +150,13 @@ def game(gameName):
 	else:
 		return template('noGame.html', gameName=gameName)
 
+@route('/game/websocket/<gameName>')
+def gameWebSocket(gameName):
+	g = Game.getFromName(gameName)
+	if g:
+		pass
+	else:
+		return template('noGame.html', gameName=gameName)
 
 # ============
 #  Tournament
@@ -161,7 +168,7 @@ def new_tournament():
 	Page to create a new tournament
 	Build from HTMLFormDict class method of TournamentMode (build from all the tournament modes)
 	"""
-	return TournamentMode.HTMLFormDict()
+	return Tournament.HTMLFormDict()
 
 
 @route('/create_new_tournament', method='POST')
@@ -169,21 +176,16 @@ def create_new_tournament():
 	"""
 	Receive the form to create a new tournament
 	"""
-	# get the options
-	name = request.forms.get('name')
-	nbMaxPlayers = request.forms.get('nbMaxPlayers')
-	rounds = request.forms.get('rounds')
+	# get the tournament mode
 	mode = request.forms.get('mode')
 
 	# create the tournament
-	d = {'name': name, 'nbMaxPlayers': nbMaxPlayers, 'rounds': rounds, 'mode': mode}
 	try:
-		# TODO: directly pass request.form... (so that the other options are passed)
-		t = Tournament(**d)
+		Tournament.factory(**dict(request.forms))
 	except ValueError as e:
 		# TODO: redirect to an error page
 		# TODO: log this
-		return "Error. Impossible to create a tournament with " + str(d) + ":'" + str(e) + "'"
+		return "Error. Impossible to create a tournament with " + str(dict(request.forms)) + ":'" + str(e) + "'"
 	else:
 		redirect('/')
 
@@ -264,11 +266,11 @@ def logG(gameName):
 def error404():
 	# TODO: log this
 	return {'url': request.url}
-
-
-@error(500)
-def errror500(err):
-	# TODO: useful ? to be checked
-	weblogger.error(err, exc_info=True)
-
-	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"
+#
+#
+# @error(500)
+# def errror500(err):
+# 	# TODO: useful ? to be checked
+# 	weblogger.error(err, exc_info=True)
+#
+# 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"

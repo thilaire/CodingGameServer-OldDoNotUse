@@ -14,20 +14,20 @@ Parameters:
     <li>mode = {{t.mode}}</li>
 </ul>
 <hr/>
-{{ t.players | length }} are registred:
+{{ t.players | length }} players are registred:
 <ul>
     {% for player in t.players %}
         <li>{{ player.HTMLrepr() }}</li>
     {% endfor %}
 </ul>
-{% if not t.isRunning %}
-    <form action="run_tournament/{{t.name}}" method="POST">
-    <button name="send">Run Tournament !!</button>
-    </form>
-{% else %}
+{% if t.isRunning %}
+    Phase {{ t.phase }}:<br/>
     {% for p1,p2 in t.games.keys() %}
-    {{ p1.HTMLrepr() }} vs {{ p2.HTMLrepr() }}
+    {{ p1.HTMLrepr() }} vs {{ p2.HTMLrepr() }}<br/>
     {% endfor %}
 {% endif %}
+    <form action="/run_tournament/{{t.name}}" method="POST">
+    <button name="send">Run Phase !!</button>
+    </form>
 </body>
 </html>
