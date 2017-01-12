@@ -16,12 +16,16 @@ File: webserver.py
 	-> the template files used are in templates
 
 """
+from gevent import monkey
+monkey.patch_all()
 
 from logging import getLogger
 
 from bottle import route, request, jinja2_view as view, jinja2_template as template
 from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
-from bottle import run, response, install, default_app			    # webserver (bottle)
+from bottle import run, response, install, default_app		# webserver (bottle)
+from geventwebsocket.handler import WebSocketHandler
+from geventwebsocket import WebSocketError
 from os.path import isfile, join
 from functools import wraps										# use to wrap a logger for bottle
 from CGS.Game import Game
@@ -62,7 +66,7 @@ def runWebServer(host, port, quiet):
 	weblogger.message("Run the web server on port %d...", port)
 
 	default_app().catchall = True       # all the exceptions/errors are catched, and re-routed to error500
-	run(host=host, port=port, quiet=quiet)
+	run(host=host, port=port, quiet=quiet, server='gevent',handler_class=WebSocketHandler)
 
 
 def static_file_from_templates(fileName):
@@ -145,7 +149,7 @@ def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
 		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
-		return template('Game.html',**g.HTMLdict())
+		return template('Game.html',SocketName='localhost:8088/game/websocket/'+gameName,**g.HTMLdict())
 	else:
 		return template('noGame.html', gameName=gameName)
 
@@ -153,7 +157,15 @@ def game(gameName):
 def gameWebSocket(gameName):
 	g = Game.getFromName(gameName)
 	if g:
-		pass
+		wsock = request.environ.get('wsgi.websocket')
+		if not wsock:
+			abort(400, "Expected Websocket request.")
+		while True:
+			try:
+				message = wsock.receive()
+				wsock.send(b"Your message was: %r" % message)
+			except WebSocketError:
+				break
 	else:
 		return template('noGame.html', gameName=gameName)
 

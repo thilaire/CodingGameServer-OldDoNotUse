@@ -98,7 +98,7 @@ if __name__ == "__main__":
 	# Run the webserver
 	threading.Thread(
 		target=runWebServer,
-		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': True}
+		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': False}
 	).start()
 
 	# TODO: remove this... Just for debug
