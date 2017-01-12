@@ -65,7 +65,6 @@ def runWebServer(host, port, quiet):
 	run(host=host, port=port, quiet=quiet)
 
 
-
 def static_file_from_templates(fileName):
 	"""
 	Returns a static_file from the template paths
@@ -146,7 +145,7 @@ def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
 		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
-		return g.HTMLpage()
+		return template('Game.html',**g.HTMLdict())
 	else:
 		return template('noGame.html', gameName=gameName)
 

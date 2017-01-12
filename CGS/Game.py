@@ -184,6 +184,17 @@ class Game:
 	def name(self):
 		return self._name
 
+	def HTMLpage(self):
+		return ''
+
+	def HTMLdict(self):
+		d = dict()
+		d['GameName']= self.name
+		d['Player1']=self.players[0].name
+		d['Player2']=self.players[1].name
+		d['HtmlPage']=self.HTMLpage()
+		return d
+
 	def HTMLrepr(self):
 		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
 		       (self.name, self.name, self.players[0].name, self.players[1].name)
