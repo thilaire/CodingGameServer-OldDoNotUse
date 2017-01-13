@@ -25,6 +25,7 @@ from datetime import datetime
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
 from CGS.Logger import configureGameLogger
 from CGS.Comments import CommentQueue
+from geventwebsocket import WebSocketError
 
 
 def crc24(octets):
@@ -175,8 +176,13 @@ class Game:
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
 
+
+		# List of websockets to send the game data
+		self.lwsock = []
+
 		# and last, add itself to the dictionary of games
 		self.allGames[self.name] = self
+
 
 
 
@@ -186,6 +192,18 @@ class Game:
 
 	def HTMLpage(self):
 		return ''
+
+	def addsock(self,wsock):
+		self.lwsock.append(wsock)
+
+	def send_wsock(self):
+		if self.lwsock:
+			for wsock in self.lwsock:
+				try:
+					print("sending message to wsock")
+					wsock.send(self.HTMLdict()['HtmlPage'])
+				except WebSocketError:
+					pass
 
 	def HTMLdict(self):
 		d = dict()
@@ -383,6 +401,7 @@ class Game:
 		else:  # return_code == MOVE_LOSE
 			self.endOfGame(1 - self._whoPlays, msg)
 
+		self.send_wsock()
 		return return_code, msg
 
 

@@ -149,7 +149,7 @@ def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
 		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
-		return template('Game.html',SocketName='localhost:8088/game/websocket/'+gameName,**g.HTMLdict())
+		return template('Game.html',SocketName='ws://localhost:8088/game/websocket/'+gameName,**g.HTMLdict())
 	else:
 		return template('noGame.html', gameName=gameName)
 
@@ -160,12 +160,15 @@ def gameWebSocket(gameName):
 		wsock = request.environ.get('wsgi.websocket')
 		if not wsock:
 			abort(400, "Expected Websocket request.")
-		while True:
-			try:
-				message = wsock.receive()
-				wsock.send(b"Your message was: %r" % message)
-			except WebSocketError:
-				break
+		g.addsock(wsock)
+		g.send_wsock()
+		while(True):
+			pass
+		# while True:
+		# 	try:
+		# 		wsock.send(g.HTMLdict()['HtmlPage'])
+		# 	except WebSocketError:
+		# 		break
 	else:
 		return template('noGame.html', gameName=gameName)
 
