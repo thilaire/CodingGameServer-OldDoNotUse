@@ -19,20 +19,22 @@ File: Mode.py
 
 from CGS.Tournament import Tournament
 
-
 # TODO: put them in different files ?
 
-class Championship(Tournament):
+
+class League(Tournament):
 	"""
-	Championship mode
+	League mode
 	"""
-	_mode = "Championship"
+	_mode = "League"
 	_HTMLoptions = ""
 
 
 	def __init__(self, name, nbMaxPlayers, rounds, **unused):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
+		# score (array of scores, indexed by the player)
+		self.score = {p:0 for p in self.players}
 
 
 	def MatchsGenerator(self):
@@ -59,13 +61,8 @@ class Championship(Tournament):
 
 
 
-
-class SingleEliminationTournament(Tournament):
-	"""
-	Single-elimination tournament
-	https://en.wikipedia.org/wiki/Single-elimination_tournament
-	"""
-	_mode = "Single-elimination Tournament"
+class PoolKnockoutTournament(Tournament):
+	_mode = "Two stages (pool + knockout) Tournament"
 	_HTMLoptions = """
 	<label>
 		Nb groups: <input name="nbGroups" type="number" value="4" required/>
@@ -96,4 +93,17 @@ class SingleEliminationTournament(Tournament):
 
 
 
+
+
+class SingleEliminationTournament(Tournament):
+	"""
+	Single-elimination tournament
+	https://en.wikipedia.org/wiki/Single-elimination_tournament
+	"""
+	_mode = "Single-elimination Tournament"
+	_HTMLoptions = ""
+
+	def __init__(self, name, nbMaxPlayers, rounds, **unused):
+		# call the super class constructor
+		super().__init__(name, nbMaxPlayers, rounds)
 

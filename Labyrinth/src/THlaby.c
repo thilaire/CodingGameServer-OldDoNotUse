@@ -222,7 +222,7 @@ int main()
     int nmove;                          /* number of moves */
     char toto[100];
 
-	//debug=1;	/* enable debug */
+	debug=1;	/* enable debug */
 
 	/* connection to the server */
 	char name[100];
@@ -232,11 +232,12 @@ int main()
 
 	/* play over and over...
 	(this loop is not necessary if you only want to play one game, but will be useful for tournament)*/
-	while (ret == MOVE_OK)  // while (1)
+	while (1)
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "TOURNAMENT toto");
+		//waitLab( &laby, "TOURNAMENT toto");
+		waitLab( &laby, "");
         nmove = 0;
 
         do {

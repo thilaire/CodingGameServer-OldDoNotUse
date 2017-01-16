@@ -67,6 +67,7 @@ class Game:
 	- _whoPlays: number of the player who should play now (0 or 1)
 	- _waitingPlayer: Event used to wait for the player
 	- _lastMove: string corresponding to the last move
+	- _tournament: (Tournament) the tournament the game is involved in (or None no tournament)
 
 	"""
 
@@ -75,7 +76,7 @@ class Game:
 
 	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)
 
-	def __init__(self, player1, player2, **options):
+	def __init__(self, player1, player2, tournament=None, **options):
 		"""
 		Create a Game
 		Parameters:
@@ -138,15 +139,15 @@ class Game:
 				g2 = str(seed) + '-' + player1.name + '-' + player2.name
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
 
+		# store the tournament
+		self._tournament = tournament
+
 		# create the logger of the game
 		self._logger = configureGameLogger(self.name)
-
+		# log the game
 		self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
-
-		# advertise the players that they enter in a game
-		player1.game = self
-		player2.game = self
+		# TODO: logguer qu'il s'agit d'un tournoi si tournament is not None
 
 		# determine who starts (player #0 ALWAYS starts)
 		self._whoPlays = 0
@@ -176,10 +177,12 @@ class Game:
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
 
+		# advertise the players that they enter in a game
+		player1.game = self
+		player2.game = self
 
 		# List of websockets to send the game data
 		self.lwsock = []
-
 		# and last, add itself to the dictionary of games
 		self.allGames[self.name] = self
 
@@ -230,6 +233,7 @@ class Game:
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
 			whoLooses.game = None
+			self.logger.debug("1) Player %s's game set to None"%whoLooses.name)
 
 
 	def endOfGame(self, whoWins, msg):
@@ -250,8 +254,14 @@ class Game:
 		# the players do not play anymore
 		if self._players[0].game is not None:
 			self._players[0].game = None
+			self.logger.debug("2) Player %s's game set to None" % self._players[0].name)
 		if self._players[1].game is not None:
 			self._players[1].game = None
+			self.logger.debug("3) Player %s's game set to None" % self._players[1].name)
+
+		# tell the tournament the result of the game
+		if self._tournament:
+			self._tournament.endOfGame(self._players[whoWins], self._players[1 - whoWins])
 
 		# remove from the list of Games
 		del self.allGames[self.name]
@@ -288,13 +298,16 @@ class Game:
 			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
 		"""
 
+		# get who plays (copy it here, because it will be change somewhere by playMove concurrently)
+		whoPlays = self._whoPlays
+
 		# check if the opponent doesn't have disconnected
-		if self._players[self._whoPlays].game is None:
-			self.endOfGame(1-self._whoPlays, "Opponent has disconnected")
+		if self._players[whoPlays].game is None:
+			self.endOfGame(1-whoPlays, "Opponent has disconnected")
 			return "", MOVE_LOSE
 
 		# wait for the move of the opponent if the opponent is a regular player
-		elif self._players[self._whoPlays].isRegular:
+		elif self._players[whoPlays].isRegular:
 
 			self.logger.low_debug("Wait for playMove event")
 			if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
@@ -308,16 +321,16 @@ class Game:
 				# Timeout !!
 				# the opponent has lost the game
 				self._playMoveEvent.clear()
-				self.endOfGame(1 - self._whoPlays, "Timeout")
+				self.endOfGame(1 - whoPlays, "Timeout")
 
 				return self._lastMove, MOVE_LOSE
 
 		else:
 			# the opponent is a training player
 			# so we call its playMove method
-			move = self._players[self._whoPlays].playMove()
-			self.logger.info("'%s' plays %s" % (self.playerWhoPlays.name, move))
-			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
+			move = self._players[whoPlays].playMove()
+			self.logger.info("'%s' plays %s" % (self._players[whoPlays].name, move))
+			self._players[1 - whoPlays].logger.info("%s plays %s" % (self._players[whoPlays].name, move))
 			# and update the game
 			return_code, msg = self.updateGame(move)
 
@@ -328,10 +341,10 @@ class Game:
 
 			elif return_code == MOVE_WIN:
 				# Game won by the opponent, end of the game
-				self.endOfGame(self._whoPlays, msg)
+				self.endOfGame(whoPlays, msg)
 			else:  # return_code == MOVE_LOSE
 				# Game won by the regular player, end of the game
-				self.endOfGame(1 - self._whoPlays, msg)
+				self.endOfGame(1 - whoPlays, msg)
 
 
 			return move, return_code
@@ -350,25 +363,27 @@ class Game:
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
+		# get who plays (copy it here, because it will be change somewhere)
+		whoPlays = self._whoPlays
 
 		# check if the opponent doesn't have disconnected
-		if self._players[self._whoPlays].game is None:
-			self.endOfGame(self._whoPlays, "Opponent has disconnected")
+		if self._players[whoPlays].game is None:
+			self.endOfGame(whoPlays, "Opponent has disconnected")
 			return MOVE_WIN, "Opponent has disconnected"
 
 		# log that move
-		self.logger.info("'%s' plays %s" % (self.playerWhoPlays.name, move))
-		if self._players[self._whoPlays].isRegular:
-			self._players[self._whoPlays].logger.info("I play %s" % move)
-		if self._players[1 - self._whoPlays].isRegular:
-			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.playerWhoPlays.name, move))
+		self.logger.info("'%s' plays %s" % (self.players[whoPlays].name, move))
+		if self._players[whoPlays].isRegular:
+			self._players[whoPlays].logger.info("I play %s" % move)
+		if self._players[1 - whoPlays].isRegular:
+			self._players[1 - whoPlays].logger.info("%s plays %s" % (self.players[whoPlays].name, move))
 
 		# check for timeout when the opponent is a training player
-		if not self._players[1 - self._whoPlays].isRegular:
+		if not self._players[1 - whoPlays].isRegular:
 			if (datetime.now()-self._lastMoveTime).total_seconds() > self._timeout:
 				# Timeout !!
 				# the player has lost the game
-				self.endOfGame(1 - self._whoPlays, "Timeout")
+				self.endOfGame(1 - whoPlays, "Timeout")
 				return MOVE_LOSE, "Timeout !"
 
 		# play that move and update the game
@@ -378,8 +393,19 @@ class Game:
 		self._lastMove = move
 		self._lastReturn_code = return_code
 
+
+		# update who plays next and check for the end of the game
+		if return_code == MOVE_OK:
+			# change who plays
+			self._whoPlays = 1 - self._whoPlays
+		elif return_code == MOVE_WIN:
+			self.endOfGame(whoPlays, msg)
+		elif return_code == MOVE_LOSE:
+			self.endOfGame(1 - whoPlays, msg)
+
+
 		# only if the opponent is a regular player
-		if self._players[1 - self._whoPlays].isRegular:
+		if self._players[1 - whoPlays].isRegular:
 			# set the playMove Event
 			self._playMoveEvent.set()
 
@@ -393,13 +419,6 @@ class Game:
 			self._lastMoveTime = datetime.now()
 
 
-		if return_code == MOVE_OK:
-			# change who plays
-			self._whoPlays = 1 - self._whoPlays
-		elif return_code == MOVE_WIN:
-			self.endOfGame(self._whoPlays, msg)
-		else:  # return_code == MOVE_LOSE
-			self.endOfGame(1 - self._whoPlays, msg)
 
 		self.send_wsock()
 		return return_code, msg

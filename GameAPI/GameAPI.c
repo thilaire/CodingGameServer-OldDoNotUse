@@ -20,7 +20,7 @@ File: GameAPI.c
 
 */
 
-/* TODO: rajouter une fonction getComment pour récupérer les commentaires de l'adversaire */
+/* TODO: rajouter une fonction getComment pour récupérer les commentaires de l'adversaire ? */
 /* TODO: permettre de tenter de se connecter à une liste de serveurs; ou bien simplement renvoyer 0 si la connection a échoué */
 
 

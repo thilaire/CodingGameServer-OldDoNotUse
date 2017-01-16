@@ -20,7 +20,7 @@ from gevent import monkey
 monkey.patch_all()
 
 from logging import getLogger
-
+import threading
 from bottle import route, request, jinja2_view as view, jinja2_template as template
 from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
 from bottle import run, response, install, default_app		# webserver (bottle)
@@ -229,7 +229,7 @@ def runTournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		t.runPhase()
+		threading.Thread(target=t.runPhase).start()
 		redirect('/tournament/'+tournamentName)
 	else:
 		return template('noTournament.html', tournamentName=tournamentName)

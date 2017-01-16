@@ -17,10 +17,13 @@ File: runCGS.py
 	Main file/entry for the Coding Game Server
 
 
-CGS requires Python3 and the following packages: colorama, colorlog, docopt, bottle, jinja2
->> pip install colorama colorlog docopt bottle jinja2
+CGS requires Python3 and the following packages: colorama, colorlog, docopt, bottle, jinja2, gevent-websocket
+>> pip install colorama colorlog docopt bottle jinja2 gevent-websocket
 
 """
+
+#from gevent import monkey
+#monkey.patch_all()
 
 import threading  # to run threads
 from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
@@ -33,6 +36,11 @@ from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for playe
 from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 from CGS.Game import Game
 from CGS.Logger import configureRootLogger
+
+
+
+
+
 
 usage = """
 Coding Game Server
@@ -103,7 +111,7 @@ if __name__ == "__main__":
 
 	# TODO: remove this... Just for debug
 	from CGS.Tournament import Tournament
-	t = Tournament.factory('Championship', name='toto', nbMaxPlayers=12, rounds=1)
+	t = Tournament.factory('League', name='toto', nbMaxPlayers=12, rounds=3)
 
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)

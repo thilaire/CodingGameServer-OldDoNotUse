@@ -39,7 +39,8 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitForLabyrinth( "PLAY_RANDOM timeout=100 rotate=False tot=25", labName, &sizeX, &sizeY);
+		//waitForLabyrinth( "PLAY_RANDOM timeout=100 rotate=False tot=25", labName, &sizeX, &sizeY);
+		waitForLabyrinth( "", labName, &sizeX, &sizeY);
 		labData = (char*) malloc( sizeX * sizeY );
 		player = getLabyrinth( labData);
 
