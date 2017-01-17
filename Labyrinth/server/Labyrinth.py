@@ -218,12 +218,12 @@ class Labyrinth(Game):
 		# TODO: return a dictionary to fill a html template
 		conv = Ansi2HTMLConverter()
 		html = conv.convert(str(self))
-		html = html.replace(u'\u2589', '<span style="background-color:white"> </span>') #black box
-		html = html.replace(u'\u2691', 'x') #treasure
+		html = html.replace(u'\u2589', '<span style="background-color:white"> </span>')  # black box
+		html = html.replace(u'\u2691', 'x')  # treasure
 		html = html.replace(u'\u265F', 'o')
 
 		return html
-		#return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
+		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 		#	self.name, self._players[0].name, self._players[1].name, self)
 
 	def __str__(self):
@@ -272,7 +272,7 @@ class Labyrinth(Game):
 		# lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
 
 		#head = "+" + "-" * (2 * self.L - 1) + "+\n"
-		head = "+" + "-" * (self.L) + "+\n"
+		head = "+" + "-" * self.L + "+\n"
 		return head + "\n".join(lines) + "\n" + head
 
 	@property

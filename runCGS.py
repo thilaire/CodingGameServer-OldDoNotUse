@@ -22,8 +22,8 @@ CGS requires Python3 and the following packages: colorama, colorlog, docopt, bot
 
 """
 
-#from gevent import monkey
-#monkey.patch_all()
+# from gevent import monkey
+# monkey.patch_all()
 
 import threading  # to run threads
 from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)

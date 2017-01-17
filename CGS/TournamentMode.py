@@ -34,7 +34,7 @@ class League(Tournament):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
 		# score (array of scores, indexed by the player)
-		self.score = {p:0 for p in self.players}
+		self.score = {p: 0 for p in self.players}
 
 
 	def MatchsGenerator(self):

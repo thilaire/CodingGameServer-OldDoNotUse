@@ -196,7 +196,7 @@ class Game:
 	def HTMLpage(self):
 		return ''
 
-	def addsock(self,wsock):
+	def addsock(self, wsock):
 		self.lwsock.append(wsock)
 
 	def send_wsock(self):
@@ -210,10 +210,10 @@ class Game:
 
 	def HTMLdict(self):
 		d = dict()
-		d['GameName']= self.name
-		d['Player1']=self.players[0].name
-		d['Player2']=self.players[1].name
-		d['HtmlPage']=self.HTMLpage()
+		d['GameName'] = self.name
+		d['Player1'] = self.players[0].name
+		d['Player2'] = self.players[1].name
+		d['HtmlPage'] = self.HTMLpage()
 		return d
 
 	def HTMLrepr(self):
@@ -233,7 +233,27 @@ class Game:
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
 			whoLooses.game = None
-			self.logger.debug("1) Player %s's game set to None"%whoLooses.name)
+			self.logger.debug("1) Player %s's game set to None" % whoLooses.name)
+
+
+	def manageNextTurn(self, return_code, msg):
+		"""
+		Called after having update the game
+		Check if it's the end of the game (and call endOfGame), or update the next player
+		Parameters:
+		- return_code: (int) code returned by updateGame (MOVE_OK, MOVE_WIN or MOVE_LOSE)
+		- msg: (string) message when the move is not OK
+		"""
+		# check if the player wins
+		if return_code == MOVE_OK:
+			# change who plays
+			self._whoPlays = self.getNextPlayer()
+		elif return_code == MOVE_WIN:
+			# Game won by the opponent, end of the game
+			self.endOfGame(self._whoPlays, msg)
+		else:  # return_code == MOVE_LOSE
+			# Game won by the regular player, end of the game
+			self.endOfGame(1 - self._whoPlays, msg)
 
 
 	def endOfGame(self, whoWins, msg):
@@ -254,10 +274,10 @@ class Game:
 		# the players do not play anymore
 		if self._players[0].game is not None:
 			self._players[0].game = None
-			self.logger.debug("2) Player %s's game set to None" % self._players[0].name)
+			self.logger.debug("2) Player %s's game set to None" % self._players[0].name)    # TODO: to remove
 		if self._players[1].game is not None:
 			self._players[1].game = None
-			self.logger.debug("3) Player %s's game set to None" % self._players[1].name)
+			self.logger.debug("3) Player %s's game set to None" % self._players[1].name)    # TODO: to remove
 
 		# tell the tournament the result of the game
 		if self._tournament:
@@ -291,61 +311,46 @@ class Game:
 
 	def getLastMove(self):
 		"""
-		Wait for the move of the player playerWhoPlays
-		If it doesn't answer in TIMEOUT_TURN seconds, then he lost
+		Wait for the move of the player playerWhoPlays (and sync with it)
+		If it doesn't answer in TIMEOUT_TURN seconds, then he losts the game
 		Returns:
 			- last move: (string) string describing the opponent last move (exactly the string it sends)
 			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
 		"""
 
-		# get who plays (copy it here, because it will be change somewhere by playMove concurrently)
-		whoPlays = self._whoPlays
-
 		# check if the opponent doesn't have disconnected
-		if self._players[whoPlays].game is None:
-			self.endOfGame(1-whoPlays, "Opponent has disconnected")
+		if self._players[self._whoPlays].game is None:
+			self.endOfGame(1-self._whoPlays, "Opponent has disconnected")
 			return "", MOVE_LOSE
 
 		# wait for the move of the opponent if the opponent is a regular player
-		elif self._players[whoPlays].isRegular:
-
-			self.logger.low_debug("Wait for playMove event")
-			if self._playMoveEvent.is_set() or self._playMoveEvent.wait(self._timeout):
-				self.logger.low_debug("Receive playMove event")
-				self._playMoveEvent.clear()
-
-				self._getMoveEvent.set()
-
+		if self._players[self._whoPlays].isRegular:
+			toto= "getMove ("+self._players[1-self._whoPlays].name+")"
+			# 1st synchronization with the opponent (with playMove)
+			self.logger.low_debug("1st synchronization with opponent (getMove)")
+			if syncEvents(self.logger, toto, self._getMoveEvent, self._playMoveEvent, self._timeout):
+				# now the opponent has played, we wait now for self._whoPlays to be updated
+				self.logger.low_debug("2nd synchronization with opponent (getMove)")
+				syncEvents(self.logger, toto, self._getMoveEvent, self._playMoveEvent)
 				return self._lastMove, self._lastReturn_code
 			else:
 				# Timeout !!
 				# the opponent has lost the game
-				self._playMoveEvent.clear()
-				self.endOfGame(1 - whoPlays, "Timeout")
-
+				self.endOfGame(1 - self._whoPlays, "Timeout")
 				return self._lastMove, MOVE_LOSE
 
 		else:
 			# the opponent is a training player
 			# so we call its playMove method
-			move = self._players[whoPlays].playMove()
-			self.logger.info("'%s' plays %s" % (self._players[whoPlays].name, move))
-			self._players[1 - whoPlays].logger.info("%s plays %s" % (self._players[whoPlays].name, move))
+			move = self._players[self._whoPlays].playMove()
+			self.logger.info("'%s' plays %s" % (self._players[self._whoPlays].name, move))
+			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self._players[self._whoPlays].name, move))
+
 			# and update the game
 			return_code, msg = self.updateGame(move)
 
-			# check if the player wins
-			if return_code == MOVE_OK:
-				# change who plays
-				self._whoPlays = 1 - self._whoPlays
-
-			elif return_code == MOVE_WIN:
-				# Game won by the opponent, end of the game
-				self.endOfGame(whoPlays, msg)
-			else:  # return_code == MOVE_LOSE
-				# Game won by the regular player, end of the game
-				self.endOfGame(1 - whoPlays, msg)
-
+			# update who plays next and check for the end of the game
+			self.manageNextTurn(return_code, msg)
 
 			return move, return_code
 
@@ -363,62 +368,59 @@ class Game:
 		- move_code: (integer) 0 if the game continues after this move, >0 if it's a winning move, -1 otherwise (illegal move)
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
-		# get who plays (copy it here, because it will be change somewhere)
-		whoPlays = self._whoPlays
-
 		# check if the opponent doesn't have disconnected
-		if self._players[whoPlays].game is None:
-			self.endOfGame(whoPlays, "Opponent has disconnected")
+		if self._players[self._whoPlays].game is None:
+			self.endOfGame(self._whoPlays, "Opponent has disconnected")
 			return MOVE_WIN, "Opponent has disconnected"
 
 		# log that move
-		self.logger.info("'%s' plays %s" % (self.players[whoPlays].name, move))
-		if self._players[whoPlays].isRegular:
-			self._players[whoPlays].logger.info("I play %s" % move)
-		if self._players[1 - whoPlays].isRegular:
-			self._players[1 - whoPlays].logger.info("%s plays %s" % (self.players[whoPlays].name, move))
+		self.logger.info("'%s' plays %s" % (self.players[self._whoPlays].name, move))
+		if self._players[self._whoPlays].isRegular:
+			self._players[self._whoPlays].logger.info("I play %s" % move)
+		if self._players[1 - self._whoPlays].isRegular:
+			self._players[1 - self._whoPlays].logger.info("%s plays %s" % (self.players[self._whoPlays].name, move))
 
-		# check for timeout when the opponent is a training player
-		if not self._players[1 - whoPlays].isRegular:
+
+		# if the opponent is a regular player
+		if self._players[1 - self._whoPlays].isRegular:
+			toto = "playMove ("+self._players[self._whoPlays].name+")"
+			# play that move, update the game and keep the last move
+			return_code, msg = self.updateGame(move)
+			self._lastMove = move
+			self._lastReturn_code = return_code
+
+			# 1st synchronization with the opponent
+			self.logger.low_debug("1st synchronization with opponent (playMove)")
+			if not syncEvents(self.logger, toto, self._playMoveEvent, self._getMoveEvent, self._timeout):
+				self.endOfGame(self._whoPlays, "Timeout")
+				return MOVE_WIN, "Timeout of the opponent!"
+
+			# update who plays next and check for the end of the game
+			self.manageNextTurn(return_code, msg)
+
+			# 2nd synchronization with the opponent
+			self.logger.low_debug("2nd synchronization with opponent (playMove)")
+			syncEvents(self.logger, toto, self._playMoveEvent, self._getMoveEvent)
+
+
+		else:   # when the opponent is a training player
+			# check for timeout
 			if (datetime.now()-self._lastMoveTime).total_seconds() > self._timeout:
 				# Timeout !!
 				# the player has lost the game
-				self.endOfGame(1 - whoPlays, "Timeout")
+				self.endOfGame(1 - self._whoPlays, "Timeout")
 				return MOVE_LOSE, "Timeout !"
 
-		# play that move and update the game
-		return_code, msg = self.updateGame(move)
+			# play that move, update the game and keep the last move
+			return_code, msg = self.updateGame(move)
+			self._lastMove = move
+			self._lastReturn_code = return_code
 
-		# keep the last move
-		self._lastMove = move
-		self._lastReturn_code = return_code
+			# update who plays next and check for the end of the game
+			self.manageNextTurn(return_code, msg)
 
-
-		# update who plays next and check for the end of the game
-		if return_code == MOVE_OK:
-			# change who plays
-			self._whoPlays = 1 - self._whoPlays
-		elif return_code == MOVE_WIN:
-			self.endOfGame(whoPlays, msg)
-		elif return_code == MOVE_LOSE:
-			self.endOfGame(1 - whoPlays, msg)
-
-
-		# only if the opponent is a regular player
-		if self._players[1 - whoPlays].isRegular:
-			# set the playMove Event
-			self._playMoveEvent.set()
-
-			# and then wait that the opponent get the move
-			self.logger.low_debug("Wait for getMove event")
-			self._getMoveEvent.wait()
-			self._getMoveEvent.clear()
-			self.logger.low_debug("Receive getMove event")
-		else:
-			# if the opponent is a training player, we store the time (to compute the timeout)
+			#  we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()
-
-
 
 		self.send_wsock()
 		return return_code, msg
@@ -517,6 +519,18 @@ class Game:
 		return cls._theGameClass.__name__
 
 
+	def getNextPlayer(self):
+		"""
+		Change the player who plays
+
+		IT CAN BE OVERLOADED BY THE CHILD CLASS if the behaviour is different than a tour by tour game
+		(if a player can replay)
+
+		Returns the next player (but do not update self._whoPlays)
+		"""
+		return 1 - self._whoPlays
+
+
 	def updateGame(self, move):
 		"""
 		update the Game by playing the move
@@ -556,3 +570,28 @@ class Game:
 
 
 # Rajouter les méthodes HTML...
+
+
+
+
+def syncEvents(logger, name, myEvent, otherEvent, timeout=None):
+	"""
+	Synchronize two threads using two Events
+
+	Parameters:
+	- myEvent: (Event) my Event for the synchronization
+	- otherEvent: (Event) the Event of the other thread
+	- timeout: (None or int) time (in seconds) before timeout
+
+	Returns False if the timeout occurs, else True
+	"""
+	# set my Event
+	logger.low_debug(name+": myEvent.set()")
+	myEvent.set()
+	# wait for the other Event
+	logger.low_debug(name+": otherEvent.wait")
+	ret = otherEvent.is_set() or otherEvent.wait(timeout)       # TODO: is is_set necessary ?
+	# receive other Event
+	logger.low_debug(name+": otherEvent.clear()")
+	otherEvent.clear()
+	return ret

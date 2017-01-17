@@ -16,7 +16,7 @@ File: Constants.py
 """
 
 
-TIMEOUT_TURN = 100		    # time (in seconds) to play a move
+TIMEOUT_TURN = 10		    # time (in seconds) to play a move
 
 
 # return codes

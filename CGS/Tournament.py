@@ -21,7 +21,9 @@ from re import sub
 from CGS.Game import Game
 from queue import Queue
 
+
 # TODO: Tournament class should be virtual (abstract)
+
 
 class Tournament:
 	"""
@@ -86,8 +88,8 @@ class Tournament:
 		self._isRunning = False         # is the tournament already running ?
 		self._isPhaseRunning = False    # is there is a running phase
 		self._games = {}        		# list of current games
-		self._queue = Queue()           # we use a queue, even we do not need to store item inside
-										# (just need the .join method to wait for all the task been done)
+		self._queue = Queue()           # we use a queue, even we do not need to store item inside (just need the .join method to wait for all the task been done)
+		self._phase = ""                # phase of the tournament
 
 		# TODO: add a logger
 
@@ -228,12 +230,12 @@ class Tournament:
 		Returns a HTML string to display the list of games
 		It displays informations from the dictionary _games
 		"""
-		HTMLgames = [ ]
-		for (p1,p2),(score,g) in self._games.items():       # unpack all the games of the phase
+		HTMLgames = []
+		for (p1, p2), (score, g) in self._games.items():       # unpack all the games of the phase
 			if g:
-				HTMLgames.append( "%s (%d) vs (%d) %s (%s)" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr(), g.HTMLrepr()))
+				HTMLgames.append("%s (%d) vs (%d) %s (%s)" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr(), g.HTMLrepr()))
 			else:
-				HTMLgames.append( "%s (%d) vs (%d) %s" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr()))
+				HTMLgames.append("%s (%d) vs (%d) %s" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr()))
 
 		return "<br/>".join(HTMLgames)
 
@@ -246,14 +248,14 @@ class Tournament:
 		- winner: (Player) player who wins the game
 		- looser: (Player) player who loose the game
 		"""
-		if (winner,looser) in self._games:
-			score = self._games[(winner,looser)][0]
+		if (winner, looser) in self._games:
+			score = self._games[(winner, looser)][0]
 			score[0] += 1
 			self._games[(winner, looser)][1] = None
 		else:
 			score = self._games[(looser, winner)][0]
 			score[1] += 1
-			self._games[(looser,winner)][1] = None
+			self._games[(looser, winner)][1] = None
 		# remove one item from the queue
 		self._queue.get()
 
@@ -299,3 +301,4 @@ class Tournament:
 		TO BE OVERLOADED
 		"""
 		yield [None, None]
+

@@ -66,7 +66,7 @@ def runWebServer(host, port, quiet):
 	weblogger.message("Run the web server on port %d...", port)
 
 	default_app().catchall = True       # all the exceptions/errors are catched, and re-routed to error500
-	run(host=host, port=port, quiet=quiet, server='gevent',handler_class=WebSocketHandler)
+	run(host=host, port=port, quiet=quiet, server='gevent', handler_class=WebSocketHandler)
 
 
 def static_file_from_templates(fileName):
@@ -149,9 +149,10 @@ def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
 		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
-		return template('Game.html',SocketName='ws://localhost:8088/game/websocket/'+gameName,**g.HTMLdict())
+		return template('Game.html', SocketName='ws://localhost:8088/game/websocket/'+gameName, **g.HTMLdict())
 	else:
 		return template('noGame.html', gameName=gameName)
+
 
 @route('/game/websocket/<gameName>')
 def gameWebSocket(gameName):
@@ -162,7 +163,7 @@ def gameWebSocket(gameName):
 			abort(400, "Expected Websocket request.")
 		g.addsock(wsock)
 		g.send_wsock()
-		while(True):
+		while True:
 			pass
 		# while True:
 		# 	try:
@@ -171,6 +172,7 @@ def gameWebSocket(gameName):
 		# 		break
 	else:
 		return template('noGame.html', gameName=gameName)
+
 
 # ============
 #  Tournament
