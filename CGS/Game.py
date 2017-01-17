@@ -19,7 +19,7 @@ File: Game.py
 import logging
 from random import seed as set_seed, randint, choice
 from time import time
-from threading import Event
+from threading import Event,Barrier, BrokenBarrierError
 from datetime import datetime
 
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
@@ -152,12 +152,6 @@ class Game:
 		# determine who starts (player #0 ALWAYS starts)
 		self._whoPlays = 0
 
-		# Event to manage payMove and getMove from the players
-		self._getMoveEvent = Event()
-		self._getMoveEvent.clear()
-		self._playMoveEvent = Event()
-		self._playMoveEvent.clear()
-
 		# last move
 		self._lastMove = ""
 		self._lastReturn_code = 0
@@ -170,9 +164,11 @@ class Game:
 				self._timeout = int(options['timeout'])
 			except ValueError:
 				raise ValueError("The 'timeout' value is invalid ('timeout=%s')" % options['timeout'])
-
 		# timestamp of the last move
 		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
+
+		# common Barrier used for the synchronization of the two players (during playMove and getMove)
+		self._sync = Barrier(2, timeout=self._timeout)  # common Barrier used for the synchronization of the two players (during playMove and getMove)
 
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
@@ -325,15 +321,15 @@ class Game:
 
 		# wait for the move of the opponent if the opponent is a regular player
 		if self._players[self._whoPlays].isRegular:
-			toto= "getMove ("+self._players[1-self._whoPlays].name+")"
-			# 1st synchronization with the opponent (with playMove)
-			self.logger.low_debug("1st synchronization with opponent (getMove)")
-			if syncEvents(self.logger, toto, self._getMoveEvent, self._playMoveEvent, self._timeout):
+			try:
+				# 1st synchronization with the opponent (with playMove)
+				#self.logger.low_debug("1st synchronization with opponent (getMove)")
+				self._sync.wait()
 				# now the opponent has played, we wait now for self._whoPlays to be updated
-				self.logger.low_debug("2nd synchronization with opponent (getMove)")
-				syncEvents(self.logger, toto, self._getMoveEvent, self._playMoveEvent)
+				#self.logger.low_debug("2nd synchronization with opponent (getMove)")
+				self._sync.wait()
 				return self._lastMove, self._lastReturn_code
-			else:
+			except BrokenBarrierError:
 				# Timeout !!
 				# the opponent has lost the game
 				self.endOfGame(1 - self._whoPlays, "Timeout")
@@ -383,15 +379,17 @@ class Game:
 
 		# if the opponent is a regular player
 		if self._players[1 - self._whoPlays].isRegular:
-			toto = "playMove ("+self._players[self._whoPlays].name+")"
 			# play that move, update the game and keep the last move
 			return_code, msg = self.updateGame(move)
 			self._lastMove = move
 			self._lastReturn_code = return_code
 
-			# 1st synchronization with the opponent
-			self.logger.low_debug("1st synchronization with opponent (playMove)")
-			if not syncEvents(self.logger, toto, self._playMoveEvent, self._getMoveEvent, self._timeout):
+			try:
+				# 1st synchronization with the opponent
+				self.logger.low_debug("1st synchronization with opponent (playMove)")
+				self._sync.wait()
+			except BrokenBarrierError:
+				# Timeout !
 				self.endOfGame(self._whoPlays, "Timeout")
 				return MOVE_WIN, "Timeout of the opponent!"
 
@@ -400,7 +398,7 @@ class Game:
 
 			# 2nd synchronization with the opponent
 			self.logger.low_debug("2nd synchronization with opponent (playMove)")
-			syncEvents(self.logger, toto, self._playMoveEvent, self._getMoveEvent)
+			self._sync.wait()
 
 
 		else:   # when the opponent is a training player
