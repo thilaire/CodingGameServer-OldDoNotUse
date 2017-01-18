@@ -22,6 +22,9 @@ from CGS.Game import Game
 from queue import Queue
 
 
+import time
+
+
 # TODO: Tournament class should be virtual (abstract)
 
 
@@ -91,6 +94,10 @@ class Tournament:
 		self._games = {}        		# list of current games
 		self._queue = Queue()   # we use a queue, even we do not need to store item inside (just need the .join method to wait for all the task been done)
 		self._phase = ""                # phase of the tournament
+
+
+		# match generator
+		self._matchGen = self.MatchsGenerator()
 
 		# TODO: add a logger
 
@@ -258,7 +265,8 @@ class Tournament:
 		print("End of the game %s vs %s" % (winner.name, looser.name))
 		print("q=%d"%self._queue.qsize())
 		self._queue.get()
-
+		self._queue.task_done()
+		print("q=%d" % self._queue.qsize())
 
 
 	def runPhase(self):
@@ -271,7 +279,8 @@ class Tournament:
 		self._isPhaseRunning = True
 
 		# get the next list of 2-tuple (player1,player2) of players who will player together in that phase
-		matches = next(self.MatchsGenerator())
+
+		matches = next(self._matchGen)
 
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: c'est plus qu'un simple match, vu qu'il y a la revanche (plusieurs tours)
@@ -298,29 +307,12 @@ class Tournament:
 			print("q=%d"%self._queue.qsize())
 			self._queue.join()
 			print("End of the waiting")
+			time.sleep(1)
 
-		# # run the games
-		# for r in range(1, self.rounds + 1):
-		# 	for p1, p2 in self._games.keys():
-		# 		# TODO: should we check that the two players are still here ????
-		# 		if self.rounds == r and self.rounds % 2 == 1:
-		# 			if self._games[(p1, p2)][0][0] == self._games[(p1, p2)][0][1]:
-		# 				# we have equality in score, so we need another game
-		# 				# TODO: vérifier que ça marche (qd on a égalité ou pas pour le dernier tour)
-		# 				self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, tournament=self)
-		# 				self._queue.put_nowait(None)
-		# 		else:
-		# 			self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=(r - 1) % 2, tournament=self)
-		# 			self._queue.put_nowait(None)
-		# 	# wait for all the games to end (before running the next round)
-		# 	self._queue.join()
+			print("Now, new rounds")
 
-
-
-
-
-
-
+		# update the scores
+		self.updateScore()
 
 		# end of the phase, we are ready to run another one
 		self._isPhaseRunning = False
@@ -333,3 +325,13 @@ class Tournament:
 		"""
 		yield [None, None]
 
+
+	def HTMLscore(self):
+		"""
+		Display the actual score
+
+		TO BE OVERLOADED
+
+		Returns a HTML string to display the score
+		"""
+		return ""

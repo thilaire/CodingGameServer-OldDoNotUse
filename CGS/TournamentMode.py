@@ -22,6 +22,17 @@ from CGS.Tournament import Tournament
 # TODO: put them in different files ?
 
 
+def numbering(i):
+	if i==1:
+		return 'st'
+	elif i==2:
+		return 'nd'
+	elif i==3:
+		return 'rd'
+	else:
+		return 'th'
+
+
 class League(Tournament):
 	"""
 	League mode
@@ -33,9 +44,9 @@ class League(Tournament):
 	def __init__(self, name, nbMaxPlayers, rounds, **_):        # **_ stands for the unused other parameters...
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
-		# score (array of scores, indexed by the player)
-		self.score = {p: 0 for p in self.players}
 
+		# initial score (empty for the moment, we don't know the players)
+		self._score = {}
 
 	def MatchsGenerator(self):
 		"""
@@ -43,21 +54,47 @@ class League(Tournament):
 		see http://en.wikipedia.org/wiki/Round-robin_tournament and
 		http://stackoverflow.com/questions/11245746/league-fixture-generator-in-python/11246261#11246261
 		"""
+		# score
+		self._score = {p: 0 for p in self.players}
+
 		# copy the player list
 		# TODO: vérifier s'ils sont tous encore là ?
 		rotation = list(self._players)
 		# if player number is odd, we use None as a fake player
 		if len(rotation) % 2:
 			rotation.append(None)
+
 		# then we iterate using round robin algorithm
 		for i in range(0, len(rotation) - 1):
-			self._phase = '%d%s phase' % (i+1, 'st' if (i+1) == 1 else 'nd' if (i+1) == 2 else 'rd' if (i+1) == 3 else 'th')
+			# update the phase name
+			self._phase = '%d%s phase' % (i+1,numbering(i+1))
 			# generate list of pairs (player1,player2)
 			yield list(zip(*[iter(rotation)] * 2))
 			# prepare the next list by rotating the list
 			rotation = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
 
+	def updateScore(self):
+		"""
+		update the score from the dictionary of games runned in that phase
+		Called by runPhase at the end of each phase
+		"""
+		for (p1, p2), (score,_) in self._games.items():
+			if score[0]>score[1]:
+				self._score[p1] += 1
+			else:
+				self._score[p2] += 1
 
+
+	def HTMLscore(self):
+		"""
+		Display the actual score
+
+		Returns a HTML string
+		"""
+		if self._score:
+			return "TOTO<ul>"+"".join("<li>%s: %d points</li>"% (p.name, score) for p, score in self._score.items())+"</ul>"
+		else:
+			return ""
 
 
 
