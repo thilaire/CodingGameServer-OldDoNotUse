@@ -62,7 +62,7 @@ Options:
   --no-email               Do not send email in production [default: False]
   --debug                  Debug mode (log and display everything)
   --dev                    Development mode (log everything, display infos, warnings and errors)
-  --prod                   Production mode (log only infos, warnings and errors, display nothing, and send emails) [default: True]
+  --prod                   Production mode (only log infos, warnings and errors and send emails) [default: True]
 """
 
 

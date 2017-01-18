@@ -138,6 +138,7 @@ def configureRootLogger(args):
 	if Config.mode == 'prod' and not args['--no-email']:
 		# get the password (and disable warning message)
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
+		# noinspection PyUnusedLocal
 		def custom_fallback(prompt="Password: ", stream=None):
 			print("WARNING: Password input may be echoed (can not control echo on the terminal)")
 			# noinspection PyProtectedMember
@@ -209,7 +210,7 @@ def removeOldestFile(path, maxSize):
 
 # The two following functions just call removeOldestFile, but each with a different non-blocking lock
 # so that these functions are just called when nobodyelse uses then
-# (if removeOldestFilePlayer is already run by a thread, then no other thread can run it (it will just do nothing instead)
+# (if removeOldestFilePlayer is already run by a thread, then no other thread can run it (do nothing instead)
 # so that we do not have two functions that try to delete oldest files in the same time
 # (one is enough; several causes troubles)
 @non_blocking_lock

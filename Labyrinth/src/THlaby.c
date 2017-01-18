@@ -222,7 +222,7 @@ int main()
     int nmove;                          /* number of moves */
     char toto[100];
 
-	debug=1;	/* enable debug */
+	debug=0;	/* enable debug */
 
 	/* connection to the server */
 	char name[100];
@@ -236,8 +236,8 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		//waitLab( &laby, "TOURNAMENT toto");
-		waitLab( &laby, "");
+		waitLab( &laby, "TOURNAMENT toto");
+		//waitLab( &laby, "");
         nmove = 0;
 
         do {

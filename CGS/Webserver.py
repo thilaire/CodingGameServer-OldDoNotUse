@@ -32,7 +32,7 @@ from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
-from CGS import TournamentMode        # HERE we import all the tournaments type
+from CGS import TournamentMode        # HERE we import all the tournaments type (DO NOT REMOVE)
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -148,7 +148,6 @@ def create_new_game():
 def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
-		# TODO: use a template, and call for g.HTMLdict() that returns a dictionary with all the possible informations about the game
 		return template('Game.html', SocketName='ws://localhost:8088/game/websocket/'+gameName, **g.HTMLdict())
 	else:
 		return template('noGame.html', gameName=gameName)
@@ -192,9 +191,6 @@ def create_new_tournament():
 	"""
 	Receive the form to create a new tournament
 	"""
-	# get the tournament mode
-	mode = request.forms.get('mode')
-
 	# create the tournament
 	try:
 		Tournament.factory(**dict(request.forms))

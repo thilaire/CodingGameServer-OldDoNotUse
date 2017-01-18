@@ -224,7 +224,7 @@ class Labyrinth(Game):
 
 		return html
 		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
-		#	self.name, self._players[0].name, self._players[1].name, self)
+		# self.name, self._players[0].name, self._players[1].name, self)
 
 	def __str__(self):
 		"""
@@ -254,7 +254,7 @@ class Labyrinth(Game):
 				# or add wall
 				else:
 					st.append(u"\u2589")
-			#lines.append("|" + " ".join(st) + "|")
+			# lines.append("|" + " ".join(st) + "|")
 			lines.append("|" + "".join(st) + "|")
 
 		# add player names
@@ -271,7 +271,7 @@ class Labyrinth(Game):
 		# lines[self.H // 2] += "\t\t" + br0[0] + Fore.BLUE + "Player 1: " + Fore.RESET + self._players[0].name + br0[1]
 		# lines[self.H // 2 + 2] += "\t\t" + br1[0] + Fore.RED + "Player 2: " + Fore.RESET + self._players[1].name + br1[1]
 
-		#head = "+" + "-" * (2 * self.L - 1) + "+\n"
+		# head = "+" + "-" * (2 * self.L - 1) + "+\n"
 		head = "+" + "-" * self.L + "+\n"
 		return head + "\n".join(lines) + "\n" + head
 

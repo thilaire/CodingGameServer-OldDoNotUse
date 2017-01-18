@@ -26,11 +26,11 @@ class League(Tournament):
 	"""
 	League mode
 	"""
-	_mode = "League"
-	_HTMLoptions = ""
+	mode = "League"
+	HTMLoptions = ""
 
 
-	def __init__(self, name, nbMaxPlayers, rounds, **unused):
+	def __init__(self, name, nbMaxPlayers, rounds, **_):        # **_ stands for the unused other parameters...
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
 		# score (array of scores, indexed by the player)
@@ -62,8 +62,8 @@ class League(Tournament):
 
 
 class PoolKnockoutTournament(Tournament):
-	_mode = "Two stages (pool + knockout) Tournament"
-	_HTMLoptions = """
+	mode = "Two stages (pool + knockout) Tournament"
+	HTMLoptions = """
 	<label>
 		Nb groups: <input name="nbGroups" type="number" value="4" required/>
 	</label>
@@ -73,7 +73,7 @@ class PoolKnockoutTournament(Tournament):
 	</label>
 	"""
 
-	def __init__(self, name, nbMaxPlayers, rounds, nbGroups, nbFirst, **unused):
+	def __init__(self, name, nbMaxPlayers, rounds, nbGroups, nbFirst, **_):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
 
@@ -100,10 +100,10 @@ class SingleEliminationTournament(Tournament):
 	Single-elimination tournament
 	https://en.wikipedia.org/wiki/Single-elimination_tournament
 	"""
-	_mode = "Single-elimination Tournament"
-	_HTMLoptions = ""
+	mode = "Single-elimination Tournament"
+	HTMLoptions = ""
 
-	def __init__(self, name, nbMaxPlayers, rounds, **unused):
+	def __init__(self, name, nbMaxPlayers, rounds, **_):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, rounds)
 

@@ -19,7 +19,7 @@ File: Game.py
 import logging
 from random import seed as set_seed, randint, choice
 from time import time
-from threading import Event,Barrier, BrokenBarrierError
+from threading import Barrier, BrokenBarrierError
 from datetime import datetime
 
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
@@ -84,7 +84,7 @@ class Game:
 		- options: dictionary of options
 			- 'seed': seed of the labyrinth (same seed => same labyrinth); used as seed for the random generator
 			- 'timeout': timeout of the game (if not given, the default timeout is used)
-			- 'start': who starts the game (0 or 1); random when not precised
+			- 'start': who starts the game (0, 1 or -1); random when not precised or '-1'
 			# TODO: add a delay/pause option (in second)
 		"""
 
@@ -103,8 +103,10 @@ class Game:
 		else:
 			try:
 				pl = int(options['start'])
+				if pl == -1:
+					pl = choice((0, 1))
 			except ValueError:
-				raise ValueError("The 'start' option must be '0' or '1'")
+				raise ValueError("The 'start' option must be '0', '1' or '-1'")
 		self._players = (player1, player2) if pl == 0 else (player2, player1)
 
 
@@ -167,8 +169,8 @@ class Game:
 		# timestamp of the last move
 		self._lastMoveTime = datetime.now()     # used for the timeout when one player is a non-regular player
 
-		# common Barrier used for the synchronization of the two players (during playMove and getMove)
-		self._sync = Barrier(2, timeout=self._timeout)  # common Barrier used for the synchronization of the two players (during playMove and getMove)
+		# Barrier used for the synchronization of the two players (during playMove and getMove)
+		self._sync = Barrier(2, timeout=self._timeout)
 
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
@@ -323,10 +325,8 @@ class Game:
 		if self._players[self._whoPlays].isRegular:
 			try:
 				# 1st synchronization with the opponent (with playMove)
-				#self.logger.low_debug("1st synchronization with opponent (getMove)")
 				self._sync.wait()
 				# now the opponent has played, we wait now for self._whoPlays to be updated
-				#self.logger.low_debug("2nd synchronization with opponent (getMove)")
 				self._sync.wait()
 				return self._lastMove, self._lastReturn_code
 			except BrokenBarrierError:
@@ -386,7 +386,6 @@ class Game:
 
 			try:
 				# 1st synchronization with the opponent
-				self.logger.low_debug("1st synchronization with opponent (playMove)")
 				self._sync.wait()
 			except BrokenBarrierError:
 				# Timeout !
@@ -397,7 +396,6 @@ class Game:
 			self.manageNextTurn(return_code, msg)
 
 			# 2nd synchronization with the opponent
-			self.logger.low_debug("2nd synchronization with opponent (playMove)")
 			self._sync.wait()
 
 
@@ -453,7 +451,9 @@ class Game:
 		- the comments
 		"""
 		nPlayer = 0 if player is self._players[0] else 1
-		return str(self) + "\n" + self._comments.getString(nPlayer, [p.name for p in self._players]) + "\n"*4
+		# noinspection PyUnresolvedReferences
+		names = [p.name for p in self._players]
+		return str(self) + "\n" + self._comments.getString(nPlayer, names) + "\n"*4
 
 
 

@@ -22,7 +22,7 @@ from .Constants import DO_NOTHING
 
 class DoNothingPlayer(TrainingPlayer):
 
-	def __init__(self, **options):
+	def __init__(self, **_):
 		super().__init__('Do_nothing')
 
 		# no options, so nothing to do with options

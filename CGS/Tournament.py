@@ -40,6 +40,7 @@ class Tournament:
 		- _games: dictionnary of current games
 		- _phase: (string) name of the phase ('not running', '1/4 final', etc...)
 		- _isRunningPhase: (bool) True if a phase is running (false when we wait the user to run a new phase)
+		- _queue: (Queue) queue of running game (used to wait for all the games to be ended)
 
 	Class attributes
 		- _HTMLoptions: (string) HTML code to display the options in a form
@@ -50,8 +51,8 @@ class Tournament:
 	"""
 
 	allTournaments = {}         # dictionary of all the tournament
-	_HTMLoptions = ""           # some options to display in an HTML form
-	_mode = ""        # type of the tournament
+	HTMLoptions = ""           # some options to display in an HTML form
+	mode = ""        # type of the tournament
 
 	def __init__(self, name, nbMaxPlayers, rounds):
 		"""
@@ -88,7 +89,7 @@ class Tournament:
 		self._isRunning = False         # is the tournament already running ?
 		self._isPhaseRunning = False    # is there is a running phase
 		self._games = {}        		# list of current games
-		self._queue = Queue()           # we use a queue, even we do not need to store item inside (just need the .join method to wait for all the task been done)
+		self._queue = Queue()   # we use a queue, even we do not need to store item inside (just need the .join method to wait for all the task been done)
 		self._phase = ""                # phase of the tournament
 
 		# TODO: add a logger
@@ -103,10 +104,6 @@ class Tournament:
 	@property
 	def name(self):
 		return self._name
-
-	@property
-	def mode(self):
-		return self._mode
 
 	@property
 	def nbMaxPlayers(self):
@@ -212,11 +209,11 @@ class Tournament:
 		- "HTMLmodeOptions": an HTML string, containing a <div> per mode; each div contains the HTML form for its own options
 		"""
 		# HTMLmode
-		modes = "\n".join("<option value='%s'>%s</option>" % (sc.__name__, sc._mode) for sc in cls.__subclasses__())
+		modes = "\n".join("<option value='%s'>%s</option>" % (sc.__name__, sc.mode) for sc in cls.__subclasses__())
 
 		# HTMLmodeOptions
 		options = "\n".join('<div display="none" id="%s">%s</div>' %
-		                    (sc.__name__, sc._HTMLoptions) for sc in cls.__subclasses__())
+		                    (sc.__name__, sc.HTMLoptions) for sc in cls.__subclasses__())
 
 		# JavascriptModeOptions
 		jOptions = "\n".join('document.getElementById("%s").style.display="none";' %
@@ -248,6 +245,7 @@ class Tournament:
 		- winner: (Player) player who wins the game
 		- looser: (Player) player who loose the game
 		"""
+		# modify the score in the dictionary
 		if (winner, looser) in self._games:
 			score = self._games[(winner, looser)][0]
 			score[0] += 1
@@ -257,6 +255,8 @@ class Tournament:
 			score[1] += 1
 			self._games[(looser, winner)][1] = None
 		# remove one item from the queue
+		print("End of the game %s vs %s" % (winner.name, looser.name))
+		print("q=%d"%self._queue.qsize())
 		self._queue.get()
 
 
@@ -267,29 +267,60 @@ class Tournament:
 		# check if a phase is not already running
 		if self._isPhaseRunning:
 			return
-
 		self._isRunning = True
 		self._isPhaseRunning = True
+
 		# get the next list of 2-tuple (player1,player2) of players who will player together in that phase
 		matches = next(self.MatchsGenerator())
+
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: c'est plus qu'un simple match, vu qu'il y a la revanche (plusieurs tours)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
+
 		# run the games
-		for r in range(1,self.rounds+1):
-			for p1, p2 in self._games.keys():
-				# TODO: should we check that the two players are still here ????
-				if self.rounds == r and self.rounds % 2 == 1:
-					if self._games[(p1,p2)][0][0] == self._games[(p1,p2)][0][1]:
-						# we have equality in score, so we need another game
-						# TODO: vérifier que ça marche (qd on a égalité ou pas pour le dernier tour)
-						self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, tournament=self)
-						self._queue.put_nowait(None)
-				else:
-					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=(r-1) % 2, tournament=self)
-					self._queue.put_nowait(None)
+		for r in range(1, self.rounds + 1):
+
+			# create the list of games to run (list of tuples (player1,player2,whoStarts) )
+			if self.rounds == r and self.rounds % 2 == 1:
+				# last round is special when self.rounds is odd (we only run the games when equality in score)
+				gameStart = [(p1, p2, -1) for p1, p2 in self._games.keys()
+				             if self._games[(p1, p2)][0][0] == self._games[(p1, p2)][0][1]]
+			else:
+				gameStart = [(p1, p2, (r - 1) % 2) for p1, p2 in self._games.keys()]
+
+			# create (and run) those games
+			for p1, p2, start in gameStart:
+				self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self)
+				self._queue.put_nowait(None)
+
 			# wait for all the games to end (before running the next round)
+			print("Wait for next round")
+			print("q=%d"%self._queue.qsize())
 			self._queue.join()
+			print("End of the waiting")
+
+		# # run the games
+		# for r in range(1, self.rounds + 1):
+		# 	for p1, p2 in self._games.keys():
+		# 		# TODO: should we check that the two players are still here ????
+		# 		if self.rounds == r and self.rounds % 2 == 1:
+		# 			if self._games[(p1, p2)][0][0] == self._games[(p1, p2)][0][1]:
+		# 				# we have equality in score, so we need another game
+		# 				# TODO: vérifier que ça marche (qd on a égalité ou pas pour le dernier tour)
+		# 				self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, tournament=self)
+		# 				self._queue.put_nowait(None)
+		# 		else:
+		# 			self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=(r - 1) % 2, tournament=self)
+		# 			self._queue.put_nowait(None)
+		# 	# wait for all the games to end (before running the next round)
+		# 	self._queue.join()
+
+
+
+
+
+
+
 
 		# end of the phase, we are ready to run another one
 		self._isPhaseRunning = False

@@ -24,7 +24,7 @@ boolConv = {'true': True, 'false': False}
 
 class AstarPlayer(TrainingPlayer):
 
-	def __init__(self, **options):
+	def __init__(self, **_):
 		super().__init__('Astar')
 
 
