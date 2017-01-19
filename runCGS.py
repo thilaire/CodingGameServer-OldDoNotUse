@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
 	# TODO: remove this... Just for debug
 	from CGS.Tournament import Tournament
-	t = Tournament.factory('League', name='toto', nbMaxPlayers=12, rounds=3)
+	t = Tournament.factory('League', name='toto', nbMaxPlayers=12, nbRounds4Victory=3)
 
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)

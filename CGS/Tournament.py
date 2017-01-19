@@ -37,7 +37,7 @@ class Tournament:
 	Attributes:
 		- _name: (string) name of the tournament
 		- _nbMaxPlayer: (int) maximum number of players (0 for unlimited)
-		- _rounds: (int) number of rounds (usually 2 or 3)
+		- _nbRounds4Victory: (int) number of rounds  for a victory (usually 1 or 2)
 		- _players: (list of Players) list of engaged players
 		- _isRunning: (bool) True if the tournament is running (False if it'is still waiting for players)
 		- _games: dictionnary of current games
@@ -57,7 +57,7 @@ class Tournament:
 	HTMLoptions = ""           # some options to display in an HTML form
 	mode = ""        # type of the tournament
 
-	def __init__(self, name, nbMaxPlayers, rounds):
+	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
 		"""
 		Create a Tournament
 
@@ -66,7 +66,7 @@ class Tournament:
 		Parameters:
 		- name: (string) name of the tournament (used for the
 		- nbMaxPlayers: (integer) number maximum of players in the tournament (0 for no limit)
-		- rounds: (integer) number of rounds for 2 opponent (1 to 3)
+		- maxVictories: (integer) maximum number of victories to win the match (1, 2 or 3): 1 means the 1st player is randomly determined
 		"""
 		# name of the tournament
 		self._name = sub('\W+', '', name)
@@ -82,11 +82,11 @@ class Tournament:
 		if self._nbMaxPlayers < 0:
 			raise ValueError("The nb maximum of players should be positive")
 
-		# get nb of rounds
+		# get maximum number of games for a victory (gives the nb of rounds)
 		try:
-			self._rounds = int(rounds)
+			self._nbRounds4Victory = int(nbRounds4Victory)
 		except ValueError:
-			raise ValueError("The number of rounds is not valid")
+			raise ValueError("The number of needed rounds for a victory is not valid")
 
 		self._players = []  # list of engaged players
 		self._isRunning = False         # is the tournament already running ?
@@ -117,8 +117,8 @@ class Tournament:
 		return self._nbMaxPlayers
 
 	@property
-	def rounds(self):
-		return self._rounds
+	def nbRounds4Victory(self):
+		return self._nbRounds4Victory
 
 	@property
 	def players(self):
@@ -287,27 +287,19 @@ class Tournament:
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
 
 		# run the games
-		for r in range(1, self.rounds + 1):
+		for r in range(1, self.nbRounds4Victory + 1):
 
-			# create the list of games to run (list of tuples (player1,player2,whoStarts) )
-			if self.rounds == r and self.rounds % 2 == 1:
-				# last round is special when self.rounds is odd (we only run the games when equality in score)
-				gameStart = [(p1, p2, -1) for p1, p2 in self._games.keys()
-				             if self._games[(p1, p2)][0][0] == self._games[(p1, p2)][0][1]]
-			else:
-				gameStart = [(p1, p2, (r - 1) % 2) for p1, p2 in self._games.keys()]
+			for (p1, p2),(score,_) in self._games.items():
 
-			# create (and run) those games
-			for p1, p2, start in gameStart:
-				self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self)
-				self._queue.put_nowait(None)
+				if max(score)<self.nbRounds4Victory:
+					# choose who starts (-1 for random)
+					start = (r-1)%2 if r<self.nbRounds4Victory else -1
+					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self)
+					self._queue.put_nowait(None)
 
 			# wait for all the games to end (before running the next round)
-			print("Wait for next round")
-			print("q=%d"%self._queue.qsize())
 			self._queue.join()
-			print("End of the waiting")
-			time.sleep(1)
+			time.sleep(1)       # TODO: check why is not fully working when we remove this sleep....
 
 			print("Now, new rounds")
 

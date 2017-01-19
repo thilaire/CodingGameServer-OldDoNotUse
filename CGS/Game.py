@@ -571,25 +571,3 @@ class Game:
 
 
 
-
-def syncEvents(logger, name, myEvent, otherEvent, timeout=None):
-	"""
-	Synchronize two threads using two Events
-
-	Parameters:
-	- myEvent: (Event) my Event for the synchronization
-	- otherEvent: (Event) the Event of the other thread
-	- timeout: (None or int) time (in seconds) before timeout
-
-	Returns False if the timeout occurs, else True
-	"""
-	# set my Event
-	logger.low_debug(name+": myEvent.set()")
-	myEvent.set()
-	# wait for the other Event
-	logger.low_debug(name+": otherEvent.wait")
-	ret = otherEvent.is_set() or otherEvent.wait(timeout)       # TODO: is is_set necessary ?
-	# receive other Event
-	logger.low_debug(name+": otherEvent.clear()")
-	otherEvent.clear()
-	return ret

@@ -41,9 +41,9 @@ class League(Tournament):
 	HTMLoptions = ""
 
 
-	def __init__(self, name, nbMaxPlayers, rounds, **_):        # **_ stands for the unused other parameters...
+	def __init__(self, name, nbMaxPlayers, nbRounds4Victory, **_):        # **_ stands for the unused other parameters...
 		# call the super class constructor
-		super().__init__(name, nbMaxPlayers, rounds)
+		super().__init__(name, nbMaxPlayers, nbRounds4Victory)
 
 		# initial score (empty for the moment, we don't know the players)
 		self._score = {}
@@ -110,9 +110,9 @@ class PoolKnockoutTournament(Tournament):
 	</label>
 	"""
 
-	def __init__(self, name, nbMaxPlayers, rounds, nbGroups, nbFirst, **_):
+	def __init__(self, name, nbMaxPlayers, nbRounds4victory, nbGroups, nbFirst, **_):
 		# call the super class constructor
-		super().__init__(name, nbMaxPlayers, rounds)
+		super().__init__(name, nbMaxPlayers, nbRounds4victory)
 
 		# number of groups
 		try:
@@ -140,7 +140,7 @@ class SingleEliminationTournament(Tournament):
 	mode = "Single-elimination Tournament"
 	HTMLoptions = ""
 
-	def __init__(self, name, nbMaxPlayers, rounds, **_):
+	def __init__(self, name, nbMaxPlayers, nbRounds4victory, **_):
 		# call the super class constructor
-		super().__init__(name, nbMaxPlayers, rounds)
+		super().__init__(name, nbMaxPlayers, nbRounds4victory)
 
