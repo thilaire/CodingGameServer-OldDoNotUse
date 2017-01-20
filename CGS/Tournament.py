@@ -263,7 +263,7 @@ class Tournament:
 			self._games[(looser, winner)][1] = None
 		# remove one item from the queue
 		print("End of the game %s vs %s" % (winner.name, looser.name))
-		print("q=%d"%self._queue.qsize())
+		print("q=%d" % self._queue.qsize())
 		self._queue.get()
 		self._queue.task_done()
 		print("q=%d" % self._queue.qsize())
@@ -289,11 +289,11 @@ class Tournament:
 		# run the games
 		for r in range(1, self.nbRounds4Victory + 1):
 
-			for (p1, p2),(score,_) in self._games.items():
+			for (p1, p2), (score, _) in self._games.items():
 
-				if max(score)<self.nbRounds4Victory:
+				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
-					start = (r-1)%2 if r<self.nbRounds4Victory else -1
+					start = (r-1) % 2 if r < self.nbRounds4Victory else -1
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self)
 					self._queue.put_nowait(None)
 
@@ -327,3 +327,15 @@ class Tournament:
 		Returns a HTML string to display the score
 		"""
 		return ""
+
+	def updateScore(self):
+		"""
+		update the score from the dictionary of games runned in that phase
+		Called by runPhase at the end of each phase
+
+		TO BE OVERLOADED
+
+		"""
+		pass
+
+

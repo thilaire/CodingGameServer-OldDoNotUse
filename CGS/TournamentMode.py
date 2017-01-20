@@ -23,11 +23,11 @@ from CGS.Tournament import Tournament
 
 
 def numbering(i):
-	if i==1:
+	if i == 1:
 		return 'st'
-	elif i==2:
+	elif i == 2:
 		return 'nd'
-	elif i==3:
+	elif i == 3:
 		return 'rd'
 	else:
 		return 'th'
@@ -67,7 +67,7 @@ class League(Tournament):
 		# then we iterate using round robin algorithm
 		for i in range(0, len(rotation) - 1):
 			# update the phase name
-			self._phase = '%d%s phase' % (i+1,numbering(i+1))
+			self._phase = '%d%s phase' % (i+1, numbering(i+1))
 			# generate list of pairs (player1,player2)
 			yield list(zip(*[iter(rotation)] * 2))
 			# prepare the next list by rotating the list
@@ -78,8 +78,8 @@ class League(Tournament):
 		update the score from the dictionary of games runned in that phase
 		Called by runPhase at the end of each phase
 		"""
-		for (p1, p2), (score,_) in self._games.items():
-			if score[0]>score[1]:
+		for (p1, p2), (score, _) in self._games.items():
+			if score[0] > score[1]:
 				self._score[p1] += 1
 			else:
 				self._score[p2] += 1
@@ -92,7 +92,7 @@ class League(Tournament):
 		Returns a HTML string
 		"""
 		if self._score:
-			return "TOTO<ul>"+"".join("<li>%s: %d points</li>"% (p.name, score) for p, score in self._score.items())+"</ul>"
+			return "TOTO<ul>"+"".join("<li>%s: %d points</li>" % (p.name, score) for p, score in self._score.items())+"</ul>"
 		else:
 			return ""
 
