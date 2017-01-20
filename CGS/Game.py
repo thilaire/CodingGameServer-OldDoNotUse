@@ -164,6 +164,7 @@ class Game:
 		else:
 			try:
 				self._timeout = int(options['timeout'])
+				self.logger.debug("The timeout is set to %ds"%self._timeout)
 			except ValueError:
 				raise ValueError("The 'timeout' value is invalid ('timeout=%s')" % options['timeout'])
 		# timestamp of the last move
@@ -180,7 +181,7 @@ class Game:
 		player2.game = self
 
 		# List of websockets to send the game data
-		self.lwsock = []
+		self._lwsock = []
 		# and last, add itself to the dictionary of games
 		self.allGames[self.name] = self
 
@@ -195,16 +196,21 @@ class Game:
 		return ''
 
 	def addsock(self, wsock):
-		self.lwsock.append(wsock)
+		self._lwsock.append(wsock)
+
+	def removesock(self,wsock):
+		print("Remove wsock")
+		pass
+		# TODO: remove wsock
 
 	def send_wsock(self):
-		if self.lwsock:
-			for wsock in self.lwsock:
-				try:
-					print("sending message to wsock")
-					wsock.send(self.HTMLdict()['HtmlPage'])
-				except WebSocketError:
-					pass
+		print("sending message to wsock")
+		print(self._lwsock)
+		for wsock in self._lwsock:
+			try:
+				wsock.send(self.HTMLdict()['HtmlPage'])
+			except WebSocketError:
+				pass
 
 	def HTMLdict(self):
 		d = dict()

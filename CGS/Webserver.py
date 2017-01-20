@@ -19,6 +19,7 @@ File: webserver.py
 from gevent import monkey
 monkey.patch_all()
 
+
 from logging import getLogger
 import threading
 from bottle import route, request, jinja2_view as view, jinja2_template as template
@@ -162,13 +163,14 @@ def gameWebSocket(gameName):
 			abort(400, "Expected Websocket request.")
 		g.addsock(wsock)
 		g.send_wsock()
+		#while True:
+			#pass
 		while True:
-			pass
-		# while True:
-		# 	try:
-		# 		wsock.send(g.HTMLdict()['HtmlPage'])
-		# 	except WebSocketError:
-		# 		break
+			try:
+				msg = wsock.receive()
+			except WebSocketError:
+				g.removesock(wsock)
+				break
 	else:
 		return template('noGame.html', gameName=gameName)
 
@@ -286,3 +288,6 @@ def error404():
 # 	weblogger.error(err, exc_info=True)
 #
 # 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"
+
+
+

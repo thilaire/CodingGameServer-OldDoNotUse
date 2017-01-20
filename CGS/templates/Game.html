@@ -9,8 +9,14 @@
              ws.send("Hello, world");
         };
         ws.onmessage = function (evt) {
+            /*alert("Receive '"+evt.data+"'");*/
         document.getElementById('labycontent').innerHTML=evt.data;
-    };
+        ws.send('OK')
+        };
+        ws.onclose = function()
+        {
+            alert("Chéri, ça a coupé...");
+        }
     </script>
 </head>
 <body>

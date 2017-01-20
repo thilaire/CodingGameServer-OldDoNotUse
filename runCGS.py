@@ -18,7 +18,7 @@ File: runCGS.py
 
 
 CGS requires Python3 and the following packages: colorama, colorlog, docopt, bottle, jinja2, gevent-websocket
->> pip install colorama colorlog docopt bottle jinja2 gevent-websocket
+>> pip install colorama colorlog docopt bottle jinja2 ansi2html karellen-geventws
 
 """
 

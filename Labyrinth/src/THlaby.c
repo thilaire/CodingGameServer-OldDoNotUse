@@ -236,8 +236,8 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "TOURNAMENT toto");
-		//waitLab( &laby, "");
+		//waitLab( &laby, "TOURNAMENT toto");
+		waitLab( &laby, "ASTAR timeout=99999");
         nmove = 0;
 
         do {
@@ -259,14 +259,16 @@ int main()
 				//.... choose what to play
                 move = bestMove(&laby);
 
-				sprintf(toto, "For my play #%d, I choose to go %s", nmove, dirString[(int)move.type-MOVE_UP]);
-				sendComment(toto);
+				//sprintf(toto, "For my play #%d, I choose to go %s", nmove, dirString[(int)move.type-MOVE_UP]);
+				//sendComment(toto);
 				if ((nmove*nmove+12*nmove+7+laby.sizeX)%18 == 5)   /* sometimes */
 				    sendComment(citation[(nmove*laby.sizeY+13)%18]);
 
 				ret = sendMove(move);
 				playMove( &laby, move);
 				nmove++;
+				printf("Pause\n");
+				scanf("%s",toto);
 			}
 
 			/* change player */
