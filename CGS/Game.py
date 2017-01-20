@@ -25,6 +25,7 @@ from datetime import datetime
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
 from CGS.Logger import configureGameLogger
 from CGS.Comments import CommentQueue
+from CGS.WebSocketBase import WebSocketBase
 from geventwebsocket import WebSocketError
 
 
@@ -54,11 +55,11 @@ def hex6(x):
 	return h[-6:]   # get the 6 last characters
 
 
-class Game:
+class Game(WebSocketBase):
 	"""
 	Game class
 
-	allGames: (class property) dictionary of all the games
+	allInstances: (class property) dictionary of all the games
 
 	An instance of class Game contains:
 	- _players: tuple of the two players (player0 and player1)
@@ -71,7 +72,6 @@ class Game:
 
 	"""
 
-	allGames = {}   # TODO: private member ? (idem for all other classes with ther allXxxxx)
 	_theGameClass = None
 
 	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)
@@ -132,11 +132,11 @@ class Game:
 		while not ok:   # we need a loop just in case we are unlucky and two existing games have the same hash
 			name = str(int(time())) + player1.name + player2.name
 			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name, 'utf8')))[2:]
-			ok = self._name not in self.allGames
+			ok = self._name not in self._allInstances
 			if not ok:
 				# just in case we are unlucky, we need to log it (probably it will never happens)
 				logger = logging.getLogger()
-				og = self.allGames[self._name]  # other game
+				og = self._allInstances[self._name]  # other game
 				g1 = str(og.seed) + '-' + og.players[0].name + og.players[1].name
 				g2 = str(seed) + '-' + player1.name + '-' + player2.name
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
@@ -164,7 +164,7 @@ class Game:
 		else:
 			try:
 				self._timeout = int(options['timeout'])
-				self.logger.debug("The timeout is set to %ds"%self._timeout)
+				self.logger.debug("The timeout is set to %ds" % self._timeout)
 			except ValueError:
 				raise ValueError("The 'timeout' value is invalid ('timeout=%s')" % options['timeout'])
 		# timestamp of the last move
@@ -180,14 +180,12 @@ class Game:
 		player1.game = self
 		player2.game = self
 
-		# List of websockets to send the game data
-		self._lwsock = []
-		# and last, add itself to the dictionary of games
-		self.allGames[self.name] = self
+		# and last, call the super init
+		super().__init__(self.name)
 
 
 
-
+	# TODO: the _name property should be included in WebSocketBase class
 	@property
 	def name(self):
 		return self._name
@@ -195,22 +193,15 @@ class Game:
 	def HTMLpage(self):
 		return ''
 
-	def addsock(self, wsock):
-		self._lwsock.append(wsock)
 
-	def removesock(self,wsock):
-		print("Remove wsock")
-		pass
-		# TODO: remove wsock
-
-	def send_wsock(self):
-		print("sending message to wsock")
-		print(self._lwsock)
-		for wsock in self._lwsock:
-			try:
-				wsock.send(self.HTMLdict()['HtmlPage'])
-			except WebSocketError:
-				pass
+	# def send_wsock(self):
+	# 	print("sending message to wsock")
+	# 	print(self._lwsock)
+	# 	for wsock in self._lwsock:
+	# 		try:
+	# 			wsock.send(self.HTMLdict()['HtmlPage'])
+	# 		except WebSocketError:
+	# 			pass
 
 	def HTMLdict(self):
 		d = dict()
@@ -288,7 +279,7 @@ class Game:
 			self._tournament.endOfGame(self._players[whoWins], self._players[1 - whoWins])
 
 		# remove from the list of Games
-		del self.allGames[self.name]
+		self.removeInstance(self.name)
 
 
 
@@ -424,7 +415,7 @@ class Game:
 			#  we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()
 
-		self.send_wsock()
+		# self.send_wsock()
 		return return_code, msg
 
 
@@ -485,16 +476,6 @@ class Game:
 			raise ValueError("The training player name '%s' is not valid." % name)
 
 
-	@classmethod
-	def getFromName(cls, name):
-		"""
-		Get a game form its name (seed + hash of time + players name)
-		Parameters:
-		- name: (string) name of the game
-
-		Returns the game (the object) or None if this game doesn't exist
-		"""
-		return cls.allGames.get(name, None)
 
 
 	@classmethod

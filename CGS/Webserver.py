@@ -101,10 +101,11 @@ def index():
 	Main page (based on index.html template)
 	"""
 	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in RegularPlayer.allPlayers.values()])
-	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game.allGames.values()])
+	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game._allInstances.values()])
 	HTMLTournamentList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Tournament.allTournaments.values()])
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
-	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList}
+	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList,
+	        'SocketName': '"ws://localhost:8088/websocket/Game"'}
 
 
 # =======
@@ -163,8 +164,6 @@ def gameWebSocket(gameName):
 			abort(400, "Expected Websocket request.")
 		g.addsock(wsock)
 		g.send_wsock()
-		#while True:
-			#pass
 		while True:
 			try:
 				msg = wsock.receive()
@@ -251,6 +250,40 @@ def player(playerName):
 		return pl.HTMLpage()
 	else:
 		return template('noPlayer.html', player=playerName)
+
+
+# ==========
+# Websockets
+# ==========
+wsCls = {'Game': Game, 'Player': RegularPlayer, 'Tournament': Tournament}
+
+
+@route('/websocket/<clsName>')
+def classWebSocket(clsName):
+	"""
+	Websocket for the class Game, Player and Tournament
+	-> used to get the list of instances of theses classes
+
+	Parameters:
+	- type: (string) should be in 'Game', 'Player' or 'Tournament'
+	"""
+	# should be a websocket
+	wsock = request.environ.get('wsgi.websocket')
+	if not wsock:
+		abort(400, "Expected Websocket request.")
+	# check for the right type
+	if clsName not in wsCls:
+		abort(400, "Expected type in %s" % (wsCls.keys()))
+	# check if that instance exists
+	cl = wsCls[clsName]
+	cl.registerClassWebSocket(wsock)
+	cl.sendListInstances()      # TODO: it is not necessary to send the information to all the other sockets (only this one)
+	while True:
+		try:
+			msg = wsock.receive()
+		except WebSocketError:
+			cl.removeClassWebSocket(wsock)
+			break
 
 
 # ======
