@@ -26,7 +26,6 @@ from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMEN
 from CGS.Logger import configureGameLogger
 from CGS.Comments import CommentQueue
 from CGS.WebSocketBase import WebSocketBase
-from geventwebsocket import WebSocketError
 
 
 def crc24(octets):
@@ -72,6 +71,7 @@ class Game(WebSocketBase):
 
 	"""
 
+	_allInstances = {}          # dictionary of all the instances
 	_theGameClass = None
 
 	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)

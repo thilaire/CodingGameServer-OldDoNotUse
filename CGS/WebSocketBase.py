@@ -29,7 +29,7 @@ logger = logging.getLogger()
 
 class WebSocketBase:
 
-	_allInstances = {}          # dictionary of all the instances
+	_allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
 	_classWebSockets = []       # list of webSockets for class informations
 
 	def __init__(self, name):
@@ -46,36 +46,37 @@ class WebSocketBase:
 		self._allInstances[name] = self
 
 		# send the new list of instances to web listeners
-		self.__class__.sendListInstances()
+		self.sendListofInstances()
 
 
-	@classmethod
-	def registerClassWebSocket(cls, wsock):
-		logger.low_debug("register class WS for %s" % cls.__name__)
-		cls._classWebSockets.append(wsock)
+	@staticmethod
+	def registerLoIWebSocket(wsock):
+		logger.low_debug("register List of instances")
+		WebSocketBase._classWebSockets.append(wsock)
 
 
-	@classmethod
-	def removeClassWebSocket(cls, wsock):
-		logger.low_debug("remove class WS for %s" % cls.__name__)
+	@staticmethod
+	def removeLoIWebSocket(wsock):
+		logger.low_debug("remove list of instances websocket")
 		print("Remove wsock")
 		pass
 		# TODO: remove wsock
 
 
-	@classmethod
-	def sendListInstances(cls):
+	@staticmethod
+	def sendListofInstances():
 		"""
 		Send list of instances through all the websockets
 		Called everytime the list of instances is changed
 		"""
-		d = {name: obj.HTMLrepr() for name, obj in cls._allInstances.items()}
-		logger.low_debug("send List of instance for %s: {%s}" % (cls.__name__, d))
-		for ws in cls._classWebSockets:
+		d = {cls.__name__: [obj.HTMLrepr() for obj in cls._allInstances.values()] for cls in WebSocketBase.__subclasses__()}
+		js = json.dumps(d)
+		logger.low_debug("send List of instances : {%s}" % (d,))
+		for ws in WebSocketBase._classWebSockets:
 			try:
-				ws.send(json.dumps(d))
+				ws.send(js)
 			except WebSocketError:
-				logger.low_debug("WebSocketError in sendListInstances for %s" % (cls.__name__, ))
+				logger.low_debug("WebSocketError in sendListInstances")
 		# TODO: enlever le ws qui fait une erreur
 
 
@@ -94,7 +95,7 @@ class WebSocketBase:
 	def removeInstance(self, name):
 		# remove from the list of instances
 		del self._allInstances[name]
-		self.sendListInstances()
+		self.sendListofInstances()
 
 
 

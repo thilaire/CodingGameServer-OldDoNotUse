@@ -19,7 +19,6 @@ File: webserver.py
 from gevent import monkey
 monkey.patch_all()
 
-
 from logging import getLogger
 import threading
 from bottle import route, request, jinja2_view as view, jinja2_template as template
@@ -34,6 +33,8 @@ from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
 from CGS import TournamentMode        # HERE we import all the tournaments type (DO NOT REMOVE)
+from CGS.WebSocketBase import WebSocketBase
+
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -105,7 +106,7 @@ def index():
 	HTMLTournamentList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Tournament.allTournaments.values()])
 	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
 	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList,
-	        'SocketName': '"ws://localhost:8088/websocket/Game"'}
+	        'SocketName': '"ws://localhost:8088/websocket/ListOfInstances"'}
 
 
 # =======
@@ -166,7 +167,7 @@ def gameWebSocket(gameName):
 		g.send_wsock()
 		while True:
 			try:
-				msg = wsock.receive()
+				wsock.receive()     # we do not care about the answer
 			except WebSocketError:
 				g.removesock(wsock)
 				break
@@ -258,31 +259,25 @@ def player(playerName):
 wsCls = {'Game': Game, 'Player': RegularPlayer, 'Tournament': Tournament}
 
 
-@route('/websocket/<clsName>')
-def classWebSocket(clsName):
+@route('/websocket/ListOfInstances')
+def classWebSocket():
 	"""
-	Websocket for the class Game, Player and Tournament
-	-> used to get the list of instances of theses classes
+	Websocket for the list of instances of the classes Game, Player and Tournament
+	-> used to get the a json with the list of instances of theses classes
 
-	Parameters:
-	- type: (string) should be in 'Game', 'Player' or 'Tournament'
 	"""
 	# should be a websocket
 	wsock = request.environ.get('wsgi.websocket')
 	if not wsock:
 		abort(400, "Expected Websocket request.")
-	# check for the right type
-	if clsName not in wsCls:
-		abort(400, "Expected type in %s" % (wsCls.keys()))
 	# check if that instance exists
-	cl = wsCls[clsName]
-	cl.registerClassWebSocket(wsock)
-	cl.sendListInstances()      # TODO: it is not necessary to send the information to all the other sockets (only this one)
+	WebSocketBase.registerLoIWebSocket(wsock)
+	WebSocketBase.sendListofInstances()      # TODO: it is not necessary to send the information to all the other sockets (only this one)
 	while True:
 		try:
 			msg = wsock.receive()
 		except WebSocketError:
-			cl.removeClassWebSocket(wsock)
+			WebSocketBase.removeLoIWebSocket(wsock)
 			break
 
 
