@@ -30,7 +30,7 @@ logger = logging.getLogger()
 class WebSocketBase:
 
 	allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
-	_classWebSockets = []       # list of webSockets for class informations
+	_LoIWebSockets = []       # list of webSockets for the lists of Instance (LoI) informations
 
 	def __init__(self, name):
 		"""
@@ -42,7 +42,7 @@ class WebSocketBase:
 		name: (string) name of the instance
 		"""
 
-		#TODO: rajouter l'attribut dans la classe de base (au lieu de dans chaque classe héritée)
+		# TODO: rajouter l'attribut dans la classe de base (au lieu de dans chaque classe héritée)
 
 		# add itself to the dictionary of games
 		self.allInstances[name] = self
@@ -51,18 +51,36 @@ class WebSocketBase:
 		self.sendListofInstances()
 
 
+	# =======================
+	# List of Instances (LoI)
+	# ========================
+
 	@staticmethod
 	def registerLoIWebSocket(wsock):
+		"""
+		Register a List of Instance websocket
+		-> this websocket will receive informations (list of all the instances) everytime these lists change
+		Parameter:
+		- wsock: (WebSocket) the websocket to register
+		"""
+		# add this websocket in the list of LoI websockets
 		logger.low_debug("register List of instances")
-		WebSocketBase._classWebSockets.append(wsock)
+		WebSocketBase._LoIWebSockets.append(wsock)
 
 
 	@staticmethod
 	def removeLoIWebSocket(wsock):
+		"""
+		Remove this websocket (the socket has closed)
+		Parameter:
+		- wsock: (WebSocket) the websocket to remove
+ 		"""
 		logger.low_debug("remove list of instances websocket")
-		print("Remove wsock")
-		pass
-		# TODO: remove wsock
+		try:
+			WebSocketBase._LoIWebSockets.remove(wsock)
+		except ValueError:
+			logger.low_debug("Remove a LoI WebSocket that do not exist !!")
+
 
 
 	@staticmethod
@@ -74,13 +92,17 @@ class WebSocketBase:
 		d = {cls.__name__: [obj.HTMLrepr() for obj in cls.allInstances.values()] for cls in WebSocketBase.__subclasses__()}
 		js = json.dumps(d)
 		logger.low_debug("send List of instances : {%s}" % (d,))
-		for ws in WebSocketBase._classWebSockets:
+		for ws in WebSocketBase._LoIWebSockets:
 			try:
 				ws.send(js)
 			except WebSocketError:
 				logger.low_debug("WebSocketError in sendListInstances")
-		# TODO: enlever le ws qui fait une erreur
+				WebSocketBase.removeLoIWebSocket(ws)
 
+
+	# ========================
+	# Manage list of instances
+	# ========================
 
 	@classmethod
 	def getFromName(cls, name):
@@ -99,6 +121,7 @@ class WebSocketBase:
 		if name in cls.allInstances:
 			del cls.allInstances[name]
 			cls.sendListofInstances()
-
+		# TODO: we should use weak references here
+		# (see http://stackoverflow.com/questions/37232884/in-python-how-to-remove-an-object-from-a-list-if-it-is-only-referenced-in-that)
 
 
