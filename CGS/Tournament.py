@@ -20,7 +20,7 @@ File: Tournament.py
 from re import sub
 from CGS.Game import Game
 from queue import Queue
-
+from CGS.WebSocketBase import WebSocketBase
 
 import time
 
@@ -28,7 +28,7 @@ import time
 # TODO: Tournament class should be virtual (abstract)
 
 
-class Tournament:
+class Tournament(WebSocketBase):
 	"""
 	Class for the tournament
 	only subclasses should be used directly
@@ -52,8 +52,7 @@ class Tournament:
 		- allTournaments: dictionary of all the existing tournament (name->tournament)
 
 	"""
-
-	allTournaments = {}         # dictionary of all the tournament
+	allInstances = {}         # dictionary of all the tournaments
 	HTMLoptions = ""           # some options to display in an HTML form
 	mode = ""        # type of the tournament
 
@@ -101,10 +100,10 @@ class Tournament:
 
 		# TODO: add a logger
 
-		# and last, add itself to the dictionary of tournaments
-		if name in self.allTournaments:
+		# and last, call the constructor of WebSocketBase
+		if name in self.allInstances:
 			raise ValueError("A tournament with the same name already exist")
-		self.allTournaments[name] = self
+		super().__init__(name)
 
 
 
@@ -174,9 +173,9 @@ class Tournament:
 		- tournamentName: (string) name of the tournament
 		"""
 		# check if the tournament exists
-		if tournamentName not in cls.allTournaments:
+		if tournamentName not in cls.allInstances:
 			raise ValueError("The tournament '%s' doesn't not exist" % tournamentName)
-		t = cls.allTournaments[tournamentName]
+		t = cls.allInstances[tournamentName]
 
 		# check if the tournament is open
 		if t.isRunning:
@@ -193,17 +192,6 @@ class Tournament:
 			else:
 				raise ValueError("The tournament '%s' already has its maximum number of players" % t.name)
 
-
-	@classmethod
-	def getFromName(cls, name):
-		"""
-		Get a tournament form its name
-		Parameters:
-		- name: (string) name of the tournament
-
-		Returns the tournament (the object) or None if it doesn't exist
-		"""
-		return cls.allTournaments.get(name, None)
 
 
 	@classmethod

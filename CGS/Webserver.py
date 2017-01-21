@@ -101,11 +101,7 @@ def index():
 	"""
 	Main page (based on index.html template)
 	"""
-	HTMLPlayerList = "\n".join(["<li>" + p.HTMLrepr() + "</li>\n" for p in RegularPlayer.allPlayers.values()])
-	HTMLGameList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Game._allInstances.values()])
-	HTMLTournamentList = "\n".join(["<li>" + l.HTMLrepr() + "</li>\n" for l in Tournament.allTournaments.values()])
-	return {"ListOfPlayers": HTMLPlayerList, "ListOfGames": HTMLGameList,
-	        "GameName": Game.getTheGameName(), "ListOfTournaments": HTMLTournamentList,
+	return {"GameName": Game.getTheGameName(),
 	        'SocketName': '"ws://localhost:8088/websocket/ListOfInstances"'}
 
 
@@ -118,7 +114,7 @@ def new_game():
 	"""
 	Page to create a new game
 	"""
-	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in RegularPlayer.allPlayers.values()])
+	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in RegularPlayer.allInstances.values()])
 
 	return {"list_players": Players}
 

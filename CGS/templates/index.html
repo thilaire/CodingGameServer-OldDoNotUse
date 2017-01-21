@@ -5,46 +5,39 @@
     <title>{{GameName}} Web Interface</title>
     <script type="text/javascript">
         var ws = new WebSocket( {{ SocketName }} );
-        ws.onopen = function() {
-             ws.send("Hello, world");
-        };
         ws.onmessage = function (evt) {
-            alert("Receive '"+evt.data+"'");
-        document.getElementById('listGames').innerHTML=evt.data;
-        ws.send('OK')
+            /* the server send a dictionary (JSON) with the list of instances (its HTML representation) of each class */
+            var data = JSON.parse(evt.data);
+            /* iterate on each class (RegularPlayer, Game and Tournament) */
+            for (var cls in data)
+            {
+                /* we convert the list of instances in HTML */
+                //var HTML = [for (p of data[cls]) "<li>" + p + "</li>"].join("");
+                var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
+                document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
+                ws.send('OK')
+
+            }
+
         };
-        ws.onclose = function()
-        {
-            alert("Chéri, ça a coupé...");
-        }
     </script></head>
 <body>
-List of connected and players:
-<ul>
-{{ListOfPlayers}}
-</ul>
-
+List of connected players:
+<div id="listRegularPlayer"></div>
 <br/>
+
 List of games:
-<ul>
-{{ListOfGames}}
-</ul>
-
+<div id="listGame"></div>
 <br/>
+
 List of Tournaments:
-<ul>
-{{ListOfTournaments}}
-</ul>
+<div id="listTournament"></div>
 
 <hr>
 <!--suppress HtmlUnknownTarget -->
 <a href="new_game">Create a new game</a><br/>
 <a href="new_tournament">Create a new tournament</a>
 
-
-<hr>
-New list of Games
-<div id="listGames"></div>
 
 </body>
 </html>

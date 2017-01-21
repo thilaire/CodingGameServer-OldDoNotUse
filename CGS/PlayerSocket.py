@@ -163,7 +163,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		try:
 			if self._player is not None:
 				self.logger.info("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
-				RegularPlayer.removePlayer(self._player.name)
+				RegularPlayer.removeInstance(self._player.name)
 				del self._player
 			else:
 				logger.info("Connection closed with client %s", self.client_address[0])
@@ -252,7 +252,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		data = data[12:]
 
 		# check if the player doesn't exist yet
-		if data in RegularPlayer.allPlayers:
+		if data in RegularPlayer.allInstances:
 			self.sendData("A client with the same name ('" + data + "') is already connected!")
 			raise ProtocolError("A client with the same name is already connected: %s (%s)" % (data, self.client_address[0]))
 

@@ -19,9 +19,10 @@ File: Player.py
 from threading import Event
 from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
+from CGS.WebSocketBase import WebSocketBase
 
 
-class RegularPlayer(Player):
+class RegularPlayer(Player, WebSocketBase):
 	"""
 	A RegularPlayer
 
@@ -39,7 +40,7 @@ class RegularPlayer(Player):
 	- opponent's turn (game.playerWhoPlays != self)
 	"""
 
-	allPlayers = {}     # dictionary with all the regular players
+	allInstances = {}  # dictionary of all the instances
 
 
 	def __init__(self, name, address):
@@ -50,8 +51,8 @@ class RegularPlayer(Player):
 		- address: (string) network address (used once for logging)
 		"""
 
-		# call the superclass constructor
-		super().__init__(name)
+		# call the first superclass constructor
+		Player.__init__(self, name)
 
 		# create the logger of the player
 		self._logger = configurePlayerLogger(name)
@@ -63,34 +64,13 @@ class RegularPlayer(Player):
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
-		# and last, add itself to the dictionary of (regular) players
-		self.allPlayers[name] = self
+		# and last, call the WebSocketBase constructor
+		WebSocketBase.__init__(self, name)
+
 
 	@property
 	def isRegular(self):
 		return True
-
-
-	@classmethod
-	def removePlayer(cls, name):
-		pl = cls.getFromName(name)
-		if pl is not None:
-			del cls.allPlayers[name]
-
-
-	@classmethod
-	def getFromName(cls, name):
-		"""
-		Get a player form its name
-		Parameters:
-		- name: (string) name of the player
-		Returns the player (the object) or None if this player doesn't exist
-		"""
-		if name in cls.allPlayers:
-			return cls.allPlayers[name]
-		else:
-			return None
-		# return cls.allPlayers.get(name, None)
 
 
 	@property

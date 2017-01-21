@@ -29,7 +29,7 @@ logger = logging.getLogger()
 
 class WebSocketBase:
 
-	_allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
+	allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
 	_classWebSockets = []       # list of webSockets for class informations
 
 	def __init__(self, name):
@@ -42,8 +42,10 @@ class WebSocketBase:
 		name: (string) name of the instance
 		"""
 
+		#TODO: rajouter l'attribut dans la classe de base (au lieu de dans chaque classe héritée)
+
 		# add itself to the dictionary of games
-		self._allInstances[name] = self
+		self.allInstances[name] = self
 
 		# send the new list of instances to web listeners
 		self.sendListofInstances()
@@ -69,7 +71,7 @@ class WebSocketBase:
 		Send list of instances through all the websockets
 		Called everytime the list of instances is changed
 		"""
-		d = {cls.__name__: [obj.HTMLrepr() for obj in cls._allInstances.values()] for cls in WebSocketBase.__subclasses__()}
+		d = {cls.__name__: [obj.HTMLrepr() for obj in cls.allInstances.values()] for cls in WebSocketBase.__subclasses__()}
 		js = json.dumps(d)
 		logger.low_debug("send List of instances : {%s}" % (d,))
 		for ws in WebSocketBase._classWebSockets:
@@ -89,14 +91,14 @@ class WebSocketBase:
 
 		Returns the object or None if it doesn't exist
 		"""
-		return cls._allInstances.get(name, None)
+		return cls.allInstances.get(name, None)
 
-
-	def removeInstance(self, name):
+	@classmethod
+	def removeInstance(cls, name):
 		# remove from the list of instances
-		del self._allInstances[name]
-		self.sendListofInstances()
-
+		if name in cls.allInstances:
+			del cls.allInstances[name]
+			cls.sendListofInstances()
 
 
 

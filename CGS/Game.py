@@ -71,7 +71,7 @@ class Game(WebSocketBase):
 
 	"""
 
-	_allInstances = {}          # dictionary of all the instances
+	allInstances = {}          # dictionary of all the instances
 	_theGameClass = None
 
 	type_dict = {}          # dictionary of the possible training Players (TO BE OVERLOADED BY INHERITED CLASSES)
@@ -132,11 +132,11 @@ class Game(WebSocketBase):
 		while not ok:   # we need a loop just in case we are unlucky and two existing games have the same hash
 			name = str(int(time())) + player1.name + player2.name
 			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name, 'utf8')))[2:]
-			ok = self._name not in self._allInstances
+			ok = self._name not in self.allInstances
 			if not ok:
 				# just in case we are unlucky, we need to log it (probably it will never happens)
 				logger = logging.getLogger()
-				og = self._allInstances[self._name]  # other game
+				og = self.allInstances[self._name]  # other game
 				g1 = str(og.seed) + '-' + og.players[0].name + og.players[1].name
 				g2 = str(seed) + '-' + player1.name + '-' + player2.name
 				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
@@ -279,7 +279,7 @@ class Game(WebSocketBase):
 			self._tournament.endOfGame(self._players[whoWins], self._players[1 - whoWins])
 
 		# remove from the list of Games
-		self.removeInstance(self.name)
+		Game.removeInstance(self.name)
 
 
 
