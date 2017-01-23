@@ -50,11 +50,12 @@ game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEV
 error_level = {'prod': logging.ERROR, 'dev': MESSAGE_LEVEL, 'debug': MESSAGE_LEVEL}
 
 
-# global variables used as configuration variables #TODO: store them in a class
+# global variables used as configuration variables
 class Config:
-	mode = 'prod'   # default mode, set by configureRootLogger
-	logPath = 'logs/'   # path where to store the log
-
+	mode = ''   # default mode, set by configureRootLogger
+	logPath = ''   # path where to store the log
+	webPort = ''    # port of the web server
+	host = ''       # name of the host
 
 # From http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
 def non_blocking_lock(fn):
@@ -97,6 +98,8 @@ def configureRootLogger(args):
 	gameName = args['<gameName>']
 	Config.mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
 	Config.logPath = join(gameName, Template(args['--log']).render(hostname=gethostname()))
+	Config.webPort = args['--web']
+	Config.host = args['--host']
 
 	# add the COMM_DEBUG and MESSAGE logging levels
 	logging.addLevelName(LOW_DEBUG_LEVEL, "COM_DEBUG")

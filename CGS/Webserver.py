@@ -102,7 +102,7 @@ def index():
 	Main page (based on index.html template)
 	"""
 	return {"GameName": Game.getTheGameName(),
-	        'SocketName': '"ws://localhost:8088/websocket/ListOfInstances"'}
+	        'SocketName': '"ws://%s:%s/websocket/ListOfInstances"'% (Config.host, Config.webPort)}
 
 
 # =======
@@ -147,28 +147,11 @@ def create_new_game():
 def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
-		return template('Game.html', SocketName='ws://localhost:8088/game/websocket/'+gameName, **g.HTMLdict())
+		return template('Game.html', host=Config.host, webPort=Config.webPort,
+		                gameName=gameName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noGame.html', gameName=gameName)
 
-
-@route('/game/websocket/<gameName>')
-def gameWebSocket(gameName):
-	g = Game.getFromName(gameName)
-	if g:
-		wsock = request.environ.get('wsgi.websocket')
-		if not wsock:
-			abort(400, "Expected Websocket request.")
-		g.addsock(wsock)
-		g.send_wsock()
-		while True:
-			try:
-				wsock.receive()     # we do not care about the answer
-			except WebSocketError:
-				g.removesock(wsock)
-				break
-	else:
-		return template('noGame.html', gameName=gameName)
 
 
 # ============
@@ -266,9 +249,42 @@ def classWebSocket():
 	wsock = request.environ.get('wsgi.websocket')
 	if not wsock:
 		abort(400, "Expected Websocket request.")
-	# check if that instance exists
+	# register this websocket
 	WebSocketBase.registerLoIWebSocket(wsock)
-	WebSocketBase.sendListofInstances()      # TODO: it is not necessary to send the information to all the other sockets (only this one)
+	# send to this websocket
+	WebSocketBase.sendListofInstances(wsock)
+	# loop until the end of this websocket
+	while True:
+		try:
+			msg = wsock.receive()
+		except WebSocketError:
+			WebSocketBase.removeLoIWebSocket(wsock)
+			break
+
+
+@route('/websocket/<clsName>/<name>')
+def classWebSocket(clsName, name):
+	"""
+	Websocket for an instance of the classes Game, Player or Tournament
+	-> used to get the a json with informations about this object
+
+	"""
+	# should be a websocket
+	wsock = request.environ.get('wsgi.websocket')
+	if not wsock:
+		abort(400, "Expected Websocket request.")
+	# check if that instance exists
+	if clsName not in wsCls:
+		abort(400, "Invalid class %s is not in %s" % (clsName, wsCls.keys()))
+	cls = wsCls[clsName]
+	obj = cls.getFromName(name)
+	if obj is None:
+		abort(400, "Invalid name (%s) for class %s" % (name, clsName))
+	# register this websocket
+	obj.registerWebSocket(wsock)
+	# send to this websocket
+	obj.sendUpdateToWebSocket(wsock)
+	# loop until the end of this websocket
 	while True:
 		try:
 			msg = wsock.receive()

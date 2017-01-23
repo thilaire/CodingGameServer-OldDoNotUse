@@ -236,8 +236,8 @@ int main()
 	{
 
 		/* wait for a game, and retrieve informations about it */
-		waitLab( &laby, "TOURNAMENT toto");
-		//waitLab( &laby, "ASTAR timeout=99999");
+		//waitLab( &laby, "TOURNAMENT toto");
+		waitLab( &laby, "ASTAR timeout=99999");
         nmove = 0;
 
         do {
@@ -267,8 +267,8 @@ int main()
 				ret = sendMove(move);
 				playMove( &laby, move);
 				nmove++;
-				//printf("Pause\n");
-				//scanf("%s",toto);
+				printf("Pause\n");
+				scanf("%s",toto);
 			}
 
 			/* change player */

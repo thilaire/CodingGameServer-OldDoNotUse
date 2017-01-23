@@ -190,26 +190,6 @@ class Game(WebSocketBase):
 	def name(self):
 		return self._name
 
-	def HTMLpage(self):
-		return ''
-
-
-	# def send_wsock(self):
-	# 	print("sending message to wsock")
-	# 	print(self._lwsock)
-	# 	for wsock in self._lwsock:
-	# 		try:
-	# 			wsock.send(self.HTMLdict()['HtmlPage'])
-	# 		except WebSocketError:
-	# 			pass
-
-	def HTMLdict(self):
-		d = dict()
-		d['GameName'] = self.name
-		d['Player1'] = self.players[0].name
-		d['Player2'] = self.players[1].name
-		d['HtmlPage'] = self.HTMLpage()
-		return d
 
 	def HTMLrepr(self):
 		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
@@ -415,7 +395,7 @@ class Game(WebSocketBase):
 			#  we store the time (to compute the timeout)
 			self._lastMoveTime = datetime.now()
 
-		# self.send_wsock()
+		self.sendUpdateToWebSocket()
 		return return_code, msg
 
 
@@ -435,7 +415,7 @@ class Game(WebSocketBase):
 		nPlayer = 0 if player is self._players[0] else 1
 		self._comments.append(comment, nPlayer)
 
-
+		self.sendUpdateToWebSocket()
 
 
 	def display(self, player):
@@ -550,6 +530,14 @@ class Game(WebSocketBase):
 		"""
 		return ""
 
+
+	def getDictInformations(self):
+		"""
+		Returns a dictionary to the websockets
+
+		TO BE OVERLOADED BY THE CHILD CLASS
+
+		"""
 
 
 
