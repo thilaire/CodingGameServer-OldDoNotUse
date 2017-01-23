@@ -222,7 +222,7 @@ class Labyrinth(Game):
 		html = html.replace(u'\u2691', 'x')  # treasure
 		html = html.replace(u'\u265F', 'o')
 
-		return {'labycontent':html, 'energy':self._playerEnergy}
+		return {'labycontent': html, 'energy': self._playerEnergy}
 		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 		# self.name, self._players[0].name, self._players[1].name, self)
 

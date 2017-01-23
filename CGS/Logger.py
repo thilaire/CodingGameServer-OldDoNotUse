@@ -57,6 +57,7 @@ class Config:
 	webPort = ''    # port of the web server
 	host = ''       # name of the host
 
+
 # From http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
 def non_blocking_lock(fn):
 	"""Decorator. Prevents the function from being called multiple times simultaneously.

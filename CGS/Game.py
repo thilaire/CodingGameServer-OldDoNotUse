@@ -531,15 +531,6 @@ class Game(WebSocketBase):
 		return ""
 
 
-	def getDictInformations(self):
-		"""
-		Returns a dictionary to the websockets
-
-		TO BE OVERLOADED BY THE CHILD CLASS
-
-		"""
-
-
 
 
 # Rajouter les méthodes HTML...

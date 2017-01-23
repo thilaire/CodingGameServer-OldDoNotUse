@@ -102,7 +102,7 @@ def index():
 	Main page (based on index.html template)
 	"""
 	return {"GameName": Game.getTheGameName(),
-	        'SocketName': '"ws://%s:%s/websocket/ListOfInstances"'% (Config.host, Config.webPort)}
+	        'host': Config.host, 'webPort': Config.webPort}
 
 
 # =======
@@ -151,7 +151,6 @@ def game(gameName):
 		                gameName=gameName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noGame.html', gameName=gameName)
-
 
 
 # ============
@@ -256,7 +255,7 @@ def classWebSocket():
 	# loop until the end of this websocket
 	while True:
 		try:
-			msg = wsock.receive()
+			wsock.receive()
 		except WebSocketError:
 			WebSocketBase.removeLoIWebSocket(wsock)
 			break
@@ -287,7 +286,7 @@ def classWebSocket(clsName, name):
 	# loop until the end of this websocket
 	while True:
 		try:
-			msg = wsock.receive()
+			wsock.receive()
 		except WebSocketError:
 			WebSocketBase.removeLoIWebSocket(wsock)
 			break
