@@ -18,7 +18,7 @@ File: Game.py
 
 import logging
 from random import seed as set_seed, randint, choice
-from time import time
+from time import time, sleep
 from threading import Barrier, BrokenBarrierError
 from datetime import datetime
 
@@ -158,6 +158,15 @@ class Game(WebSocketBase):
 		self._lastMove = ""
 		self._lastReturn_code = 0
 
+		# set a delay after each move (to let the time to see the party)
+		if 'delay' not in options:
+			self._delay = 0
+		try:
+			self._delay = int(options['delay'])
+			self.logger.debug("The delay is set to %ds" % self._delay)
+		except ValueError:
+			raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
+
 		# time out for the move
 		if 'timeout' not in options:
 			self._timeout = TIMEOUT_TURN
@@ -221,6 +230,8 @@ class Game(WebSocketBase):
 		"""
 		# check if the player wins
 		if return_code == MOVE_OK:
+			#Wait the delay time
+			sleep(self._delay)
 			# change who plays
 			self._whoPlays = self.getNextPlayer()
 		elif return_code == MOVE_WIN:
@@ -389,11 +400,13 @@ class Game(WebSocketBase):
 			self._lastMove = move
 			self._lastReturn_code = return_code
 
+			#  we store the time (to compute the timeout)
+			self._lastMoveTime = datetime.now()
+
 			# update who plays next and check for the end of the game
 			self.manageNextTurn(return_code, msg)
 
-			#  we store the time (to compute the timeout)
-			self._lastMoveTime = datetime.now()
+
 
 		self.sendUpdateToWebSocket()
 		return return_code, msg
