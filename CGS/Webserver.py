@@ -108,7 +108,7 @@ def index():
 # =======
 #  Games
 # =======
-@route('/new_game')     # TODO: route vers xxx.html au lieu de xxx !
+@route('/new_game.html')
 @view("new_game.html")
 def new_game():
 	"""
@@ -156,7 +156,7 @@ def game(gameName):
 # ============
 #  Tournament
 # ============
-@route('/new_tournament')
+@route('/new_tournament.html')
 @view("new_tournament.html")
 def new_tournament():
 	"""
@@ -192,7 +192,7 @@ def tournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		return template('tournament.html', {'t': t})
+		return template('tournament.html', {'t': t, 'host': Config.host, 'webPort': Config.webPort})
 	else:
 		return template('noTournament.html', tournamentName=tournamentName)
 
@@ -234,6 +234,7 @@ def player(playerName):
 # ==========
 # Websockets
 # ==========
+# TODO: can be directly obtained from {x.__name__:x for x in WebSocket.__subclasses__()}
 wsCls = {'Game': Game, 'Player': RegularPlayer, 'Tournament': Tournament}
 
 

@@ -13,10 +13,13 @@
             {
                 /* we convert the list of instances in HTML */
                 //var HTML = [for (p of data[cls]) "<li>" + p + "</li>"].join("");
-                var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
-                document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
-                ws.send('OK')
+                if (data.hasOwnProperty(cls))
+                {
+                    var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
+                    document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
+                }
             }
+            ws.send('OK')
         };
     </script></head>
 <body>
@@ -32,9 +35,8 @@ List of Tournaments:
 <div id="listTournament"></div>
 
 <hr>
-<!--suppress HtmlUnknownTarget -->
-<a href="new_game">Create a new game</a><br/>
-<a href="new_tournament">Create a new tournament</a>
+<a href="new_game.html">Create a new game</a><br/>
+<a href="new_tournament.html">Create a new tournament</a>
 
 
 </body>

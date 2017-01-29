@@ -10,7 +10,8 @@
             var data = JSON.parse(evt.data);
             for(var el in data)
             {
-                document.getElementById('div_'+el).innerHTML = data[el];
+                if (data.hasOwnProperty(el))
+                    document.getElementById('div_'+el).innerHTML = data[el];
             }
             ws.send('OK')
         };
@@ -28,7 +29,6 @@ Energy=<div id="div_energy"></div>
 <br/>
 
 <hr>
-<!--suppress HtmlUnknownTarget -->
-<a href="/index.html">Back to front page</a><br/>
+<a href="index.html">Back to front page</a><br/>
 </body>
 </html>
