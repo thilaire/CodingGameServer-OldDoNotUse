@@ -1,53 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Create a new tournament</title>
-    <script type="text/javascript">
-        function updateModeForm(sel)
-        {
-            {{ JavascriptModeOptions }}
-             var mode = sel.value;
-             document.getElementById(mode).style.display="block";
-        }
-        window.onload = updateModeForm;
-    </script>
+{% extends "base.html" %}
 
-</head>
-<body>
 
-    <!--suppress HtmlUnknownTarget -->
-    <form action="create_new_tournament" method="POST">
+{% block script %}
+<script type="text/javascript">
+    function updateModeForm(sel)
+    {
+        {{ JavascriptModeOptions }}
+         var mode = sel.value;
+         document.getElementById(mode).style.display="block";
+    }
+    window.onload = updateModeForm;
+</script>
+{% endblock %}
+
+
+{% block content %}
+<form action="create_new_tournament.html" method="POST">
+    <label>
+        Name:
+        <input name="name" type="text" required/>
+    </label>
+    <br/>
+    <label>
+        Nb max players (0 for no limit):
+        <input name="nbMaxPlayers" type="number" value="0"/>
+    </label>
+    <br/>
+    max rounds for a victory:
+    <label>
+        <select name="nbRounds4victory">
+            <option value="1">1 (who starts is random)</option>
+            <option value="2">2 (both starts)</option>
+            <option value="3" selected>3</option>
+        </select>
+    </label>
+
+    <fieldset>
+        <legend>Tournament mode</legend>
         <label>
-            Name:
-            <input name="name" type="text" required/>
+        Mode: <select name='mode' onchange='updateModeForm(this);'>{{ HTMLmodes }}</select>
         </label>
-        <br/>
-        <label>
-            Nb max players (0 for no limit):
-            <input name="nbMaxPlayers" type="number" value="0"/>
-        </label>
-        <br/>
-        max rounds for a victory:
-        <label>
-            <select name="nbRounds4victory">
-                <option value="1">1 (who starts is random)</option>
-                <option value="2">2 (both starts)</option>
-                <option value="3" selected>3</option>
-            </select>
-        </label>
+        {{ HTMLmodeOptions }}
+    </fieldset>
 
-        <fieldset>
-            <legend>Tournament mode</legend>
-            <label>
-            Mode: <select name='mode' onchange='updateModeForm(this);'>{{ HTMLmodes }}</select>
-            </label>
-            {{ HTMLmodeOptions }}
-        </fieldset>
+    <button name="send">Create Tournament</button>
 
-		<button name="send">Create Tournament</button>
-
-	</form>
-
-</body>
-</html>
+</form>
+{% endblock %}

@@ -1,24 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tournament</title>
-    <script type="text/javascript">
-        var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/Tournament/{{ t.name }}" );
-        ws.onmessage = function (evt) {
-            /* the server send a dictionary (JSON) with information about the game */
-            var data = JSON.parse(evt.data);
-            document.getElementById('div_nbPlayers').innerHTML = data['nbPlayers'];
-            document.getElementById('div_phase').innerHTML = data['phase'];
-            document.getElementById('div_score').innerHTML = data['score'];
-            document.getElementById('list_players').innerHTML = data['Players'].map(function (x){return "<li>"+x+"</li>"}).join("");
-            document.getElementById('list_games').innerHTML = data['Games'].map(function (x){return "<li>"+x+"</li>"}).join("");
-            document.getElementById('runPhaseButton').disabled = !(data['runPhaseButton']);
-            ws.send('OK')
-        };
-    </script>
-</head>
-<body>
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/Tournament/{{ t.name }}" );
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        document.getElementById('div_nbPlayers').innerHTML = data['nbPlayers'];
+        document.getElementById('div_phase').innerHTML = data['phase'];
+        document.getElementById('div_score').innerHTML = data['score'];
+        document.getElementById('list_players').innerHTML = data['Players'].map(function (x){return "<li>"+x+"</li>"}).join("");
+        document.getElementById('list_games').innerHTML = data['Games'].map(function (x){return "<li>"+x+"</li>"}).join("");
+        document.getElementById('runPhaseButton').disabled = !(data['runPhaseButton']);
+        ws.send('OK')
+    };
+</script>
+{% endblock %}
+
+
+{% block content %}
 Tournament {{t.name}}
 <hr/>
 Parameters:
@@ -43,6 +44,4 @@ Games:<br/>
 
 <hr/>
 <div id="div_score"></div>
-
-</body>
-</html>
+{%  endblock %}

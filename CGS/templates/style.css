@@ -1,0 +1,13 @@
+/* main */
+body {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+
+/* footer */
+#footer {
+  display: block;
+  clear: both;
+  margin-top: 10px;
+}
