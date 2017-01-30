@@ -90,9 +90,11 @@ def static_file_from_templates(fileName):
 def favicon():
 	return static_file_from_templates('favicon.ico')
 
+
 @route('/style.css')
 def css():
 	return static_file_from_templates('style.css')
+
 
 # ================
 #   main page
