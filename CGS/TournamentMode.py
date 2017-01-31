@@ -109,7 +109,11 @@ class PoolKnockoutTournament(Tournament):
 		Nb of players per group that can pass the first phase <input name="nbFirst" type="number" value="2" required/>
 	</label>
 	"""
-
+	HTMLgameoptions = """
+	<label>
+		Delay between each move : <input name="delay" type="number" value="0" required/>
+	</label>
+	"""
 	def __init__(self, name, nbMaxPlayers, nbRounds4victory, nbGroups, nbFirst, **_):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, nbRounds4victory)
@@ -127,9 +131,40 @@ class PoolKnockoutTournament(Tournament):
 			self._nbFirst = int(nbFirst)
 		except ValueError:
 			raise ValueError("The number of accepted players per group must be an integer")
+		if not self._nbMaxPlayers//self._nbGroups >= self._nbFirst:
+			raise ValueError("There must be enough player in each group to passe the first phase")
 
 
+	def MatchsGenerator(self):
+		"""
+		Use the round robin tournament algorithm
+		see http://en.wikipedia.org/wiki/Round-robin_tournament and
+		http://stackoverflow.com/questions/11245746/league-fixture-generator-in-python/11246261#11246261
+		"""
+		# score
+		self._score = {p: 0 for p in self.players}
 
+		#TODO : Put players in groups
+
+
+		# copy the player list
+		# TODO: vérifier s'ils sont tous encore là ?
+		rotation = list(self._players)
+		# if player number is odd, we use None as a fake player
+		if len(rotation) % 2:
+			rotation.append(None)
+
+		# then we iterate using round robin algorithm
+		for i in range(0, len(rotation) - 1):
+			# update the phase name
+			self._phase = '%d%s phase' % (i+1, numbering(i+1))
+			# generate list of pairs (player1,player2)
+			yield list(zip(*[iter(rotation)] * 2))
+			# prepare the next list by rotating the list
+			rotation = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
+
+		#TODO: Selection of the best players to be in SingleEliminatioTournament
+		#TODO: Make eht singleELimiationTournament
 
 
 class SingleEliminationTournament(Tournament):

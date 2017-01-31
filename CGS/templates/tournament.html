@@ -24,7 +24,11 @@ Parameters:
     {{ t.phase }}:<br/>
     {{ t.HTMLlistOfGames() }}
 {% endif %}
+<hr/>
+Game options:
     <form action="/run_tournament/{{t.name}}" method="POST">
+    {{ t.HTMLgameoptions }}
+    <br/>
     <button name="send" {% if t.isRunningPhase %} disabled {% else %} enabled {% endif %}>Run Phase !!</button>
     </form>
 
