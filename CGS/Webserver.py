@@ -22,6 +22,7 @@ monkey.patch_all()
 from logging import getLogger
 import threading
 from bottle import route, request, jinja2_view as view, jinja2_template as template
+from bottle import Jinja2Template
 from bottle import redirect, static_file, TEMPLATE_PATH, error, abort
 from bottle import run, response, install, default_app		# webserver (bottle)
 from geventwebsocket.handler import WebSocketHandler
@@ -63,6 +64,8 @@ def runWebServer(host, port, quiet):
 	# it first looks in <gameName>/server/templates/ and then in CGS/server/templates
 	TEMPLATE_PATH.append(Game.getTheGameName() + "/server/templates")
 	TEMPLATE_PATH.reverse()
+	# add the base url to all the templates
+	Jinja2Template.defaults['base_url'] = 'http://%s:%s/'%(host,port)
 	# Start the web server
 	install(log_to_logger)
 	weblogger.message("Run the web server on port %d...", port)
@@ -114,7 +117,7 @@ def index():
 #  Games
 # =======
 @route('/new_game.html')
-@view("new_game.html")
+@view("game/new_game.html")
 def new_game():
 	"""
 	Page to create a new game
@@ -143,7 +146,7 @@ def create_new_game():
 	except ValueError as e:
 		# TODO: redirect to an error page
 		# TODO: log this
-		return "Error. Impossible to create a game with " + request.forms.get('player1') + " and " + request.forms.get('player2') + ": '" + str(e) + "'"
+		return "Error. Impossible to create a game with " + str(request.forms.get('player1')) + " and " + str(request.forms.get('player2')) + ": '" + str(e) + "'"
 	else:
 		redirect('/')
 
@@ -152,7 +155,7 @@ def create_new_game():
 def game(gameName):
 	g = Game.getFromName(gameName)
 	if g:
-		return template('Game.html', host=Config.host, webPort=Config.webPort,
+		return template('game/Game.html', host=Config.host, webPort=Config.webPort,
 		                gameName=gameName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noObject.html', className='game', objectName=gameName)
@@ -162,7 +165,7 @@ def game(gameName):
 #  Tournament
 # ============
 @route('/new_tournament.html')
-@view("new_tournament.html")
+@view("tournament/new_tournament.html")
 def new_tournament():
 	"""
 	Page to create a new tournament
@@ -197,7 +200,7 @@ def tournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		return template('tournament.html', {'t': t, 'host': Config.host, 'webPort': Config.webPort})
+		return template('tournament/tournament.html', {'t': t, 'host': Config.host, 'webPort': Config.webPort})
 	else:
 		return template('noObject.html', className='tournament', objectName=tournamentName)
 

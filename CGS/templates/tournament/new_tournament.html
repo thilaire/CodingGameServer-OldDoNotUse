@@ -15,7 +15,7 @@
 
 
 {% block content %}
-<form action="create_new_tournament.html" method="POST">
+<form action="{{base_url}}create_new_tournament.html" method="POST">
     <label>
         Name:
         <input name="name" type="text" required/>
@@ -28,7 +28,7 @@
     <br/>
     max rounds for a victory:
     <label>
-        <select name="nbRounds4victory">
+        <select name="nbRounds4Victory">
             <option value="1">1 (who starts is random)</option>
             <option value="2">2 (both starts)</option>
             <option value="3" selected>3</option>
