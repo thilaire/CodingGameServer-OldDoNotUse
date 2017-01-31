@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Create a new game</title>
-</head>
-<body>
+{% extends "base.html" %}
 
-	<!--suppress HtmlUnknownTarget -->
-    <form action="create_new_game" method="POST">
-        <label>
-            Player 1:
-            <select name="player1">
+
+{% block content %}
+<form action="create_new_game.html" method="POST">
+    <label>
+        Player 1:
+        <select name="player1">
+        {{list_players}}
+        </select>
+    </label>
+    <label>
+        Player2:
+        <select name="player2">
             {{list_players}}
-            </select>
-        </label>
-        <label>
-            Player2:
-            <select name="player2">
-                {{list_players}}
-            </select>
-        </label>
-		<button name="send">Create Game</button>
+        </select>
+    </label>
+    <button name="send">Create Game</button>
 
-	</form>
-</body>
-</html>
+</form>
+{% endblock %}

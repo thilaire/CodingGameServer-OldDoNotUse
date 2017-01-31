@@ -190,6 +190,7 @@ class Tournament(WebSocketBase):
 			# TODO: log it (in player.logger and self.logger)
 			if t.nbMaxPlayers == 0 or len(t.players) < t.nbMaxPlayers:
 				t.players.append(player)
+				t.sendUpdateToWebSocket()
 			else:
 				raise ValueError("The tournament '%s' already has its maximum number of players" % t.name)
 
@@ -251,11 +252,10 @@ class Tournament(WebSocketBase):
 			score[1] += 1
 			self._games[(looser, winner)][1] = None
 		# remove one item from the queue
-		print("End of the game %s vs %s" % (winner.name, looser.name))
-		print("q=%d" % self._queue.qsize())
 		self._queue.get()
 		self._queue.task_done()
-		print("q=%d" % self._queue.qsize())
+		self.sendUpdateToWebSocket()
+
 
 
 	def runPhase(self,**kwargs):
@@ -268,8 +268,15 @@ class Tournament(WebSocketBase):
 		self._isPhaseRunning = True
 
 		# get the next list of 2-tuple (player1,player2) of players who will player together in that phase
+		try:
+			matches = next(self._matchGen)
+		except StopIteration:
+			# no more matches to run (end of the tournament)
+			self._isRunning = False
+			self._isPhaseRunning = False
+			return
 
-		matches = next(self._matchGen)
+
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: c'est plus qu'un simple match, vu qu'il y a la revanche (plusieurs tours)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
@@ -285,17 +292,37 @@ class Tournament(WebSocketBase):
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self,**kwargs)
 					self._queue.put_nowait(None)
 
-			# wait for all the games to end (before running the next round)
+			# update the websockets (no need to update everytime a game is added)
+			self.sendUpdateToWebSocket()
+			# and wait for all the games to end (before running the next round)
 			self._queue.join()
 			time.sleep(1)       # TODO: check why is not fully working when we remove this sleep....
 
-			print("Now, new rounds")
 
 		# update the scores
 		self.updateScore()
 
 		# end of the phase, we are ready to run another one
 		self._isPhaseRunning = False
+		self.sendUpdateToWebSocket()
+
+
+	def getDictInformations(self):
+		"""
+
+		:return:
+		"""
+		# build the HTML representation for the running games
+		listGames = []
+		for (p1, p2), (score, game) in self._games.items():
+			if game:
+				listGames.append("%s: %s %s %s" % (game.HTMLrepr(), p1.HTMLrepr(), score, p2.HTMLrepr()))
+		# return the dictionary used by the websocket
+		return {'nbPlayers': len(self._players), 'Players': [p.HTMLrepr() for p in self._players],
+		        'runPhaseButton': not self._isPhaseRunning,
+		        'phase': self._phase, 'Games': listGames,
+		        'score': self.HTMLscore()}
+
 
 
 
@@ -325,5 +352,4 @@ class Tournament(WebSocketBase):
 
 		"""
 		pass
-
 

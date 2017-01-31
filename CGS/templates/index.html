@@ -1,25 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{GameName}} Web Interface</title>
-    <script type="text/javascript">
-        var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/ListOfInstances");
-        ws.onmessage = function (evt) {
-            /* the server send a dictionary (JSON) with the list of instances (its HTML representation) of each class */
-            var data = JSON.parse(evt.data);
-            /* iterate on each class (RegularPlayer, Game and Tournament) */
-            for (var cls in data)
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/ListOfInstances");
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with the list of instances (its HTML representation) of each class */
+        var data = JSON.parse(evt.data);
+        /* iterate on each class (RegularPlayer, Game and Tournament) */
+        for (var cls in data)
+        {
+            /* we convert the list of instances in HTML */
+            //var HTML = [for (p of data[cls]) "<li>" + p + "</li>"].join("");
+            if (data.hasOwnProperty(cls))
             {
-                /* we convert the list of instances in HTML */
-                //var HTML = [for (p of data[cls]) "<li>" + p + "</li>"].join("");
                 var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
                 document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
-                ws.send('OK')
             }
-        };
-    </script></head>
-<body>
+        }
+        ws.send('OK')
+    };
+</script>
+{% endblock %}
+
+
+{% block content %}
 List of connected players:
 <div id="listRegularPlayer"></div>
 <br/>
@@ -32,10 +37,6 @@ List of Tournaments:
 <div id="listTournament"></div>
 
 <hr>
-<!--suppress HtmlUnknownTarget -->
-<a href="new_game">Create a new game</a><br/>
-<a href="new_tournament">Create a new tournament</a>
-
-
-</body>
-</html>
+<a href="new_game.html">Create a new game</a><br/>
+<a href="new_tournament.html">Create a new tournament</a>
+{% endblock %}

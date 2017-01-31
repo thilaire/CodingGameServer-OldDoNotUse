@@ -194,6 +194,7 @@ class Game(WebSocketBase):
 
 
 
+
 	# TODO: the _name property should be included in WebSocketBase class
 	@property
 	def name(self):
@@ -336,6 +337,8 @@ class Game(WebSocketBase):
 			# update who plays next and check for the end of the game
 			self.manageNextTurn(return_code, msg)
 
+			self.sendUpdateToWebSocket()
+
 			return move, return_code
 
 
@@ -429,6 +432,7 @@ class Game(WebSocketBase):
 		self._comments.append(comment, nPlayer)
 
 		self.sendUpdateToWebSocket()
+
 
 
 	def display(self, player):
@@ -545,8 +549,6 @@ class Game(WebSocketBase):
 
 
 
-
-# Rajouter les méthodes HTML...
 
 
 

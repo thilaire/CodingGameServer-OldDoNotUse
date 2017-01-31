@@ -91,6 +91,11 @@ def favicon():
 	return static_file_from_templates('favicon.ico')
 
 
+@route('/style.css')
+def css():
+	return static_file_from_templates('style.css')
+
+
 # ================
 #   main page
 # ================
@@ -108,7 +113,7 @@ def index():
 # =======
 #  Games
 # =======
-@route('/new_game')     # TODO: route vers xxx.html au lieu de xxx !
+@route('/new_game.html')
 @view("new_game.html")
 def new_game():
 	"""
@@ -119,7 +124,7 @@ def new_game():
 	return {"list_players": Players}
 
 
-@route('/create_new_game', method='POST')
+@route('/create_new_game.html', method='POST')
 def create_new_game():
 	"""
 	Receive the form to create a new game
@@ -150,13 +155,13 @@ def game(gameName):
 		return template('Game.html', host=Config.host, webPort=Config.webPort,
 		                gameName=gameName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
-		return template('noGame.html', gameName=gameName)
+		return template('noObject.html', className='game', objectName=gameName)
 
 
 # ============
 #  Tournament
 # ============
-@route('/new_tournament')
+@route('/new_tournament.html')
 @view("new_tournament.html")
 def new_tournament():
 	"""
@@ -166,7 +171,7 @@ def new_tournament():
 	return Tournament.HTMLFormDict()
 
 
-@route('/create_new_tournament', method='POST')
+@route('/create_new_tournament.html', method='POST')
 def create_new_tournament():
 	"""
 	Receive the form to create a new tournament
@@ -192,9 +197,9 @@ def tournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		return template('tournament.html', {'t': t})
+		return template('tournament.html', {'t': t, 'host': Config.host, 'webPort': Config.webPort})
 	else:
-		return template('noTournament.html', tournamentName=tournamentName)
+		return template('noObject.html', className='tournament', objectName=tournamentName)
 
 
 @route('/run_tournament/<tournamentName>', method='POST')
@@ -210,7 +215,7 @@ def runTournament(tournamentName):
 		threading.Thread(target=t.runPhase,kwargs=dict(request.forms)).start()
 		redirect('/tournament/'+tournamentName)
 	else:
-		return template('noTournament.html', tournamentName=tournamentName)
+		return template('noObject.html', className='tournament', objectName=tournamentName)
 
 
 # =========
@@ -228,12 +233,13 @@ def player(playerName):
 		# TODO: use a template
 		return pl.HTMLpage()
 	else:
-		return template('noPlayer.html', player=playerName)
+		return template('noObject.html', className='player', objectName=playerName)
 
 
 # ==========
 # Websockets
 # ==========
+# TODO: can be directly obtained from {x.__name__:x for x in WebSocket.__subclasses__()}
 wsCls = {'Game': Game, 'Player': RegularPlayer, 'Tournament': Tournament}
 
 
