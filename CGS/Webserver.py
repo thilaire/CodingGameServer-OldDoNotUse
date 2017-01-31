@@ -215,7 +215,7 @@ def runTournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		threading.Thread(target=t.runPhase).start()
+		threading.Thread(target=t.runPhase,kwargs=dict(request.forms)).start()
 		redirect('/tournament/'+tournamentName)
 	else:
 		return template('noObject.html', className='tournament', objectName=tournamentName)

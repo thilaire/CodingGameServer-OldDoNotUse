@@ -30,6 +30,7 @@ Parameters:
 </ul>
 <!-- websocket-updated data -->
 <hr/>
+
     <div id="div_nbPlayers"></div> players are registred:
 <div id="list_players"></div>
 
@@ -38,7 +39,9 @@ Phase:<div id="div_phase"></div><br/>
 Games:<br/>
 <div id="list_games"></div>
 
-    <form action="{{base_url}}run_tournament/{{t.name}}" method="POST">
+    <form action="{{ base_url }}run_tournament/{{t.name}}" method="POST">
+    {{ t.HTMLgameoptions }}
+    <br/>
     <button name="send" id="runPhaseButton">Run Phase !!</button>
     </form>
 

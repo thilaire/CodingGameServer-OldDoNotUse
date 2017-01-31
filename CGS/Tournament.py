@@ -53,7 +53,8 @@ class Tournament(WebSocketBase):
 
 	"""
 	allInstances = {}         # dictionary of all the tournaments
-	HTMLoptions = ""           # some options to display in an HTML form
+	HTMLoptions = ""          # some options to display in an HTML form
+	HTMLgameoptions =""       # some options to display game options in an HTML form
 	mode = ""        # type of the tournament
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
@@ -257,7 +258,7 @@ class Tournament(WebSocketBase):
 
 
 
-	def runPhase(self):
+	def runPhase(self,**kwargs):
 		"""Launch a phase of the tournament
 		"""
 		# check if a phase is not already running
@@ -275,6 +276,7 @@ class Tournament(WebSocketBase):
 			self._isPhaseRunning = False
 			return
 
+
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: c'est plus qu'un simple match, vu qu'il y a la revanche (plusieurs tours)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
@@ -287,7 +289,7 @@ class Tournament(WebSocketBase):
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
 					start = (r-1) % 2 if r < self.nbRounds4Victory else -1
-					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self)
+					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self,**kwargs)
 					self._queue.put_nowait(None)
 
 			# update the websockets (no need to update everytime a game is added)
