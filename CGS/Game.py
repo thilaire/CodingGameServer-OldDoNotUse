@@ -18,9 +18,11 @@ File: Game.py
 
 import logging
 from random import seed as set_seed, randint, choice
-from time import time, sleep
+from time import time
+import time as timemod
 from threading import Barrier, BrokenBarrierError
 from datetime import datetime
+
 
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
 from CGS.Logger import configureGameLogger
@@ -232,7 +234,7 @@ class Game(WebSocketBase):
 		# check if the player wins
 		if return_code == MOVE_OK:
 			#Wait the delay time
-			sleep(self._delay)
+			timemod.sleep(self._delay)
 			# change who plays
 			self._whoPlays = self.getNextPlayer()
 		elif return_code == MOVE_WIN:
@@ -272,6 +274,11 @@ class Game(WebSocketBase):
 
 		# remove from the list of Games
 		Game.removeInstance(self.name)
+
+		# close the logger file
+		for handler in self.logger.handlers[:]:
+			handler.close()
+			self.logger.removeHandler(handler)
 
 
 

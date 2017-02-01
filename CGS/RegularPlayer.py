@@ -51,8 +51,8 @@ class RegularPlayer(Player, WebSocketBase):
 		- address: (string) network address (used once for logging)
 		"""
 
-		# call the first superclass constructor
-		Player.__init__(self, name)
+		# call the Player constructor
+		Player.__init__(self,name)
 
 		# create the logger of the player
 		self._logger = configurePlayerLogger(name)
@@ -72,6 +72,15 @@ class RegularPlayer(Player, WebSocketBase):
 	def isRegular(self):
 		return True
 
+
+	@classmethod
+	def removePlayer(cls, name):
+		pl = cls.getFromName(name)
+		if pl is not None:
+			del cls.allInstances[name]
+			for handler in pl.logger.handlers[:]:
+				handler.close()
+				pl.logger.removeHandler(handler)
 
 	@property
 	def game(self):

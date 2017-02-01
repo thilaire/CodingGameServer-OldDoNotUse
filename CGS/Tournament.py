@@ -280,7 +280,6 @@ class Tournament(WebSocketBase):
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: c'est plus qu'un simple match, vu qu'il y a la revanche (plusieurs tours)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
-
 		# run the games
 		for r in range(1, self.nbRounds4Victory + 1):
 
@@ -289,6 +288,7 @@ class Tournament(WebSocketBase):
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
 					start = (r-1) % 2 if r < self.nbRounds4Victory else -1
+					#TODO : passer le TIMEOUT
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self,**kwargs)
 					self._queue.put_nowait(None)
 
