@@ -25,9 +25,25 @@ from CGS.WebSocketBase import WebSocketBase
 import time
 
 
+def numbering(i):
+	"""Returns the 2-letter string associated to a number
+	1->st
+	2->nd
+	3->rd
+	others->th
+	(a dictionary may be used, instead)
+	"""
+	if i == 1:
+		return 'st'
+	elif i == 2:
+		return 'nd'
+	elif i == 3:
+		return 'rd'
+	else:
+		return 'th'
+
+
 # TODO: Tournament class should be virtual (abstract)
-
-
 class Tournament(WebSocketBase):
 	"""
 	Class for the tournament
@@ -54,7 +70,7 @@ class Tournament(WebSocketBase):
 	"""
 	allInstances = {}         # dictionary of all the tournaments
 	HTMLoptions = ""          # some options to display in an HTML form
-	HTMLgameoptions =""       # some options to display game options in an HTML form
+	HTMLgameoptions = ""       # some options to display game options in an HTML form
 	mode = ""        # type of the tournament
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
@@ -92,7 +108,8 @@ class Tournament(WebSocketBase):
 		self._isRunning = False         # is the tournament already running ?
 		self._isPhaseRunning = False    # is there is a running phase
 		self._games = {}        		# list of current games
-		self._queue = Queue()   # we use a queue, even we do not need to store item inside (just need the .join method to wait for all the task been done)
+		self._queue = Queue()           # we use a queue, even we do not need to store item inside
+										# (just need the .join method to wait for all the task been done)
 		self._phase = ""                # phase of the tournament
 
 
@@ -258,7 +275,7 @@ class Tournament(WebSocketBase):
 
 
 
-	def runPhase(self,**kwargs):
+	def runPhase(self, **kwargs):
 		"""Launch a phase of the tournament
 		"""
 		# check if a phase is not already running
@@ -288,8 +305,8 @@ class Tournament(WebSocketBase):
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
 					start = (r-1) % 2 if r < self.nbRounds4Victory else -1
-					#TODO : passer le TIMEOUT
-					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self,**kwargs)
+					# TODO : passer le TIMEOUT
+					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self, **kwargs)
 					self._queue.put_nowait(None)
 
 			# update the websockets (no need to update everytime a game is added)
