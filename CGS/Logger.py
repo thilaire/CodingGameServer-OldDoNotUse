@@ -202,11 +202,11 @@ def removeOldestFile(path, maxSize):
 	while sum(getsize(path+f) for f in listdir(path)) > maxSize:
 		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
 		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
-		# TODO: vérfier que le joueur/game que l'on supprime ne soit pas encore un train de jouer...
-		# (n'est plus dans Player.allPlayers / Games.allPGames)
-		# sinon, il ne sera plus loggué
-		# si on rajoute la condition dans l'itérateur, il faut un try/except pour le cas où la séquence est vide
-		# (renvoie un ValueError)
+		# TODO: check if the game/player we are removing is not still playing
+		# (is not in Player.allPlayers / Games.allPGames)
+		# otherwise it will not be logged
+		# if we add this condition in the iteratirn we need a try/Except when the sequence is empty
+		# (returns a ValueError)
 		oldest = min(files, key=itemgetter(1))[0]
 		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
 		remove(path+oldest)

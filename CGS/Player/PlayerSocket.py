@@ -88,7 +88,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 						else:
 							# we cannot ask for a move, since it's our turn to play
 							self.sendData("It's our turn to play, so we cannot ask for a move!")
-							# TODO: le player doit perdre ? ou bien on attend la déconnexion faite par l'API client ?
+							# TODO: should the player loose ? Or just wait for the deconnection done by the client API?
 
 					elif data.startswith("PLAY_MOVE "):
 						# check if it's not too late (timeout)
@@ -301,7 +301,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 				if "=" in terms[0]:
 					trainingPlayerName = ""
 					tournamentName = ""
-					# TODO: virer les potientiels espaces (autour du =, par exemple), en appliquant split aux clés et valeurs
+					# TODO: remove the potential spaces (around the =, for example), by applying split to keys and values
 					options = dict([token.split('=') for token in terms])
 				elif terms[0] == 'TOURNAMENT':
 					trainingPlayerName = ""

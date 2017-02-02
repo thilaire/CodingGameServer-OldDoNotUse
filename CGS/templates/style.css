@@ -12,8 +12,28 @@ body{
 }
 
 
+/* triple columns */
+.triple ul{
+  width:760px;
+  margin-bottom:20px;
+  overflow:hidden;
+}
+
+.triple li{
+  line-height:1.5em;
+  float:left;
+  display:inline;
+  width:33.333%;
+}
+
+
 /* menu */
 /* taken from http://red-team-design.com/css3-animated-dropdown-menu/ */
+
+body{
+    background: #eee url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAMAAAC6sdbXAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF3d3d////riJKgAAAAAJ0Uk5T/wDltzBKAAAAFUlEQVR42mJgBAEGGMmAxAYCgAADAAGGABmnk/7aAAAAAElFTkSuQmCC);
+    font: 13px 'trebuchet MS', Arial, Helvetica;
+}
 
 h2, p {
     text-align: center;
@@ -365,6 +385,7 @@ a {
 #menu li:hover > .no-transition {
     display: block;
 }
+
 
 
 /* footer */

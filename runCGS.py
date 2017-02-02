@@ -111,7 +111,7 @@ if __name__ == "__main__":
 
 
 
-# TODO: rajouter un timeout pour le dataReceive (il y a ça dans la classe BaseRequestHandler)
-# TODO: mettre en forme les emails (qd ça vient du webserver)
-# TODO: GameAPI.c rajouter le nom du joueur et de la partie dans les affichages de debug (utile qd on lance plusieurs joueurs sur sa machine)
-# TODO: permettre à l'API C de ne pas quitter quand il y a error (et de récupérer le message d'erreur) -> variable "cachée" onErrorContinue et lastError
+# TODO: add a timeout for the dataReceive (this exists in the BaseRequestHandler class)
+# TODO: send pretty emails (when send from webserver)
+# TODO: GameAPI.c: add the name of the player (and the game) in the debug printing (usefull when we run several players on the same terminal)
+# TODO: allows the C API do not quit when there is an error (and to get back the error message) -> in some hidden variables "onErrorContinue" and "lastError" ?

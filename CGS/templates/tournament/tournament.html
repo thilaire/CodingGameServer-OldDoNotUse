@@ -10,8 +10,8 @@
         document.getElementById('div_nbPlayers').innerHTML = data['nbPlayers'];
         document.getElementById('div_phase').innerHTML = data['phase'];
         document.getElementById('div_score').innerHTML = data['score'];
-        document.getElementById('list_players').innerHTML = data['Players'].map(function (x){return "<li>"+x+"</li>"}).join("");
-        document.getElementById('list_games').innerHTML = data['Games'].map(function (x){return "<li>"+x+"</li>"}).join("");
+        document.getElementById('list_players').innerHTML = "<ul class='triple'>" + data['Players'].map(function (x){return "<li>"+x+"</li>"}).join("") + "</ul>";
+        document.getElementById('list_games').innerHTML = "<ul>" + data['Games'].map(function (x){return "<li>"+x+"</li>"}).join("") + "</ul>";
         document.getElementById('runPhaseButton').disabled = !(data['runPhaseButton']);
         ws.send('OK')
     };

@@ -15,7 +15,7 @@
             if (data.hasOwnProperty(cls))
             {
                 var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
-                document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
+                document.getElementById('list'+cls).innerHTML = "<ul class='triple'>"+HTML+"</ul>";
             }
         }
         ws.send('OK')

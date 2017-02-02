@@ -20,8 +20,7 @@ File: GameAPI.c
 
 */
 
-/* TODO: rajouter une fonction getComment pour récupérer les commentaires de l'adversaire ? */
-/* TODO: permettre de tenter de se connecter à une liste de serveurs; ou bien simplement renvoyer 0 si la connection a échoué */
+/* TODO: allows to try to connect to a list of servers? Or just returns 0 if the connection fails */
 
 
 #include <stdio.h>
@@ -175,7 +174,7 @@ void sendString( const char* fct, const char* str, ...) {
  * Parameters:
  * - fct: name of the function that calls connectToCGS (used for the logging)
  * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- * - port: (int) port number used for the connection	TODO: should we fix it ?
+ * - port: (int) port number used for the connection
  * - name: (string) name of the bot : max 20 characters (checked by the server)
  */
 void connectToCGS( const char* fct, char* serverName, int port, char* name)
@@ -294,12 +293,6 @@ int getGameData( const char* fct, char* data,size_t ndata)
 	dispDebug( fct,2, "Receive labyrinth's data:%s", data);
 
 
-	/* TODO: copier le buffer dans data
-	pour cela, il faut peut-être connaitre la taille
-	On passe d'abord la taille, ou bien c'est une taille fixe ???
-	Julien, je te laisse régler ce pb ?*/
-
-
 	/* read if we begin (0) or if the opponent begins (1) */
 	bzero(buffer,1000);
 	r = read_inbuf(fct,buffer,MAX_LENGTH);
@@ -385,8 +378,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
 
 	
 	/*TODO: that message is not handle or given to the user..
-
-	 TH: À mon avis, il faut l'afficher que quand le résultat n'est pas MOVE_OK	 */
+	 TH: according to me, we need to print it when the result is not MOVE_OK	 */
 
 	return result;
 }

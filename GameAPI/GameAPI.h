@@ -61,7 +61,7 @@ void dispDebug(const char* fct,int level, const char* msg, ...);
  * Parameters:
  * - fct: name of the function that calls connectToCGS (used for the logging)
  * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
- * - port: (int) port number used for the connection	TODO: should we fix it ?
+ * - port: (int) port number used for the connection
  * - name: (string) name of the bot : max 20 characters (checked by the server)
  */
 void connectToCGS( const char* fct, char* serverName, int port, char* name);

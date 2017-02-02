@@ -150,7 +150,7 @@ class Game(BaseClass):
 		# log the game
 		self.logger.info("=================================")
 		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
-		# TODO: logguer qu'il s'agit d'un tournoi si tournament is not None
+		# TODO: also log that this game is part of a tournament (if tournament is not None)
 
 		# determine who starts (player #0 ALWAYS starts)
 		self._whoPlays = 0
@@ -220,7 +220,6 @@ class Game(BaseClass):
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
 			whoLooses.game = None
-			self.logger.debug("1) Player %s's game set to None" % whoLooses.name)
 
 
 	def manageNextTurn(self, return_code, msg):
@@ -263,10 +262,8 @@ class Game(BaseClass):
 		# the players do not play anymore
 		if self._players[0].game is not None:
 			self._players[0].game = None
-			self.logger.debug("2) Player %s's game set to None" % self._players[0].name)    # TODO: to remove
 		if self._players[1].game is not None:
 			self._players[1].game = None
-			self.logger.debug("3) Player %s's game set to None" % self._players[1].name)    # TODO: to remove
 
 		# tell the tournament the result of the game
 		if self._tournament:

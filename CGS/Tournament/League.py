@@ -45,7 +45,7 @@ class League(Tournament):
 		self._score = {p: 0 for p in self.players}
 
 		# copy the player list
-		# TODO: vérifier s'ils sont tous encore là ?
+		# TODO: check if they are all here ?
 		rotation = list(self._players)
 		# if player number is odd, we use None as a fake player
 		if len(rotation) % 2:
