@@ -1,8 +1,8 @@
 //
-// Created by Thib on 26/09/2016.
+// Created by Julien Brajard et Thibault Hilaire 01/02/2017.
 //
 
-// Correspond à la question 1 (jouer à la main contre le serveur)
+//Programme Do Nothing pouvant participer au tournoi
 
 
 

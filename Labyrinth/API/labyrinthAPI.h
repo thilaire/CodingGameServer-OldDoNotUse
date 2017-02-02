@@ -94,7 +94,7 @@ void closeConnection();
  *   (each training player has its own options)
  *   invalid keys are ignored, invalid values leads to error
  *   the following options are common to every training player
- *   (when NAME is not empty):
+ *   (when NAME is not empty or not TOURNAMENT):
  *        - 'timeout': allows an define the timeout
  *                   when training (in seconds)
  *        - 'seed': allows to set the seed of the random generator
@@ -106,6 +106,8 @@ void closeConnection();
  *   (option "rotate=False/True")
  * - "ASTAR" for a player that move the shortest way to the treasure
  *   (without making any rotation)
+ * training also be : "TOURNAMENT name" where name is the name of the tournament
+ * as it has been created using the web page
  */
 void waitForLabyrinth( char* training, char* labyrinthName,
 		       int* sizeX, int* sizeY);

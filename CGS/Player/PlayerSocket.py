@@ -25,7 +25,7 @@ from socketserver import BaseRequestHandler
 from CGS.Constants import MOVE_LOSE
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
-from CGS.Player import RegularPlayer
+from CGS.Player.RegularPlayer import RegularPlayer
 from CGS.Tournament import Tournament
 
 logger = logging.getLogger()  # general logger ('root')
