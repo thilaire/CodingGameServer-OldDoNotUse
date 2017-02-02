@@ -30,7 +30,7 @@ from geventwebsocket import WebSocketError
 from os.path import isfile, join
 from functools import wraps										# use to wrap a logger for bottle
 from CGS.Game import Game
-from CGS.RegularPlayer import RegularPlayer
+from CGS.Player import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
 from CGS.BaseClass import BaseClass
@@ -295,7 +295,7 @@ def classWebSocket(clsName, name):
 		try:
 			wsock.receive()
 		except WebSocketError:
-			WebSocketBase.removeLoIWebSocket(wsock)
+			BaseClass.removeLoIWebSocket(wsock)
 			break
 
 

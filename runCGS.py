@@ -34,7 +34,7 @@ from docopt import docopt  # used to parse the command line
 
 from CGS.Game import Game
 from CGS.Logger import configureRootLogger
-from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
+from CGS.Player import PlayerSocketHandler  # TCP socket handler for players
 from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 
 usage = """

@@ -18,15 +18,15 @@ File: PlayerSocket.py
 """
 
 import logging
-from socketserver import BaseRequestHandler
+import shlex
 from re import sub
-from CGS.RegularPlayer import RegularPlayer
+from socketserver import BaseRequestHandler
+
+from CGS.Constants import MOVE_LOSE
 from CGS.Constants import SIZE_FMT
 from CGS.Game import Game
-from CGS.Constants import MOVE_LOSE
+from CGS.Player import RegularPlayer
 from CGS.Tournament import Tournament
-import shlex
-
 
 logger = logging.getLogger()  # general logger ('root')
 
