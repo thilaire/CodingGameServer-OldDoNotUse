@@ -33,7 +33,6 @@ from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
-from CGS import TournamentMode        # HERE we import all the tournaments type (DO NOT REMOVE)
 from CGS.WebSocketBase import WebSocketBase
 
 
@@ -65,7 +64,7 @@ def runWebServer(host, port, quiet):
 	TEMPLATE_PATH.append(Game.getTheGameName() + "/server/templates")
 	TEMPLATE_PATH.reverse()
 	# add the base url to all the templates
-	Jinja2Template.defaults['base_url'] = 'http://%s:%s/'%(host,port)
+	Jinja2Template.defaults['base_url'] = 'http://%s:%s/' % (host, port)
 	# Start the web server
 	install(log_to_logger)
 	weblogger.message("Run the web server on port %d...", port)
@@ -215,7 +214,7 @@ def runTournament(tournamentName):
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
-		threading.Thread(target=t.runPhase,kwargs=dict(request.forms)).start()
+		threading.Thread(target=t.runPhase, kwargs=dict(request.forms)).start()
 		redirect('/tournament/'+tournamentName)
 	else:
 		return template('noObject.html', className='tournament', objectName=tournamentName)

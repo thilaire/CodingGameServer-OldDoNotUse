@@ -220,7 +220,7 @@ class Labyrinth(Game):
 		html = conv.convert(str(self))
 		html = html.replace(u'\u2589', '<span style="background-color:black"> </span>')  # black box
 		html = html.replace(u'\u2691', 'x')  # treasure
-		html = html.replace(u'\u265F', 'o') #player
+		html = html.replace(u'\u265F', 'o')  # player
 
 		return {'labycontent': html, 'energy': self._playerEnergy}
 		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (

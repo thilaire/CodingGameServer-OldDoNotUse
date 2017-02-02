@@ -109,15 +109,10 @@ if __name__ == "__main__":
 		kwargs={'host': args['--host'], 'port': args['--web'], 'quiet': False}
 	).start()
 
-	# TODO: remove this... Just for debug
-	from CGS.Tournament import Tournament
-	#t = Tournament.factory('League', name='toto', nbMaxPlayers=12, nbRounds4Victory=3)
-	#t = Tournament.factory('PoolKnockoutTournament', name='titi', nbMaxPlayers=0, nbRounds4Victory=3,nbGroups=4,nbFirst=2)
 	# Start TCP Socket server (connection to players)
 	PlayerServer = ThreadingTCPServer((args['--host'], args['--port']), PlayerSocketHandler)
 	logger.message("Run the game server on port %d...", args['--port'])
 	threading.Thread(target=PlayerServer.serve_forever())
-
 
 
 

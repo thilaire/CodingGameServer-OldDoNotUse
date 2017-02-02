@@ -52,7 +52,7 @@ class RegularPlayer(Player, WebSocketBase):
 		"""
 
 		# call the Player constructor
-		Player.__init__(self,name)
+		Player.__init__(self, name)
 
 		# create the logger of the player
 		self._logger = configurePlayerLogger(name)
