@@ -33,8 +33,7 @@ from CGS.Game import Game
 from CGS.RegularPlayer import RegularPlayer
 from CGS.Logger import Config
 from CGS.Tournament import Tournament
-from CGS.WebSocketBase import WebSocketBase
-
+from CGS.BaseClass import BaseClass
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -257,15 +256,15 @@ def classWebSocket():
 	if not wsock:
 		abort(400, "Expected Websocket request.")
 	# register this websocket
-	WebSocketBase.registerLoIWebSocket(wsock)
+	BaseClass.registerLoIWebSocket(wsock)
 	# send to this websocket
-	WebSocketBase.sendListofInstances(wsock)
+	BaseClass.sendListofInstances(wsock)
 	# loop until the end of this websocket
 	while True:
 		try:
 			wsock.receive()
 		except WebSocketError:
-			WebSocketBase.removeLoIWebSocket(wsock)
+			BaseClass.removeLoIWebSocket(wsock)
 			break
 
 

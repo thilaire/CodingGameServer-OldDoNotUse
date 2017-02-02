@@ -17,12 +17,13 @@ File: Player.py
 """
 
 from threading import Event
+
 from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
-from CGS.WebSocketBase import WebSocketBase
+from CGS.BaseClass import BaseClass
 
 
-class RegularPlayer(Player, WebSocketBase):
+class RegularPlayer(Player, BaseClass):
 	"""
 	A RegularPlayer
 
@@ -64,8 +65,8 @@ class RegularPlayer(Player, WebSocketBase):
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
-		# and last, call the WebSocketBase constructor
-		WebSocketBase.__init__(self, name)
+		# and last, call the BaseClass constructor
+		BaseClass.__init__(self, name)
 
 
 	@property

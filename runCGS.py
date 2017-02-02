@@ -26,21 +26,16 @@ CGS requires Python3 and the following packages: colorama, colorlog, docopt, bot
 # monkey.patch_all()
 
 import threading  # to run threads
+from importlib import import_module    # to dynamically import modules
 from socketserver import ThreadingTCPServer  # socket server (with multi-threads capabilities)
 
 from colorama import Fore
 from docopt import docopt  # used to parse the command line
-from importlib import import_module    # to dynamically import modules
 
-from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
-from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 from CGS.Game import Game
 from CGS.Logger import configureRootLogger
-
-
-
-
-
+from CGS.PlayerSocket import PlayerSocketHandler  # TCP socket handler for players
+from CGS.Webserver import runWebServer  # to run the webserver (bottle)
 
 usage = """
 Coding Game Server

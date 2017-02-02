@@ -24,10 +24,7 @@ import json
 logger = logging.getLogger()
 
 
-# TODO: renommer la WebSocketBase en qq chos qui ne fait pas forcément référence au WebSocket
-
-
-class WebSocketBase:
+class BaseClass:
 
 	allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
 	_LoIWebSockets = []       # list of webSockets for the lists of Instance (LoI) informations
@@ -41,8 +38,6 @@ class WebSocketBase:
 		Parameters:
 		name: (string) name of the instance
 		"""
-
-		# TODO: rajouter l'attribut dans la classe de base (au lieu de dans chaque classe héritée)
 
 		# add itself to the dictionary of games
 		self.allInstances[name] = self
@@ -93,7 +88,7 @@ class WebSocketBase:
 		"""
 		# add this websocket in the list of LoI websockets
 		logger.low_debug("register List of instances")
-		WebSocketBase._LoIWebSockets.append(wsock)
+		BaseClass._LoIWebSockets.append(wsock)
 
 
 	@staticmethod
@@ -105,7 +100,7 @@ class WebSocketBase:
  		"""
 		logger.low_debug("remove list of instances websocket")
 		try:
-			WebSocketBase._LoIWebSockets.remove(wsock)
+			BaseClass._LoIWebSockets.remove(wsock)
 		except ValueError:
 			logger.low_debug("Remove a LoI WebSocket that do not exist !!")
 
@@ -119,17 +114,17 @@ class WebSocketBase:
 		Parameters:
 		- wsock: (websocket) if None, the data is sent to all the websockets, otherwise only to this one
 		"""
-		d = {cls.__name__: [obj.HTMLrepr() for obj in cls.allInstances.values()] for cls in WebSocketBase.__subclasses__()}
+		d = {cls.__name__: [obj.HTMLrepr() for obj in cls.allInstances.values()] for cls in BaseClass.__subclasses__()}
 		js = json.dumps(d)
 		logger.low_debug("send List of instances : {%s}" % (d,))
 		# send to all the websockets or only to one
-		lws = WebSocketBase._LoIWebSockets if wsock is None else [wsock]
+		lws = BaseClass._LoIWebSockets if wsock is None else [wsock]
 		for ws in lws:
 			try:
 				ws.send(js)
 			except WebSocketError:
 				logger.low_debug("WebSocketError in sendListInstances")
-				WebSocketBase.removeLoIWebSocket(ws)
+				BaseClass.removeLoIWebSocket(ws)
 
 
 	# ===================

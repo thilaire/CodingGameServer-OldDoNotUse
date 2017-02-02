@@ -17,17 +17,16 @@ File: Game.py
 """
 
 import logging
-from random import seed as set_seed, randint, choice
-from time import time
 import time as timemod
-from threading import Barrier, BrokenBarrierError
 from datetime import datetime
+from random import seed as set_seed, randint, choice
+from threading import Barrier, BrokenBarrierError
+from time import time
 
-
+from CGS.Comments import CommentQueue
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
 from CGS.Logger import configureGameLogger
-from CGS.Comments import CommentQueue
-from CGS.WebSocketBase import WebSocketBase
+from CGS.BaseClass import BaseClass
 
 
 def crc24(octets):
@@ -56,7 +55,7 @@ def hex6(x):
 	return h[-6:]   # get the 6 last characters
 
 
-class Game(WebSocketBase):
+class Game(BaseClass):
 	"""
 	Game class
 
@@ -197,7 +196,7 @@ class Game(WebSocketBase):
 
 
 
-	# TODO: the _name property should be included in WebSocketBase class
+	# TODO: the _name property should be included in BaseClass class
 	@property
 	def name(self):
 		return self._name

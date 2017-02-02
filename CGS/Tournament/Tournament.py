@@ -17,12 +17,12 @@ File: Tournament.py
 
 """
 
-from re import sub
-from CGS.Game import Game
+import time     # do not import sleep from time (but rather use time.sleep()) because of the gevent's monkeypatch
 from queue import Queue
-from CGS.WebSocketBase import WebSocketBase
+from re import sub
 
-import time
+from CGS.Game import Game
+from CGS.BaseClass import BaseClass
 
 
 def numbering(i):
@@ -44,7 +44,7 @@ def numbering(i):
 
 
 # TODO: Tournament class should be virtual (abstract)
-class Tournament(WebSocketBase):
+class Tournament(BaseClass):
 	"""
 	Class for the tournament
 	only subclasses should be used directly
@@ -108,17 +108,15 @@ class Tournament(WebSocketBase):
 		self._isRunning = False         # is the tournament already running ?
 		self._isPhaseRunning = False    # is there is a running phase
 		self._games = {}        		# list of current games
-		self._queue = Queue()           # we use a queue, even we do not need to store item inside
-										# (just need the .join method to wait for all the task been done)
+		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
 		self._phase = ""                # phase of the tournament
-
 
 		# match generator
 		self._matchGen = self.MatchsGenerator()
 
 		# TODO: add a logger
 
-		# and last, call the constructor of WebSocketBase
+		# and last, call the constructor of BaseClass
 		if name in self.allInstances:
 			raise ValueError("A tournament with the same name already exist")
 		super().__init__(name)
