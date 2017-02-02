@@ -162,11 +162,12 @@ class Game(BaseClass):
 		# set a delay after each move (to let the time to see the party)
 		if 'delay' not in options:
 			self._delay = 0
-		try:
-			self._delay = int(options['delay'])
-			self.logger.debug("The delay is set to %ds" % self._delay)
-		except ValueError:
-			raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
+		else:
+			try:
+				self._delay = int(options['delay'])
+				self.logger.debug("The delay is set to %ds" % self._delay)
+			except ValueError:
+				raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
 
 		# time out for the move
 		if 'timeout' not in options:
