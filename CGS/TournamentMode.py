@@ -130,6 +130,10 @@ class PoolKnockoutTournament(Tournament):
 		if not self._nbMaxPlayers==0 and not 2 <= self._nbGroups <= self.nbMaxPlayers/2:
 			raise ValueError("The number of groups must be in 0 and nbMaxPlayer/2")
 
+		log2nbGroups = frexp(float(nbGroups))[1] - 1  #
+		print (log2nbGroups)
+		if not 2**log2nbGroups == self._nbGroups:
+			raise ValueError("The number of groups should be 2^n")
 		# number of players per group that pass the first phase
 		try:
 			self._nbFirst = int(nbFirst)
@@ -196,9 +200,7 @@ class PoolKnockoutTournament(Tournament):
 			self._Draw[0][2*i]=WinPlayers[2*i]
 			self._Draw[0][-2*i-1]=WinPlayers[2*i+1]
 		nturn = frexp(self._nbGroups*self._nbFirst)[1]-1 #frexp : log2 int
-		print (nturn)
-		print ("----------")
-		print (self._Draw)
+
 		for iturn in range(nturn):
 			if nturn-iturn > 4:
 				self._phase = '%d%s turn of the final phase'% (iturn + 1, numbering(iturn + 1))

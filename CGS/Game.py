@@ -234,7 +234,7 @@ class Game(WebSocketBase):
 		# check if the player wins
 		if return_code == MOVE_OK:
 			#Wait the delay time
-			timemod.sleep(self._delay)
+			timemod.sleep(self._delay/1000)
 			# change who plays
 			self._whoPlays = self.getNextPlayer()
 		elif return_code == MOVE_WIN:
