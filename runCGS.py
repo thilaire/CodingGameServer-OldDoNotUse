@@ -49,7 +49,7 @@ Options:
   gameName                 Name of game [default: Labyrinth]
   -h --help                Show this screen.
   -p PORT --port=PORT      Game server port [default: 1234].
-  -w PORT --web=PORT       Web server port [default: 8080].
+  -w PORT --web=PORT       Web server port [default: 8088].
   -H HOST --host=HOST      Servers host [default: localhost].
   -e EMAIL --email=EMAIL   Email address used in prod to send info when the server fails [default: pythoncgs@gmail.com]
   -s SMTP --smtp=SMTP      SMTP server:port used in prod to send the email [default: smtp.gmail.com:587]
