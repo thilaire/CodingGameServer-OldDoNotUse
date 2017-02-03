@@ -98,7 +98,7 @@ class PoolKnockout(Tournament):
 		# iterate using round robin algorithm
 		for i in range(nmax):
 			# update the phase name
-			self._phase = '%d%s round' % (i + 1, numbering(i + 1))
+			phase = '%d%s round' % (i + 1, numbering(i + 1))
 			# list of match by group
 			lmatch = []
 			for j in range(len(nbrounds)):
@@ -107,7 +107,7 @@ class PoolKnockout(Tournament):
 					rotation = groups[j]
 					lmatch += list(zip(*[iter(rotation)] * 2))
 					groups[j] = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
-			yield lmatch
+			yield phase, lmatch
 
 		# Selection of the best players to be in SingleEliminatioTournament
 		# Works only if self._nbFirst == 2
@@ -129,15 +129,15 @@ class PoolKnockout(Tournament):
 
 		for iturn in range(nturn):
 			if nturn-iturn > 4:
-				self._phase = '%d%s turn of the final phase' % (iturn + 1, numbering(iturn + 1))
+				phase = '%d%s turn of the final phase' % (iturn + 1, numbering(iturn + 1))
 			elif nturn-iturn > 2:
-				self._phase = '1/%d%s final' % (2**(nturn-iturn-1), numbering(2**(nturn-iturn-1)))
+				phase = '1/%d%s final' % (2**(nturn-iturn-1), numbering(2**(nturn-iturn-1)))
 			elif nturn-iturn == 2:
-				self._phase = "semi-final"
-			elif nturn-iturn == 1:
-				self._phase = "final"
+				phase = "semi-final"
+			else: # nturn-iturn == 1
+				phase = "final"
 
-			yield list(zip(*[iter(self._Draw[-1])] * 2))
+			yield phase, list(zip(*[iter(self._Draw[-1])] * 2))
 			newDraw = []
 			Draw = self._Draw[-1]
 			for j in range(len(Draw)//2):

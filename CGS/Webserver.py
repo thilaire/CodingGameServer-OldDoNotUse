@@ -203,18 +203,19 @@ def tournament(tournamentName):
 		return template('noObject.html', className='tournament', objectName=tournamentName)
 
 
+
 @route('/run_tournament/<tournamentName>', method='POST')
 def runTournament(tournamentName):
 	"""
 	Receive the runPhase tournament form
-	redirect to `tournament/<tournamentName>` if tournament exists (otherwise `noTournament.html`)
+	redirect to `noTournament.html` if the tournament doesn't exit
+	other, return nothing, since it is run from ajax (doesn't wait for any response)
 	Parameters:
 	- tournamentName: name of the tournament
 	"""
 	t = Tournament.getFromName(tournamentName)
 	if t:
 		threading.Thread(target=t.runPhase, kwargs=dict(request.forms)).start()
-		redirect('/tournament/'+tournamentName)
 	else:
 		return template('noObject.html', className='tournament', objectName=tournamentName)
 

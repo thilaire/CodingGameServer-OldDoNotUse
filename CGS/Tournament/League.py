@@ -54,9 +54,9 @@ class League(Tournament):
 		# then we iterate using round robin algorithm
 		for i in range(0, len(rotation) - 1):
 			# update the phase name
-			self._phase = '%d%s phase' % (i+1, numbering(i+1))
+			phase = '%d%s phase' % (i+1, numbering(i+1))
 			# generate list of pairs (player1,player2)
-			yield list(zip(*[iter(rotation)] * 2))
+			yield phase, list(zip(*[iter(rotation)] * 2))
 			# prepare the next list by rotating the list
 			rotation = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
 

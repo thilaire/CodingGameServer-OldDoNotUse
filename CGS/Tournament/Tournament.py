@@ -43,6 +43,94 @@ def numbering(i):
 		return 'th'
 
 
+# TODO: should this be included in Tournament class ??
+class Status:
+	"""
+	tiny class to manage the status of a tournament
+	Properties:
+	- _state: (int) intern state of the tournament
+		0 -> not yet began
+		1 -> a phase is running
+		2 -> wait for a new phase
+		3 -> end of the tournament
+	- _phase: (string) name of the current (or next) phase
+	"""
+	def __init__(self):
+		"""Create a status (at the beginning, the tournament has not yet began)"""
+		self._state = 0     # current state
+		self._phase = ""
+
+	@property
+	def hasBegan(self):
+		"""Returns True if the tournament has already began"""
+		return self._state != 0
+
+	@property
+	def isFinished(self):
+		"""Returns True if the tournament is finished"""
+		return self._state == 3
+
+	@property
+	def isPhaseRunning(self):
+		"""Returns True if a phase is running"""
+		return self._state == 1
+
+	def newPhase(self, phase=None):
+		"""Call to indicates a new phase
+		Parameter:
+		- phase: (string) name of the new phase
+		"""
+		self._state = 1
+		if phase:
+			self._phase = phase
+
+	def endPhase(self, newPhase):
+		"""Called to indicate the end of the phase (so we wait for a new phase)"""
+		self._state = 2
+		self._phase = newPhase
+
+	def endTournament(self):
+		"""Called to indicate the end of the tournament"""
+		self._state = 3
+
+	@property
+	def phase(self):
+		"""Returns the name of the current (or next) phase"""
+		return self._phase
+
+	def HTMLButton(self):
+		"""
+		Returns the HTML code for the "next" button
+		-> may be enable or disable, with a label depending on the state
+		"""
+		HTMLstr = "<input type='button' name='send' id='nextPhaseButton' %s value='%s'></input>"
+		if self._state == 0:
+			# "run Tournament" button
+			return HTMLstr % ('', 'Run Tournament !!')
+		elif self._state == 1:
+			# disabled "next Phase" button
+			return HTMLstr % ('disabled', 'Next Phase (%s)'% self._phase)
+		elif self._state == 2:
+			# enable "next Phase" button
+			return HTMLstr % ('', 'Next Phase (%s)'% self._phase)
+		else:
+			# no button anymore
+			return ""
+
+	def getStatus(self):
+		"""
+		Returns a string describing the status (about the current phase or the next phase)
+		"""
+		if self._state == 0:
+			return "Ready to start !"
+		elif self._state == 1:
+			return "Running phase: " + self._phase
+		elif self._state == 2:
+			return "Next phase: " + self._phase
+		else:
+			return "Tournament over"
+
+
 # TODO: Tournament class should be virtual (abstract)
 class Tournament(BaseClass):
 	"""
@@ -55,10 +143,7 @@ class Tournament(BaseClass):
 		- _nbMaxPlayer: (int) maximum number of players (0 for unlimited)
 		- _nbRounds4Victory: (int) number of rounds  for a victory (usually 1 or 2)
 		- _players: (list of Players) list of engaged players
-		- _isRunning: (bool) True if the tournament is running (False if it'is still waiting for players)
 		- _games: dictionnary of current games
-		- _phase: (string) name of the phase ('not running', '1/4 final', etc...)
-		- _isRunningPhase: (bool) True if a phase is running (false when we wait the user to run a new phase)
 		- _queue: (Queue) queue of running game (used to wait for all the games to be ended)
 
 	Class attributes
@@ -71,7 +156,8 @@ class Tournament(BaseClass):
 	allInstances = {}         # dictionary of all the tournaments
 	HTMLoptions = ""          # some options to display in an HTML form
 	HTMLgameoptions = ""       # some options to display game options in an HTML form
-	mode = ""        # type of the tournament
+	# TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
+	mode = ""               # type of the tournament
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
 		"""
@@ -105,11 +191,10 @@ class Tournament(BaseClass):
 			raise ValueError("The number of needed rounds for a victory is not valid")
 
 		self._players = []  # list of engaged players
-		self._isRunning = False         # is the tournament already running ?
-		self._isPhaseRunning = False    # is there is a running phase
 		self._games = {}        		# list of current games
 		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
-		self._phase = ""                # phase of the tournament
+		self._status = Status()         # status of the tournament
+		self._matches = []              # list of current (or next) matches in the phase
 
 		# match generator
 		self._matchGen = self.MatchsGenerator()
@@ -140,12 +225,12 @@ class Tournament(BaseClass):
 		return self._players
 
 	@property
-	def isRunning(self):
-		return self._isRunning
-
-	@property
-	def isPhaseRunning(self):
-		return self._isPhaseRunning
+	def hasBegan(self):
+		return self._status.hasBegan
+	#
+	# @property
+	# def isPhaseRunning(self):
+	# 	return self._isPhaseRunning
 
 	def HTMLrepr(self):
 		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
@@ -154,9 +239,9 @@ class Tournament(BaseClass):
 	def games(self):
 		return self._games
 
-	@property
-	def phase(self):
-		return self._phase
+	# @property
+	# def phase(self):
+	# 	return self._phase
 
 
 	@classmethod
@@ -194,7 +279,7 @@ class Tournament(BaseClass):
 		t = cls.allInstances[tournamentName]
 
 		# check if the tournament is open
-		if t.isRunning:
+		if t.hasBegan:
 			if player not in t.players:
 				# TODO: log it in t.logger
 				raise ValueError("The tournament '%s' is now closed." % tournamentName)
@@ -215,6 +300,8 @@ class Tournament(BaseClass):
 	def HTMLFormDict(cls):
 		"""
 		Returns a dictionary to fill the template new_tournament.html
+		It's about all the existing types of tournament (subclasses of Tournament class)
+
 		The dictionary contains:
 		- "HTMLmode": an HTML string, containing a <SELEC> element to be included in HTML file
 			It's a drop-down list with all the existing modes
@@ -277,24 +364,25 @@ class Tournament(BaseClass):
 		"""Launch a phase of the tournament
 		"""
 		# check if a phase is not already running
-		if self._isPhaseRunning:
-			return
-		self._isRunning = True
-		self._isPhaseRunning = True
-
-		# get the next list of 2-tuple (player1,player2) of players who will player together in that phase
-		try:
-			matches = next(self._matchGen)
-		except StopIteration:
-			# no more matches to run (end of the tournament)
-			self._isRunning = False
-			self._isPhaseRunning = False
+		if self._status.isPhaseRunning:
+			# do noting, since a phase is already running
 			return
 
+		# first launch
+		if not self._status.hasBegan:
+			# we first need to get the list of 2-tuple (player1,player2) of players who will play together in the phase
+			try:
+				phase, self._matches = next(self._matchGen)
+			except StopIteration:
+				self._status.endTournament()
+			else:
+				self._status.newPhase(phase)
+		else:
+			self._status.newPhase()
 
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: it's more than a simple match (several rounds)
-		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in matches if p1 and p2}
+		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in self._matches if p1 and p2}
 		# run the games
 		for r in range(1, self.nbRounds4Victory + 1):
 
@@ -313,12 +401,19 @@ class Tournament(BaseClass):
 			self._queue.join()
 			time.sleep(1)       # TODO: check why is not fully working when we remove this sleep....
 
-
 		# update the scores
 		self.updateScore()
 
-		# end of the phase, we are ready to run another one
-		self._isPhaseRunning = False
+		# Prepare the next list of 2-tuple (player1,player2) of players who will play in next phase
+		try:
+			phase, self._matches = next(self._matchGen)
+		except StopIteration:
+			# no more matches to run (end of the tournament)
+			self._status.endTournament()
+		else:
+			self._status.endPhase(phase)
+
+		# update data through websockets
 		self.sendUpdateToWebSocket()
 
 
@@ -327,16 +422,25 @@ class Tournament(BaseClass):
 
 		:return:
 		"""
-		# build the HTML representation for the running games
 		listGames = []
-		for (p1, p2), (score, game) in self._games.items():
-			if game:
-				listGames.append("%s: %s %s %s" % (game.HTMLrepr(), p1.HTMLrepr(), score, p2.HTMLrepr()))
+
+		if self._status.isPhaseRunning:
+			# build the HTML representation for the running games
+			for (p1, p2), (score, game) in self._games.items():
+				if game:
+					listGames.append("%s: %s %s %s" % (game.HTMLrepr(), p1.HTMLrepr(), score, p2.HTMLrepr()))
+		else:
+			# build the HTML representation for the next games
+			for p1,p2 in self._matches:
+				if p1 and p2:
+					listGames.append("%s vs %s" % (p1.HTMLrepr(), p2.HTMLrepr()))
+
 		# return the dictionary used by the websocket
 		return {'nbPlayers': len(self._players), 'Players': [p.HTMLrepr() for p in self._players],
-		        'runPhaseButton': not self._isPhaseRunning,
-		        'phase': self._phase, 'Games': listGames,
-		        'score': self.HTMLscore()}
+		        'HTMLbutton': self._status.HTMLButton(),
+		        'phase': self._status.getStatus(), 'Games': listGames,
+		        'score': self.HTMLscore(),
+		        'next_games': 'Games' if self._status.isPhaseRunning else 'Next games'}
 
 
 
