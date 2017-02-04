@@ -277,6 +277,11 @@ class Game(BaseClass):
 			handler.close()
 			self.logger.removeHandler(handler)
 
+		# close the logger file
+		for handler in self.logger.handlers[:]:
+			handler.close()
+			self.logger.removeHandler(handler)
+
 
 
 	@property
