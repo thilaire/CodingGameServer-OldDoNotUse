@@ -134,7 +134,7 @@ class PoolKnockout(Tournament):
 				phase = '1/%d%s final' % (2**(nturn-iturn-1), numbering(2**(nturn-iturn-1)))
 			elif nturn-iturn == 2:
 				phase = "semi-final"
-			else: # nturn-iturn == 1
+			else:  # nturn-iturn == 1
 				phase = "final"
 
 			yield phase, list(zip(*[iter(self._Draw[-1])] * 2))

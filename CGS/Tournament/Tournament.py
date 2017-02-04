@@ -43,22 +43,115 @@ def numbering(i):
 		return 'th'
 
 
-# TODO: should this be included in Tournament class ??
-class Status:
+# TODO: Tournament class should be virtual (abstract)
+class Tournament(BaseClass):
 	"""
-	tiny class to manage the status of a tournament
-	Properties:
-	- _state: (int) intern state of the tournament
-		0 -> not yet began
-		1 -> a phase is running
-		2 -> wait for a new phase
-		3 -> end of the tournament
-	- _phase: (string) name of the current (or next) phase
+	Class for the tournament
+	only subclasses should be used directly
+	Subclasses object can be created using Tournament.factory(...)
+
+	Attributes:
+		- _name: (string) name of the tournament
+		- _nbMaxPlayer: (int) maximum number of players (0 for unlimited)
+		- _nbRounds4Victory: (int) number of rounds  for a victory (usually 1 or 2)
+		- _players: (list of Players) list of engaged players
+		- _games: dictionnary of current games
+		- _queue: (Queue) queue of running game (used to wait for all the games to be ended)
+		- _state: (int) intern state of the tournament
+			0 -> not yet began
+			1 -> a phase is running
+			2 -> wait for a new phase
+			3 -> end of the tournament
+		- _phase: (string) name of the current (or next) phase
+		- _round: (int) actual round
+
+	Class attributes
+		- _HTMLoptions: (string) HTML code to display the options in a form
+		- _mode: (string) mode of the tournament (like 'championship' or 'single-elimination Tournament')
+		        the short name is given by the class name
+		- allTournaments: dictionary of all the existing tournament (name->tournament)
+
 	"""
-	def __init__(self):
-		"""Create a status (at the beginning, the tournament has not yet began)"""
-		self._state = 0     # current state
-		self._phase = ""
+	allInstances = {}         # dictionary of all the tournaments
+	HTMLoptions = ""          # some options to display in an HTML form
+	HTMLgameoptions = ""       # some options to display game options in an HTML form
+	# TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
+	mode = ""               # type of the tournament
+
+	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
+		"""
+		Create a Tournament
+
+		Should not be directly (only used by the __init__ of the subclasses)
+
+		Parameters:
+		- name: (string) name of the tournament (used for the
+		- nbMaxPlayers: (integer) number maximum of players in the tournament (0 for no limit)
+		- maxVictories: (integer) maximum number of victories to win the match (1, 2 or 3): 1 means the 1st player is randomly determined
+		"""
+		# name of the tournament
+		self._name = sub('\W+', '', name)
+		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
+		if name != self._name or len(name) > 20:
+			raise ValueError("The name of the tournament is not valid (must be 20 characters max, and only in [a-zA-Z0-9_]")
+
+		# get maximum number of players
+		try:
+			self._nbMaxPlayers = int(nbMaxPlayers)
+		except ValueError:
+			raise ValueError("The nb maximum of players is not valid")
+		if self._nbMaxPlayers < 0:
+			raise ValueError("The nb maximum of players should be positive")
+
+		# get maximum number of games for a victory (gives the nb of rounds)
+		try:
+			self._nbRounds4Victory = int(nbRounds4Victory)
+		except ValueError:
+			raise ValueError("The number of needed rounds for a victory is not valid")
+
+		self._players = []  # list of engaged players
+		self._games = {}        		# list of current games
+		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
+		self._matches = []              # list of current (or next) matches in the phase
+		self._state = 0                 # current state
+		self._phase = ""                # name of the phase
+		self._round = 0
+
+		# match generator
+		self._matchGen = self.MatchsGenerator()
+
+		# TODO: add a logger
+
+		# and last, call the constructor of BaseClass
+		if name in self.allInstances:
+			raise ValueError("A tournament with the same name already exist")
+		super().__init__(name)
+
+
+
+	@property
+	def name(self):
+		return self._name
+
+	@property
+	def nbMaxPlayers(self):
+		return self._nbMaxPlayers
+
+	@property
+	def nbRounds4Victory(self):
+		return self._nbRounds4Victory
+
+	@property
+	def players(self):
+		return self._players
+
+
+	def HTMLrepr(self):
+		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
+
+	@property
+	def games(self):
+		return self._games
 
 	@property
 	def hasBegan(self):
@@ -109,10 +202,10 @@ class Status:
 			return HTMLstr % ('', 'Run Tournament !!')
 		elif self._state == 1:
 			# disabled "next Phase" button
-			return HTMLstr % ('disabled', 'Next Phase (%s)'% self._phase)
+			return HTMLstr % ('disabled', 'Next Phase (%s)' % self._phase)
 		elif self._state == 2:
 			# enable "next Phase" button
-			return HTMLstr % ('', 'Next Phase (%s)'% self._phase)
+			return HTMLstr % ('', 'Next Phase (%s)' % self._phase)
 		else:
 			# no button anymore
 			return ""
@@ -124,124 +217,11 @@ class Status:
 		if self._state == 0:
 			return "Ready to start !"
 		elif self._state == 1:
-			return "Running phase: " + self._phase
+			return "Running phase: %s (%d%s round)" % (self._phase, self._round, numbering(self._round))
 		elif self._state == 2:
 			return "Next phase: " + self._phase
 		else:
 			return "Tournament over"
-
-
-# TODO: Tournament class should be virtual (abstract)
-class Tournament(BaseClass):
-	"""
-	Class for the tournament
-	only subclasses should be used directly
-	Subclasses object can be created using Tournament.factory(...)
-
-	Attributes:
-		- _name: (string) name of the tournament
-		- _nbMaxPlayer: (int) maximum number of players (0 for unlimited)
-		- _nbRounds4Victory: (int) number of rounds  for a victory (usually 1 or 2)
-		- _players: (list of Players) list of engaged players
-		- _games: dictionnary of current games
-		- _queue: (Queue) queue of running game (used to wait for all the games to be ended)
-
-	Class attributes
-		- _HTMLoptions: (string) HTML code to display the options in a form
-		- _mode: (string) mode of the tournament (like 'championship' or 'single-elimination Tournament')
-		        the short name is given by the class name
-		- allTournaments: dictionary of all the existing tournament (name->tournament)
-
-	"""
-	allInstances = {}         # dictionary of all the tournaments
-	HTMLoptions = ""          # some options to display in an HTML form
-	HTMLgameoptions = ""       # some options to display game options in an HTML form
-	# TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
-	mode = ""               # type of the tournament
-
-	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
-		"""
-		Create a Tournament
-
-		Should not be directly (only used by the __init__ of the subclasses)
-
-		Parameters:
-		- name: (string) name of the tournament (used for the
-		- nbMaxPlayers: (integer) number maximum of players in the tournament (0 for no limit)
-		- maxVictories: (integer) maximum number of victories to win the match (1, 2 or 3): 1 means the 1st player is randomly determined
-		"""
-		# name of the tournament
-		self._name = sub('\W+', '', name)
-		# check if the name is valid (20 characters max, and only in [a-zA-Z0-9_]
-		if name != self._name or len(name) > 20:
-			raise ValueError("The name of the tournament is not valid (must be 20 characters max, and only in [a-zA-Z0-9_]")
-
-		# get maximum number of players
-		try:
-			self._nbMaxPlayers = int(nbMaxPlayers)
-		except ValueError:
-			raise ValueError("The nb maximum of players is not valid")
-		if self._nbMaxPlayers < 0:
-			raise ValueError("The nb maximum of players should be positive")
-
-		# get maximum number of games for a victory (gives the nb of rounds)
-		try:
-			self._nbRounds4Victory = int(nbRounds4Victory)
-		except ValueError:
-			raise ValueError("The number of needed rounds for a victory is not valid")
-
-		self._players = []  # list of engaged players
-		self._games = {}        		# list of current games
-		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
-		self._status = Status()         # status of the tournament
-		self._matches = []              # list of current (or next) matches in the phase
-
-		# match generator
-		self._matchGen = self.MatchsGenerator()
-
-		# TODO: add a logger
-
-		# and last, call the constructor of BaseClass
-		if name in self.allInstances:
-			raise ValueError("A tournament with the same name already exist")
-		super().__init__(name)
-
-
-
-	@property
-	def name(self):
-		return self._name
-
-	@property
-	def nbMaxPlayers(self):
-		return self._nbMaxPlayers
-
-	@property
-	def nbRounds4Victory(self):
-		return self._nbRounds4Victory
-
-	@property
-	def players(self):
-		return self._players
-
-	@property
-	def hasBegan(self):
-		return self._status.hasBegan
-	#
-	# @property
-	# def isPhaseRunning(self):
-	# 	return self._isPhaseRunning
-
-	def HTMLrepr(self):
-		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
-
-	@property
-	def games(self):
-		return self._games
-
-	# @property
-	# def phase(self):
-	# 	return self._phase
 
 
 	@classmethod
@@ -364,33 +344,33 @@ class Tournament(BaseClass):
 		"""Launch a phase of the tournament
 		"""
 		# check if a phase is not already running
-		if self._status.isPhaseRunning:
+		if self.isPhaseRunning:
 			# do noting, since a phase is already running
 			return
 
 		# first launch
-		if not self._status.hasBegan:
+		if not self.hasBegan:
 			# we first need to get the list of 2-tuple (player1,player2) of players who will play together in the phase
 			try:
 				phase, self._matches = next(self._matchGen)
 			except StopIteration:
-				self._status.endTournament()
+				self.endTournament()
 			else:
-				self._status.newPhase(phase)
+				self.newPhase(phase)
 		else:
-			self._status.newPhase()
+			self.newPhase()
 
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
 		# TODO: rename _games variable: it's more than a simple match (several rounds)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in self._matches if p1 and p2}
 		# run the games
-		for r in range(1, self.nbRounds4Victory + 1):
+		for self._round in range(1, self.nbRounds4Victory + 1):
 
 			for (p1, p2), (score, _) in self._games.items():
 
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
-					start = (r-1) % 2 if r < self.nbRounds4Victory else -1
+					start = (self._round-1) % 2 if self._round < self.nbRounds4Victory else -1
 					# TODO : pass the TIMEOUT parameter
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self, **kwargs)
 					self._queue.put_nowait(None)
@@ -409,9 +389,9 @@ class Tournament(BaseClass):
 			phase, self._matches = next(self._matchGen)
 		except StopIteration:
 			# no more matches to run (end of the tournament)
-			self._status.endTournament()
+			self.endTournament()
 		else:
-			self._status.endPhase(phase)
+			self.endPhase(phase)
 
 		# update data through websockets
 		self.sendUpdateToWebSocket()
@@ -424,23 +404,23 @@ class Tournament(BaseClass):
 		"""
 		listGames = []
 
-		if self._status.isPhaseRunning:
+		if self.isPhaseRunning:
 			# build the HTML representation for the running games
 			for (p1, p2), (score, game) in self._games.items():
 				if game:
 					listGames.append("%s: %s %s %s" % (game.HTMLrepr(), p1.HTMLrepr(), score, p2.HTMLrepr()))
 		else:
 			# build the HTML representation for the next games
-			for p1,p2 in self._matches:
+			for p1, p2 in self._matches:
 				if p1 and p2:
 					listGames.append("%s vs %s" % (p1.HTMLrepr(), p2.HTMLrepr()))
 
 		# return the dictionary used by the websocket
 		return {'nbPlayers': len(self._players), 'Players': [p.HTMLrepr() for p in self._players],
-		        'HTMLbutton': self._status.HTMLButton(),
-		        'phase': self._status.getStatus(), 'Games': listGames,
+		        'HTMLbutton': self.HTMLButton(),
+		        'phase': self.getStatus(), 'Games': listGames,
 		        'score': self.HTMLscore(),
-		        'next_games': 'Games' if self._status.isPhaseRunning else 'Next games'}
+		        'next_games': 'Games' if self.isPhaseRunning else 'Next games'}
 
 
 
