@@ -44,6 +44,8 @@ class PoolKnockout(Tournament):
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory, nbGroups, nbFirst, **_):
 		# call the super class constructor
+		# (we call it now, because it parses the parameters and we need them)
+		# (the drawback is that we need to remove the instance in case of error here)
 		super().__init__(name, nbMaxPlayers, nbRounds4Victory)
 
 		self._score = {}
@@ -54,19 +56,24 @@ class PoolKnockout(Tournament):
 		try:
 			self._nbGroups = int(nbGroups)
 		except ValueError:
+			super().removeInstance(name)    # need to remove the instance
 			raise ValueError("The number of groups must be an integer")
 		if not self._nbMaxPlayers == 0 and not 2 <= self._nbGroups <= self.nbMaxPlayers/2:
+			super().removeInstance(name)
 			raise ValueError("The number of groups must be in 0 and nbMaxPlayer/2")
 
 		log2nbGroups = frexp(float(nbGroups))[1] - 1  #
 		if not 2**log2nbGroups == self._nbGroups:
+			super().removeInstance(name)
 			raise ValueError("The number of groups should be 2^n")
 		# number of players per group that pass the first phase
 		try:
 			self._nbFirst = int(nbFirst)
 		except ValueError:
+			super().removeInstance(name)
 			raise ValueError("The number of accepted players per group must be an integer")
 		if not self._nbMaxPlayers == 0 and not self._nbMaxPlayers//self._nbGroups >= self._nbFirst:
+			super().removeInstance(name)
 			raise ValueError("There must be enough player in each group to passe the first phase")
 
 
@@ -144,7 +151,6 @@ class PoolKnockout(Tournament):
 				newDraw.append(Draw[2*j] if self._score[Draw[2*j]][2] > self._score[Draw[2*j+1]][2] else Draw[2*j+1])
 			self._Draw.append(newDraw)
 
-		# Make eht singleELimiationTournament
 
 
 	def updateScore(self):
