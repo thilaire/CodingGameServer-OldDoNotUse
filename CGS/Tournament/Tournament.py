@@ -185,6 +185,7 @@ class Tournament(BaseClass):
 	def endTournament(self):
 		"""Called to indicate the end of the tournament"""
 		self._state = 3
+		Tournament.removeInstance(self.name)
 
 	@property
 	def phase(self):
