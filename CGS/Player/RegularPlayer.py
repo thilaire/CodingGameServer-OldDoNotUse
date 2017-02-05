@@ -18,7 +18,6 @@ File: Player.py
 
 from threading import Event
 
-from CGS.Logger import configurePlayerLogger
 from CGS.Player import Player
 from CGS.BaseClass import BaseClass
 
@@ -53,13 +52,7 @@ class RegularPlayer(Player, BaseClass):
 		"""
 
 		# call the Player constructor
-		Player.__init__(self, name)
-
-		# create the logger of the player
-		self._logger = configurePlayerLogger(name)
-
-		self.logger.info("=================================")
-		self.logger.info(name + " just log in (from " + address + ".")
+		Player.__init__(self)
 
 		# waitGame event
 		self._waitingGame = Event()
@@ -67,21 +60,15 @@ class RegularPlayer(Player, BaseClass):
 
 		# and last, call the BaseClass constructor
 		BaseClass.__init__(self, name)
+		self.logger.info("=================================")
+		self.logger.info(name + " just log in (from " + address + ".")
+
 
 
 	@property
 	def isRegular(self):
 		return True
 
-
-	@classmethod
-	def removePlayer(cls, name):
-		pl = cls.getFromName(name)
-		if pl is not None:
-			del cls.allInstances[name]
-			for handler in pl.logger.handlers[:]:
-				handler.close()
-				pl.logger.removeHandler(handler)
 
 	@property
 	def game(self):
@@ -108,3 +95,12 @@ class RegularPlayer(Player, BaseClass):
 		# (so when the game assigned itself to the game property of a player)
 		self._waitingGame.wait()
 		self._waitingGame.clear()  # clear it for the next game...
+
+
+	def HTMLrepr(self):
+		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
+
+
+	def HTMLpage(self):
+		# TODO: return a dictionary to fill a template
+		return self.HTMLrepr()

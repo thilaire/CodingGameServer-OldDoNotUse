@@ -16,7 +16,7 @@ File: Game.py
 
 """
 
-import logging
+
 import time as timemod
 from datetime import datetime
 from random import seed as set_seed, randint, choice
@@ -25,7 +25,6 @@ from time import time
 
 from CGS.Comments import CommentQueue
 from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
-from CGS.Logger import configureGameLogger
 from CGS.BaseClass import BaseClass
 
 
@@ -130,27 +129,15 @@ class Game(BaseClass):
 		# - the first 6 characters are the seed (in hexadecimal),
 		# - the 6 next characters are hash (CRC24) of the time and names (hexadecimal)
 		ok = False
+		name = ""
 		while not ok:   # we need a loop just in case we are unlucky and two existing games have the same hash
-			name = str(int(time())) + player1.name + player2.name
-			self._name = hex6(seed)[2:] + hex6(crc24(bytes(name, 'utf8')))[2:]
-			ok = self._name not in self.allInstances
-			if not ok:
-				# just in case we are unlucky, we need to log it (probably it will never happens)
-				logger = logging.getLogger()
-				og = self.allInstances[self._name]  # other game
-				g1 = str(og.seed) + '-' + og.players[0].name + og.players[1].name
-				g2 = str(seed) + '-' + player1.name + '-' + player2.name
-				logger.warning("Two games have the same name (same hash): %s and %s" % (g1, g2))
+			fullName = str(int(time())) + player1.name + player2.name
+			name = hex6(seed)[2:] + hex6(crc24(bytes(fullName, 'utf8')))[2:]
+			ok = name not in self.allInstances
+			timemod.sleep(1)
 
 		# store the tournament
 		self._tournament = tournament
-
-		# create the logger of the game
-		self._logger = configureGameLogger(self.name)
-		# log the game
-		self.logger.info("=================================")
-		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", self.name, player1.name, player2.name, seed)
-		# TODO: also log that this game is part of a tournament (if tournament is not None)
 
 		# determine who starts (player #0 ALWAYS starts)
 		self._whoPlays = 0
@@ -165,7 +152,6 @@ class Game(BaseClass):
 		else:
 			try:
 				self._delay = int(options['delay'])
-				self.logger.debug("The delay is set to %ds" % self._delay)
 			except ValueError:
 				raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
 
@@ -175,7 +161,6 @@ class Game(BaseClass):
 		else:
 			try:
 				self._timeout = int(options['timeout'])
-				self.logger.debug("The timeout is set to %ds" % self._timeout)
 			except ValueError:
 				raise ValueError("The 'timeout' value is invalid ('timeout=%s')" % options['timeout'])
 		# timestamp of the last move
@@ -187,20 +172,19 @@ class Game(BaseClass):
 		# list of comments
 		self._comments = CommentQueue(MAX_COMMENTS)
 
+		# and (almost) last, call the super init for base initialization
+		super().__init__(name)
+
 		# advertise the players that they enter in a game
 		player1.game = self
 		player2.game = self
 
-		# and last, call the super init
-		super().__init__(self.name)
-
-
-
-
-	# TODO: the _name property should be included in BaseClass class
-	@property
-	def name(self):
-		return self._name
+		# log the game
+		self.logger.info("=================================")
+		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", name, player1.name, player2.name, seed)
+		self.logger.debug("The delay is set to %ds" % self._delay)
+		self.logger.debug("The timeout is set to %ds" % self._timeout)
+		# TODO: also log that this game is part of a tournament (if tournament is not None)
 
 
 	def HTMLrepr(self):
@@ -271,22 +255,6 @@ class Game(BaseClass):
 
 		# remove from the list of Games
 		Game.removeInstance(self.name)
-
-		# close the logger file
-		for handler in self.logger.handlers[:]:
-			handler.close()
-			self.logger.removeHandler(handler)
-
-		# close the logger file
-		for handler in self.logger.handlers[:]:
-			handler.close()
-			self.logger.removeHandler(handler)
-
-
-
-	@property
-	def logger(self):
-		return self._logger
 
 
 	@property

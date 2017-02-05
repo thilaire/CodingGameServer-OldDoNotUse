@@ -23,58 +23,40 @@ from email.utils import parseaddr   # parse email to validate it (can validate w
 from colorlog import ColoredFormatter  # logging with colors
 from colorama import Fore
 from os import makedirs, remove, listdir
-from os.path import getmtime, getsize, join
+from os.path import getmtime, getsize, join, splitext
 from smtplib import SMTP, SMTPAuthenticationError
 from operator import itemgetter
-from functools import wraps
 from threading import Lock
 from jinja2 import Template
 
+
 # Max File Size (in octets)
 MAX_ACTIVITY_SIZE = 1e6     # 1Mo for the activity.log file
-MAX_PLAYER_SIZE = 50e3       # 50ko each player
-MAX_PLAYERS_FOLDER = 5e6     # 5Mo for the players/ folder
-MAX_GAME_SIZE = 10e3         # 10ko each game
-MAX_GAMES_FOLDER = 5e6       # 5Mo for the games/ folder
+MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 10e3, 'Tournament': 1e6}   # 10ko per game and player, 1Mo per tournament
+MAX_BASECLASS_FOLDER = {'Game':  1e6, 'Player': 1e6, 'Tournament': 1e6}   # 5Mo per game, player and tournament folders
 
 
-# see 'Logging.txt' for the different logging levels
+# logging levels (see 'Logging.txt'), depending on the mode
 LOW_DEBUG_LEVEL = 5
 MESSAGE_LEVEL = 35
 activity_level = {
 	'prod': (MESSAGE_LEVEL, logging.WARNING, logging.ERROR),
 	'dev': (logging.INFO, logging.DEBUG),
 	'debug': (logging.DEBUG, LOW_DEBUG_LEVEL)}
-player_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
-game_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
 error_level = {'prod': logging.ERROR, 'dev': MESSAGE_LEVEL, 'debug': MESSAGE_LEVEL}
+baseclass_level = {'prod': logging.INFO, 'dev': logging.DEBUG, 'debug': LOW_DEBUG_LEVEL}
+
+
+# dictionary of Lockes, used for removeOldestWithLock (to that removeOldestFilePlayer is only run once a time)
+lockDict = {}
 
 
 # global variables used as configuration variables
 class Config:
-	mode = ''   # default mode, set by configureRootLogger
-	logPath = ''   # path where to store the log
+	mode = ''       # default mode, set by configureRootLogger
+	logPath = ''    # path where to store the log
 	webPort = ''    # port of the web server
 	host = ''       # name of the host
-
-
-# From http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
-def non_blocking_lock(fn):
-	"""Decorator. Prevents the function from being called multiple times simultaneously.
-    If thread A is executing the function and thread B attempts to call the
-    function, thread B will immediately receive a return value of None instead.
-    """
-	lock = Lock()
-
-	@wraps(fn)
-	def locker(*args, **kwargs):
-		if lock.acquire(False):
-			try:
-				return fn(*args, **kwargs)
-			finally:
-				lock.release()
-
-	return locker
 
 
 # function used to log message at low_debug and message levels
@@ -96,13 +78,14 @@ def configureRootLogger(args):
 
 	Returns the logger
 	"""
+	# store the configuration in Config (datat used elsewhere)
 	gameName = args['<gameName>']
 	Config.mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
 	Config.logPath = join(gameName, Template(args['--log']).render(hostname=gethostname()))
 	Config.webPort = args['--web']
 	Config.host = args['--host']
 
-	# add the COMM_DEBUG and MESSAGE logging levels
+	# add the LOW_DEBUG and MESSAGE logging levels
 	logging.addLevelName(LOW_DEBUG_LEVEL, "COM_DEBUG")
 	logging.Logger.low_debug = low_debug
 	logging.addLevelName(MESSAGE_LEVEL, "MESSAGE")
@@ -187,95 +170,93 @@ def configureRootLogger(args):
 
 
 
-def removeOldestFile(path, maxSize):
+def removeOldestFiles(cls, path, maxSize):
 	"""
-	Remove the oldest log file in path if the folder size is greater than MAX_SIZE
+	Remove some of the oldest log file in path,  if that folder's size is greater than maxSize
+
 	Parameters:
+	- cls: (class) class of the objets concerned (used to test if some objects still exist)
 	- path: (string) path where to look for .log files
 	- maxSize: (int) maximum size (in octets) of the folder
 
-	Use listdir, but can be based on scandir (Python 3.5+) for efficiency
+	Remark: it uses listdir, but can be based on scandir (Python 3.5+) for efficiency
 	"""
-	# while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
-	# TODO:  write a try..catch if path does not exist
 
+	# while sum(f.stat().st_size for f in scandir(path)) > (MAX_SIZE):     # -> for Python 3.5 (fastest!)
 	while sum(getsize(path+f) for f in listdir(path)) > maxSize:
+
+		# build the list (iterator) of log files that are not yet used (not in cls.allInstances dictionary)
 		# files = ((f.name, f.stat().st_mtime) for f in scandir(path) if '.log' in f.name)      # -> for Python 3.5 (fastest!)
-		files = ((f, getmtime(path + f)) for f in listdir(path) if '.log' in f)
-		# TODO: check if the game/player we are removing is not still playing
-		# (is not in Player.allPlayers / Games.allPGames)
-		# otherwise it will not be logged
-		# if we add this condition in the iteratirn we need a try/Except when the sequence is empty
-		# (returns a ValueError)
-		oldest = min(files, key=itemgetter(1))[0]
+		files = ((f, getmtime(path + f)) for f in listdir(path) if
+		         '.log' in f and splitext(f)[0] not in cls.allInstances)
+		# remove the oldest file
+		try:
+			oldest = min(files, key=itemgetter(1))[0]
+		except ValueError:
+			# the list is empty, nothing to remove...
+			break
 		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
 		remove(path+oldest)
 
-
-# The two following functions just call removeOldestFile, but each with a different non-blocking lock
-# so that these functions are just called when nobodyelse uses then
-# (if removeOldestFilePlayer is already run by a thread, then no other thread can run it (do nothing instead)
-# so that we do not have two functions that try to delete oldest files in the same time
-# (one is enough; several causes troubles)
-@non_blocking_lock
-def removeOldestFilePlayer(path):
-	return removeOldestFile(path, MAX_PLAYERS_FOLDER)
+	# TODO: this is not efficient. It should be better to i) build the list of log files that can be removed
+	# and ii) in a loop, remove the oldest while the size of the deleted files is lower than the excedent
 
 
-@non_blocking_lock
-def removeOldestFileGame(path):
-	return removeOldestFile(path, MAX_GAMES_FOLDER)
-
-
-def configurePlayerLogger(playerName):
+def removeOldestWithLock(cls, path, maxSize):
 	"""
-	Configure a player logger
+	# inspired by http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
+	:param path:
+	:param maxSize:
+	:param cls:
+	:return:
+	"""
+	# get the lock associated to the path (create it if it doesn't exist)
+	if path not in lockDict:
+		lockDict[path] = Lock()
+	lock = lockDict[path]
+
+	# check if the call of removeOldestFiles is locked (for a given path)
+	if lock.acquire(False):
+		try:
+			removeOldestFiles(cls, path, maxSize)
+		finally:
+			lock.release()
+	else:
+		# else do nothing (since removeOldestFilePlayer is already ran by a thread, then there is no need to
+		# run it in the same time, otherwise it will cause some problems)
+		pass
+
+
+
+def configureBaseClassLogger(cls, objName):
+	"""
+	Configure a logger for BaseClass object (game, player or tournament)
 	Parameters:
-	- playerName: (string) name of the player
+	- obj: instance of BaseClass (instance of Game, Player, League, etc.)
 
 	Returns the logger
 	"""
-	logger = logging.getLogger(playerName)
-	path = join(Config.logPath, 'players/')
+	# get the name of the class, or its parents
+	className = cls.__name__
+	if className not in MAX_BASECLASS_FOLDER:
+		className = cls.__base__.__name__
+
+	# create the logger and the associated folder
+	logger = logging.getLogger(className + objName)
+	path = join(Config.logPath, className + 's/')     # add a 's' at the end (Game -> Games)
 	makedirs(path, exist_ok=True)
 
-	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
-	removeOldestFilePlayer(path)
+	# remove the oldest log files until the folder weights more than MAX_BASECLASS_FOLDER octets
+	removeOldestWithLock(cls, path, MAX_BASECLASS_FOLDER[className])
 
 	# add an handler to write the log to a file (MAX_PLAYER_SIZE octets max) *if* it doesn't exist
 	if not logger.handlers:
 
-		file_handler = RotatingFileHandler(path + playerName + '.log', mode='a', maxBytes=MAX_PLAYER_SIZE, backupCount=1)
-		file_handler.setLevel(player_level[Config.mode])
+		file_handler = RotatingFileHandler(path + objName + '.log', mode='a',
+		                                   maxBytes=MAX_BASECLASS_FOLDER[className], backupCount=1)
+		file_handler.setLevel(baseclass_level[Config.mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
 		logger.addHandler(file_handler)
 
 	return logger
-
-
-def configureGameLogger(name):
-	"""
-	Configure a game logger
-	Parameters:
-	- name: (string) name of the game
-
-	Returns the logger
-	"""
-	logger = logging.getLogger(name)
-	path = join(Config.logPath, 'games/')
-	makedirs(path, exist_ok=True)
-
-	# remove the oldest log files until the folder weights more than MAX_PLAYERS_FOLDER octets
-	removeOldestFileGame(path)
-
-	# add an handler to write the log to a file (MAX_GAME_SIZE max) *if* it doesn't exist
-	file_handler = RotatingFileHandler(path + name + '.log', mode='a', maxBytes=MAX_GAME_SIZE, backupCount=1)
-	file_handler.setLevel(game_level[Config.mode])
-	file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
-	file_handler.setFormatter(file_formatter)
-	logger.addHandler(file_handler)
-
-	return logger
-
-

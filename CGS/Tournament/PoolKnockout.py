@@ -45,7 +45,7 @@ class PoolKnockout(Tournament):
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory, nbGroups, nbFirst, **_):
 		# call the super class constructor
 		# (we call it now, because it parses the parameters and we need them)
-		# (the drawback is that we need to remove the instance in case of error here)
+		# (the drawback is that we need to remove the instance in case of an error here)
 		super().__init__(name, nbMaxPlayers, nbRounds4Victory)
 
 		self._score = {}

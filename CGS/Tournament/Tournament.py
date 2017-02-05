@@ -120,11 +120,7 @@ class Tournament(BaseClass):
 		# match generator
 		self._matchGen = self.MatchsGenerator()
 
-		# TODO: add a logger
-
 		# and last, call the constructor of BaseClass
-		if name in self.allInstances:
-			raise ValueError("A tournament with the same name already exist")
 		super().__init__(name)
 
 

@@ -20,7 +20,7 @@ File: WebSocketBase.py
 import logging
 from geventwebsocket import WebSocketError
 import json
-
+from CGS.Logger import configureBaseClassLogger
 logger = logging.getLogger()
 
 
@@ -29,25 +29,50 @@ class BaseClass:
 	allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
 	_LoIWebSockets = []       # list of webSockets for the lists of Instance (LoI) informations
 
+	# TODO: we should use weak references here (for the allInstances dictionary)
+	# (see http://stackoverflow.com/questions/37232884/in-python-how-to-remove-an-object-from-a-list-if-it-is-only-referenced-in-that)
+
 	def __init__(self, name):
 		"""
 		Base constructor
-		add the object to the dictionary of all instances
-		and create list of websockets
+		- store the name, create the logger
+		- add the object to the dictionary of all instances
+		- and create list of websockets
+
+		Should be called at the end of the subclass init
 
 		Parameters:
 		name: (string) name of the instance
 		"""
+		# store the name
+		self._name = name
 
-		# add itself to the dictionary of games
-		self.allInstances[name] = self
+		# create and configure the logger
+		self._logger = configureBaseClassLogger(self.__class__, name)
 
 		# list of (instance) websocket
 		self._lwsocks = []
 
+		# add itself to the dictionary of games
+		if name in self.allInstances:
+			raise ValueError("A %s with the same name already exist" % self.__class__.__name__)
+		self.allInstances[name] = self
+
 		# send the new list of instances to web listeners
 		self.sendListofInstances()
 
+
+
+	# ===========
+	# Properties
+	# ===========
+	@property
+	def name(self):
+		return self._name
+
+	@property
+	def logger(self):
+		return self._logger
 
 	# ========================
 	# Manage list of instances
@@ -64,14 +89,20 @@ class BaseClass:
 		"""
 		return cls.allInstances.get(name, None)
 
+
 	@classmethod
 	def removeInstance(cls, name):
 		# remove from the list of instances
 		if name in cls.allInstances:
+			obj = cls.allInstances[name]
+			# close the associated logger handlers (close file)
+			for handler in obj.logger.handlers[:]:
+				handler.close()
+				obj.logger.removeHandler(handler)
 			del cls.allInstances[name]
 			cls.sendListofInstances()
-		# TODO: we should use weak references here
-		# (see http://stackoverflow.com/questions/37232884/in-python-how-to-remove-an-object-from-a-list-if-it-is-only-referenced-in-that)
+
+
 
 
 	# ===================================

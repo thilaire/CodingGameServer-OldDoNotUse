@@ -29,7 +29,6 @@ class Player:
 	"""
 	A Player
 
-	- _name: its name
 	- _game: the game it is involved with
 
 
@@ -39,35 +38,12 @@ class Player:
 	- opponent's turn (game.playerWhoPlays != self)
 	"""
 
-	def __init__(self, name):
-		# name
-		self._name = name
+	def __init__(self):
 
 		# game
 		self._game = None
-
-		# logger
-		self._logger = logger
-
-
-	def HTMLrepr(self):
-		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
-
-
-	def HTMLpage(self):
-		# TODO: return a dictionary to fill a template
-		return self.HTMLrepr()
-
-
-	@property
-	def logger(self):
-		return self._logger
-
-
-	@property
-	def name(self):
-		return self._name
-
+		# the name is not stored here: for TrainingPlayer, it is stored locally, and for RegularPlayer, it is stored
+		# in the BaseClas
 
 
 	@property
@@ -78,7 +54,7 @@ class Player:
 	def game(self, g):
 		self._game = g
 
-
+	# TODO: remove, because no ones is using this (need to be checked)
 	@property
 	def opponent(self):
 		"""
@@ -97,9 +73,25 @@ class TrainingPlayer(Player):
 		Class for training players
 	"""
 
+	def __init__(self, name):
+		super().__init__()
+		# name
+		self._name = name
+		# logger
+		self._logger = logger       # TODO: check if this is somewhere used or not (if not, remove it)
+
+	@property
+	def logger(self):
+		return self._logger
+
+	@property
+	def name(self):
+		return self._name
+
 	@property
 	def isRegular(self):
 		return False
+
 
 
 	def playMove(self):
