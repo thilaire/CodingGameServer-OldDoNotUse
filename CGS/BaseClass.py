@@ -147,7 +147,7 @@ class BaseClass:
 		"""
 		d = {cls.__name__: [obj.HTMLrepr() for obj in cls.allInstances.values()] for cls in BaseClass.__subclasses__()}
 		js = json.dumps(d)
-		logger.low_debug("send List of instances : {%s}" % (d,))
+		logger.low_debug("send List of instances : {%s}" % (d.keys(),))
 		# send to all the websockets or only to one
 		lws = BaseClass._LoIWebSockets if wsock is None else [wsock]
 		for ws in lws:

@@ -204,6 +204,8 @@ def removeOldestFiles(cls, path, maxSize):
 
 def removeOldestWithLock(cls, path, maxSize):
 	"""
+	Remove some of the oldest log file in path (call removeOldestFiles)
+	*BUT* only if nobody is doing it with the same path (use Lock for that purpose)
 	# inspired by http://codereview.stackexchange.com/questions/42802/a-non-blocking-lock-decorator-in-python
 	:param path:
 	:param maxSize:
@@ -222,8 +224,8 @@ def removeOldestWithLock(cls, path, maxSize):
 		finally:
 			lock.release()
 	else:
-		# else do nothing (since removeOldestFilePlayer is already ran by a thread, then there is no need to
-		# run it in the same time, otherwise it will cause some problems)
+		# else do nothing (since removeOldestFilePlayer is already ran by a thread for this path,
+		#  then there is no need to run it in the same time, otherwise it will cause some problems)
 		pass
 
 
@@ -242,7 +244,7 @@ def configureBaseClassLogger(cls, objName):
 		className = cls.__base__.__name__
 
 	# create the logger and the associated folder
-	logger = logging.getLogger(className + objName)
+	logger = logging.getLogger(className + '-' + objName)
 	path = join(Config.logPath, className + 's/')     # add a 's' at the end (Game -> Games)
 	makedirs(path, exist_ok=True)
 

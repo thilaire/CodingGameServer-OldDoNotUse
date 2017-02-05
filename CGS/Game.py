@@ -134,7 +134,8 @@ class Game(BaseClass):
 			fullName = str(int(time())) + player1.name + player2.name
 			name = hex6(seed)[2:] + hex6(crc24(bytes(fullName, 'utf8')))[2:]
 			ok = name not in self.allInstances
-			timemod.sleep(1)
+			if not ok:
+				timemod.sleep(1)
 
 		# store the tournament
 		self._tournament = tournament
@@ -181,10 +182,13 @@ class Game(BaseClass):
 
 		# log the game
 		self.logger.info("=================================")
-		self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", name, player1.name, player2.name, seed)
+		if self._tournament:
+			self.logger.message("[Tournament %s] Game %s just starts with '%s' and '%s' (seed=%d).",
+			                    self._tournament.name, name, player1.name, player2.name, seed)
+		else:
+			self.logger.message("Game %s just starts with '%s' and '%s' (seed=%d).", name, player1.name, player2.name, seed)
 		self.logger.debug("The delay is set to %ds" % self._delay)
 		self.logger.debug("The timeout is set to %ds" % self._timeout)
-		# TODO: also log that this game is part of a tournament (if tournament is not None)
 
 
 	def HTMLrepr(self):

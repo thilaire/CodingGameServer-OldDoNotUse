@@ -122,7 +122,9 @@ class Tournament(BaseClass):
 
 		# and last, call the constructor of BaseClass
 		super().__init__(name)
-
+		# and log it
+		self._logger.message("=======================")
+		self._logger.message("The tournament %s is now created (%s)", name, self.__class__.__name__)
 
 
 	@property
@@ -172,14 +174,20 @@ class Tournament(BaseClass):
 		self._state = 1
 		if phase:
 			self._phase = phase
+		# log it
+		self.logger.message("The phase `%s` now starts", self._phase)
 
 	def endPhase(self, newPhase):
 		"""Called to indicate the end of the phase (so we wait for a new phase)"""
+		self.logger.message("The phase `%s` ends", self._phase)
 		self._state = 2
 		self._phase = newPhase
 
+
 	def endTournament(self):
 		"""Called to indicate the end of the tournament"""
+		self.logger.message("The tournament is now over !")
+		# TODO: log the winner (need to add a new attribute, that the child class should set at the end of the tournament)
 		self._state = 3
 		Tournament.removeInstance(self.name)
 
@@ -258,18 +266,25 @@ class Tournament(BaseClass):
 		# check if the tournament is open
 		if t.hasBegan:
 			if player not in t.players:
-				# TODO: log it in t.logger
-				raise ValueError("The tournament '%s' is now closed." % tournamentName)
+				t.logger.info("Player %s wanted to enter, but the tournament has began.", player.name)
+				raise ValueError("The tournament '%s' has already began." % tournamentName)
 			else:
 				# ok, nothing to do, the player is already registred
 				pass
 		else:
-			# TODO: log it (in player.logger and self.logger)
 			if t.nbMaxPlayers == 0 or len(t.players) < t.nbMaxPlayers:
+				# add the player in the players list
 				t.players.append(player)
+				t.logger.info("Player `%s` has joined the tournament", player.name)
+				player.logger.info("We have entered the tournament `%s`", t.name)
+				# update the sockets
 				t.sendUpdateToWebSocket()
 			else:
-				raise ValueError("The tournament '%s' already has its maximum number of players" % t.name)
+				t.logger.info("Player `%s` wanted to enter, but the tournament already has its maximum number of players.",
+				              player.name)
+				player.logger.info("Impossible to enter the tournament `%s`, it already has its maximum number of players",
+				                   t.name)
+				raise ValueError("The tournament `%s` already has its maximum number of players" % t.name)
 
 
 
@@ -321,6 +336,8 @@ class Tournament(BaseClass):
 		- winner: (Player) player who wins the game
 		- looser: (Player) player who loose the game
 		"""
+		# log it
+		self.logger.info("`%s` won its game against `%s`", winner.name, looser.name)
 		# modify the score in the dictionary
 		if (winner, looser) in self._games:
 			score = self._games[(winner, looser)][0]
@@ -370,6 +387,7 @@ class Tournament(BaseClass):
 					start = (self._round-1) % 2 if self._round < self.nbRounds4Victory else -1
 					# TODO : pass the TIMEOUT parameter
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self, **kwargs)
+					self.logger.info("The game `%s` vs `%s` starts", p1.name, p2.name)
 					self._queue.put_nowait(None)
 
 			# update the websockets (no need to update everytime a game is added)
