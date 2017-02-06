@@ -205,8 +205,11 @@ class Game(BaseClass):
 		"""
 		nWhoLooses = 0 if self._players[0] is whoLooses else 1
 		# end of the game if the opponent is not regular or if it has already disconnected
-		if (not self._players[1 - nWhoLooses].isRegular) or (self._players[1 - nWhoLooses].game is None):
+		if not self._players[1 - nWhoLooses].isRegular:
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
+		elif self._players[1 - nWhoLooses].game is None:
+			# the opponent has disconnected first, so we win
+			self.endOfGame(nWhoLooses, "Opponent has disconnected")
 		else:
 			whoLooses.game = None
 
