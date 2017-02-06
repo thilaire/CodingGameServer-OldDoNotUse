@@ -195,6 +195,7 @@ class Tournament(BaseClass):
 		self.logger.message("The tournament is now over: %s wins !!", self._winner)
 		self._state = 3
 		Tournament.removeInstance(self.name)
+		# !!TODO: disconnect all the players of that tournament ?
 
 	@property
 	def phase(self):
@@ -305,7 +306,7 @@ class Tournament(BaseClass):
 		"""
 		Called by PlayerSocket when the player disconnects
 		The player's name is kept in the dictionary, but with no player associated (with None instead)
-		:param player:
+		:param playerName: (string) name of the player who disconnects
 		:return:
 		"""
 		# check if the player is in that tournament

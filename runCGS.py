@@ -113,6 +113,5 @@ if __name__ == "__main__":
 
 # !TODO: add a timeout for the dataReceive (this exists in the BaseRequestHandler class)
 # TODO: send pretty emails (when send from webserver)
-# !!TODO: GameAPI.c: add the name of the player (and the game) in the debug printing (usefull when we run several players on the same terminal)
 # !TODO: allows the C API do not quit when there is an error (and to get back the error message) -> in some hidden variables "onErrorContinue" and "lastError" ?
 # !TODO: unify the docstrings (`Parameters` vs `param:`, check with sphinx)

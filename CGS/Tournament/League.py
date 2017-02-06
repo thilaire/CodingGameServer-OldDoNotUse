@@ -38,7 +38,14 @@ class League(Tournament):
 
 	def MatchsGenerator(self):
 		"""
-		Use the round robin tournament algorithm to generate the matches of each phase
+		Generator that generate, for each phase, a tuple:
+		- the name of the phase
+		- a list of players who will play together
+		(a list of 2-tuples (name1,name2), where name1 and name2 are the names of the players who will play together)
+
+		At the end, set the winner
+
+		It uses the round robin tournament algorithm to generate the matches of each phase
 		see http://en.wikipedia.org/wiki/Round-robin_tournament and
 		http://stackoverflow.com/questions/11245746/league-fixture-generator-in-python/11246261#11246261
 		"""
