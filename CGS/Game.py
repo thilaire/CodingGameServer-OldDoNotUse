@@ -204,7 +204,8 @@ class Game(BaseClass):
 		The game is not fully ended, since we need to wait the other player to call GET_MOVE or PLAY_MOVE
 		"""
 		nWhoLooses = 0 if self._players[0] is whoLooses else 1
-		if not self._players[1 - nWhoLooses].isRegular:
+		# end of the game if the opponent is not regular or if it has already disconnected
+		if (not self._players[1 - nWhoLooses].isRegular) or (self._players[1 - nWhoLooses].game is None):
 			self.endOfGame(1 - nWhoLooses, "Opponent has disconnected")
 		else:
 			whoLooses.game = None

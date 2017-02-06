@@ -314,7 +314,8 @@ class Tournament(BaseClass):
 		# remove that player
 		self._players[playerName] = None
 		self.logger.info("Player `%s` has quit the tournament", playerName)
-
+		# update the sockets
+		self.sendUpdateToWebSocket()
 
 
 	@classmethod

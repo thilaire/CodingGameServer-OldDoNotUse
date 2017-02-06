@@ -32,8 +32,8 @@ from jinja2 import Template
 
 # Max File Size (in octets)
 MAX_ACTIVITY_SIZE = 1e6     # 1Mo for the activity.log file
-MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 10e3, 'Tournament': 1e6}   # 10ko per game and player, 1Mo per tournament
-MAX_BASECLASS_FOLDER = {'Game':  1e6, 'Player': 1e6, 'Tournament': 1e6}   # 5Mo per game, player and tournament folders
+MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 100e3, 'Tournament': 1e6}   # 10ko per game and player, 1Mo per tournament
+MAX_BASECLASS_FOLDER = {'Game':  1e6, 'Player': 5e6, 'Tournament': 1e6}   # 5Mo per game, player and tournament folders
 
 
 # logging levels (see 'Logging.txt'), depending on the mode
@@ -255,7 +255,7 @@ def configureBaseClassLogger(cls, objName):
 	if not logger.handlers:
 
 		file_handler = RotatingFileHandler(path + objName + '.log', mode='a',
-		                                   maxBytes=MAX_BASECLASS_FOLDER[className], backupCount=1)
+		                                   maxBytes=MAX_BASECLASS_SIZE[className], backupCount=1)
 		file_handler.setLevel(baseclass_level[Config.mode])
 		file_formatter = logging.Formatter('%(asctime)s | %(message)s', "%m/%d %H:%M:%S")
 		file_handler.setFormatter(file_formatter)
