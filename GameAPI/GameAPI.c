@@ -36,17 +36,22 @@ File: GameAPI.c
 #include "GameAPI.h"
 
 
+
+#define HEAD_SIZE 4 /*number of bytes to code the size of the message (header)*/
+#define MAX_LENGTH 1000 /* maximum size of the buffer expect for print_Game */
+
 /* global variables about the connection
  * we use them just to hide all the connection details to the user
  * so no need to know about them, or give them when we use the functions of this API
 */
-#define HEAD_SIZE 4 /*number of bytes to code the size of the message (header)*/
-#define MAX_LENGTH 1000 /* maximum size of the buffer expect for print_Game */
-
-int sockfd = -1;		/* socket descriptor, equal to -1 when we are not yet connected */
+int sockfd = -1;		        /* socket descriptor, equal to -1 when we are not yet connected */
 char buffer[MAX_LENGTH];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message) */
-int debug=1;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
-char stream_size[HEAD_SIZE] ; 
+int debug=1;			        /* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
+char stream_size[HEAD_SIZE] ;
+char playerName[20];            /* name of the player, stored to display it in debug */
+
+
+
 /* Display Error message and exit
  *
  * Parameters:
@@ -54,15 +59,11 @@ char stream_size[HEAD_SIZE] ;
  * - msg: message to display
  * - ...: extra parameters to give to printf...
 */
-
-
-
-
 void dispError(const char* fct, const char* msg, ...)
 {
 	va_list args;
 	va_start (args, msg);
-	fprintf( stderr, "\e[5m\e[31m\u2327\e[2m (%s)\e[0m ", fct);
+	fprintf( stderr, "\e[5m\e[31m\u2327\e[2m [%s] (%s)\e[0m ", playerName, fct);
 	vfprintf( stderr, msg, args);
 	fprintf( stderr, "\n");
 	va_end (args);
@@ -82,7 +83,7 @@ void dispDebug(const char* fct, int level, const char* msg, ...)
 {
   if (debug>=level)
 	{
-		printf("\e[35m\u26A0\e[0m (%s) ", fct);
+		printf("\e[35m\u26A0\e[0m [%s] (%s) ", playerName, fct);
 
 		/* print the msg, using the varying number of parameters */
 		va_list args;
@@ -181,7 +182,10 @@ void connectToCGS( const char* fct, char* serverName, int port, char* name)
 {
 	struct sockaddr_in serv_addr;
 	struct hostent *server;
-	
+
+	/* copy the name */
+	strncpy(playerName, name, 20);
+
 	dispDebug( fct,2, "Initiate connection with %s (port: %d)", serverName, port);
 
 	/* Create a socket point, TCP/IP protocol, connected */
@@ -207,6 +211,8 @@ void connectToCGS( const char* fct, char* serverName, int port, char* name)
 
 	/* Sending our name */
 	sendString( fct, "CLIENT_NAME %s",name);
+
+
 }
 
 
