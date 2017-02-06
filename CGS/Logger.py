@@ -198,7 +198,7 @@ def removeOldestFiles(cls, path, maxSize):
 		logging.getLogger().info("Remove the file `%s`" % (path+oldest))
 		remove(path+oldest)
 
-	# TODO: this is not efficient. It should be better to i) build the list of log files that can be removed
+	# FIXME: this is not efficient. It should be better to i) build the list of log files that can be removed
 	# and ii) in a loop, remove the oldest while the size of the deleted files is lower than the excedent
 
 

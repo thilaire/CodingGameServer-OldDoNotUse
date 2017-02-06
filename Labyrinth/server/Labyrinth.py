@@ -154,7 +154,7 @@ class Labyrinth(Game):
 	"""
 
 	# dictionary of the possible training Players (non-regular players)
-	# TODO: build it automatically from Player.__subclasses__() ???
+	# FIXME: build it automatically from Player.__subclasses__() ???
 	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer,
 	             "ASTAR": AstarPlayer}   # type -> class of the Player
 
@@ -166,8 +166,6 @@ class Labyrinth(Game):
 		:param player2: 2nd Player
 		:param options: dictionary of options (the options 'seed' and 'timeout' are managed by the Game class)
 		"""
-
-		# TODO: add size of the labyrinth in the constructor?
 
 		# random Labyrinth
 		totalSize = randint(8, 12)  # sX + sY is randomly in [8;11]

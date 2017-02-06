@@ -17,7 +17,6 @@ Status: still in dev... (not even a beta)
 File: GameAPI.h
 	Functions' prototypes for the Game API
 
-TODO: explain...
 
 */
 

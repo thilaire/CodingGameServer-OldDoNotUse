@@ -68,7 +68,7 @@ class Tournament(BaseClass):
 	Class attributes
 		- _HTMLoptions: (string) HTML code to display the options in a form
 		- _mode: (string) mode of the tournament (like 'championship' or 'single-elimination Tournament')
-		        the short name is given by the class name
+			the short name is given by the class name
 		- allTournaments: dictionary of all the existing tournament (name->tournament)
 
 	"""
@@ -187,7 +187,7 @@ class Tournament(BaseClass):
 	def endTournament(self):
 		"""Called to indicate the end of the tournament"""
 		self.logger.message("The tournament is now over !")
-		# TODO: log the winner (need to add a new attribute, that the child class should set at the end of the tournament)
+		# !TODO: log the winner (need to add a new attribute, that the child class should set at the end of the tournament)
 		self._state = 3
 		Tournament.removeInstance(self.name)
 
@@ -375,7 +375,7 @@ class Tournament(BaseClass):
 			self.newPhase()
 
 		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
-		# TODO: rename _games variable: it's more than a simple match (several rounds)
+		# !TODO: rename _games variable: it's more than a simple match (several rounds)
 		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in self._matches if p1 and p2}
 		# run the games
 		for self._round in range(1, self.nbRounds4Victory + 1):
@@ -385,7 +385,7 @@ class Tournament(BaseClass):
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
 					start = (self._round-1) % 2 if self._round < self.nbRounds4Victory else -1
-					# TODO : pass the TIMEOUT parameter
+					# !!TODO : pass the TIMEOUT parameter
 					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self, **kwargs)
 					self.logger.info("The game `%s` vs `%s` starts", p1.name, p2.name)
 					self._queue.put_nowait(None)

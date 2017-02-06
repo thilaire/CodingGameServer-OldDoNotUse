@@ -107,8 +107,7 @@ def index():
 	"""
 	Main page (based on index.html template)
 	"""
-	return {"GameName": Game.getTheGameName(),
-	        'host': Config.host, 'webPort': Config.webPort}
+	return {"GameName": Game.getTheGameName(), 'host': Config.host, 'webPort': Config.webPort}
 
 
 # =======
@@ -135,14 +134,14 @@ def create_new_game():
 	player1 = RegularPlayer.getFromName(request.forms.get('player1'))
 	player2 = RegularPlayer.getFromName(request.forms.get('player2'))
 
-	# TODO: add some options (timeout, seed, etc.) in the html, and send them to the constructor
+	# !TODO: add some options (timeout, seed, etc.) in the html, and send them to the constructor
 	try:
 		# the constructor will check if player1 and player2 are available to play
 		# no need to store the game object created here
 		Game.getTheGameClass()(player1, player2)
 
 	except ValueError as e:
-		# TODO: redirect to an error page
+		# !TODO: redirect to an error page
 		# TODO: log this
 		return "Error. Impossible to create a game with " + str(request.forms.get('player1')) + " and " + str(request.forms.get('player2')) + ": '" + str(e) + "'"
 	else:
@@ -181,7 +180,7 @@ def create_new_tournament():
 	try:
 		Tournament.factory(**dict(request.forms))
 	except ValueError as e:
-		# TODO: redirect to an error page
+		# !TODO: redirect to an error page
 		# TODO: log this
 		return "Error. Impossible to create a tournament with " + str(dict(request.forms)) + ":'" + str(e) + "'"
 	else:
@@ -331,7 +330,7 @@ def error404():
 #
 # @error(500)
 # def errror500(err):
-# 	# TODO: useful ? to be checked
+# 	# !TODO: useful ? to be checked
 # 	weblogger.error(err, exc_info=True)
 #
 # 	return "We have an unexpected error. It has been reported, and we will work on it so that it never occurs again !"

@@ -41,10 +41,10 @@ File: GameAPI.c
  * so no need to know about them, or give them when we use the functions of this API
 */
 #define HEAD_SIZE 4 /*number of bytes to code the size of the message (header)*/
-#define MAX_LENGTH 1000 /* maximum size of the buffer expect for print_Game (TODO) */
+#define MAX_LENGTH 1000 /* maximum size of the buffer expect for print_Game */
 
 int sockfd = -1;		/* socket descriptor, equal to -1 when we are not yet connected */
-char buffer[MAX_LENGTH];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message; TODO: is it useful?) */
+char buffer[MAX_LENGTH];		/* global buffer used to send message (global so that it is not allocated/desallocated for each message) */
 int debug=1;			/* debug constant; we do not use here a #DEFINE, since it allows the client to declare 'extern int debug;' set it to 1 to have debug information, without having to re-compile labyrinthAPI.c */
 char stream_size[HEAD_SIZE] ; 
 /* Display Error message and exit
@@ -101,7 +101,7 @@ void dispDebug(const char* fct, int level, const char* msg, ...)
 * - nbuf : size of the buffer
 *
 * Return the remaining length of the message (0 is the message is completely read)
-* TODO if allocated memory for buf is < MAX_LENGTH, leads to memory fault
+* !FIXME: if allocated memory for buf is < MAX_LENGTH, leads to memory fault
 */
 
 int read_inbuf(const char *fct, char *buf, size_t nbuf){
@@ -377,7 +377,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
 	dispDebug( fct,1, "Receive that message: %s", buffer);
 
 	
-	/*TODO: that message is not handle or given to the user..
+	/* TODO: that message is not handle or given to the user.. Should we printf it ?
 	 TH: according to me, we need to print it when the result is not MOVE_OK	 */
 
 	return result;

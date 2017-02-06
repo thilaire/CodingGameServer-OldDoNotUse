@@ -33,4 +33,4 @@ class SingleEliminationTournament(Tournament):
 		# call the super class constructor
 		super().__init__(name, nbMaxPlayers, nbRounds4victory)
 
-	# TODO !!
+	# NOTIMPLEMENTED
