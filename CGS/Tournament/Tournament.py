@@ -426,10 +426,14 @@ class Tournament(BaseClass):
 					else:
 						# one player is not playing anymore (disconnected), so the other wins
 						score = self._games[(pName1, pName2)][0]
-						if player1:
+						if player1 is not None:
 							score[0] += 1
-						else:
+						elif player2 is not None:
 							score[1] += 1
+						else:
+							# in the case where the 2 players are disconnected, the 1st win...
+							# !FIXME: introduce equality (the result of a game is either WIN, LOOSE or EQUALITY !)
+							score[start] += 1
 
 			# update the websockets (no need to update everytime a game is added)
 			self.sendUpdateToWebSocket()
