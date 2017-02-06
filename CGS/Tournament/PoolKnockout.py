@@ -41,6 +41,7 @@ class PoolKnockout(Tournament):
 		Delay between each move : <input name="delay" type="number" value="0" required/>
 	</label>
 	"""
+	# !TODO: this option should be in Tournament (same option for every tournament)
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory, nbGroups, nbFirst, **_):
 		# call the super class constructor
@@ -151,6 +152,10 @@ class PoolKnockout(Tournament):
 				newDraw.append(Draw[2*j] if self._score[Draw[2*j]][2] > self._score[Draw[2*j+1]][2] else Draw[2*j+1])
 			self._Draw.append(newDraw)
 
+
+		# update the winner
+		# !!FIXME: set the winner
+		self._winner = ""
 
 
 	def updateScore(self):

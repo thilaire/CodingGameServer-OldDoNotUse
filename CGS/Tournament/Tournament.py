@@ -17,6 +17,11 @@ File: Tournament.py
 
 """
 
+
+# !!TODO: add some other options in the HTML form (timeout, possibility to run all the phases without stop, etc.)
+# !!TODO: remove unnecessary properties (used once in the HTML when it was not dynamic)
+
+
 import time     # do not import sleep from time (but rather use time.sleep()) because of the gevent's monkeypatch
 from queue import Queue
 from re import sub
@@ -54,8 +59,8 @@ class Tournament(BaseClass):
 		- _name: (string) name of the tournament
 		- _nbMaxPlayer: (int) maximum number of players (0 for unlimited)
 		- _nbRounds4Victory: (int) number of rounds  for a victory (usually 1 or 2)
-		- _players: (list of Players) list of engaged players
-		- _games: dictionnary of current games
+		- _players: dictionary (name: player) of engaged players (None if the player has left)
+		- _games: dictionnary of current games (pName1, pName2) -> [score,Game]
 		- _queue: (Queue) queue of running game (used to wait for all the games to be ended)
 		- _state: (int) intern state of the tournament
 			0 -> not yet began
@@ -75,7 +80,7 @@ class Tournament(BaseClass):
 	allInstances = {}         # dictionary of all the tournaments
 	HTMLoptions = ""          # some options to display in an HTML form
 	HTMLgameoptions = ""       # some options to display game options in an HTML form
-	# TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
+	# !TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
 	mode = ""               # type of the tournament
 
 	def __init__(self, name, nbMaxPlayers, nbRounds4Victory):
@@ -109,13 +114,14 @@ class Tournament(BaseClass):
 		except ValueError:
 			raise ValueError("The number of needed rounds for a victory is not valid")
 
-		self._players = []  # list of engaged players
+		self._players = {}              # dictionary (name: player) of engaged players
 		self._games = {}        		# list of current games
 		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
 		self._matches = []              # list of current (or next) matches in the phase
 		self._state = 0                 # current state
 		self._phase = ""                # name of the phase
 		self._round = 0
+		self._winner = ""               # name of the winner
 
 		# match generator
 		self._matchGen = self.MatchsGenerator()
@@ -186,8 +192,7 @@ class Tournament(BaseClass):
 
 	def endTournament(self):
 		"""Called to indicate the end of the tournament"""
-		self.logger.message("The tournament is now over !")
-		# !TODO: log the winner (need to add a new attribute, that the child class should set at the end of the tournament)
+		self.logger.message("The tournament is now over: %s wins !!", self._winner)
 		self._state = 3
 		Tournament.removeInstance(self.name)
 
@@ -226,7 +231,7 @@ class Tournament(BaseClass):
 		elif self._state == 2:
 			return "Next phase: " + self._phase
 		else:
-			return "Tournament over"
+			return "Tournament over: %s is the winner" % self._winner
 
 
 	@classmethod
@@ -265,18 +270,27 @@ class Tournament(BaseClass):
 
 		# check if the tournament is open
 		if t.hasBegan:
-			if player not in t.players:
+			if player.name not in t.players:
 				t.logger.info("Player %s wanted to enter, but the tournament has began.", player.name)
 				raise ValueError("The tournament '%s' has already began." % tournamentName)
 			else:
-				# ok, nothing to do, the player is already registred
-				pass
+				# check if the player is fully registred or has already disconnected
+				if not t.players[player.name]:
+					# previously disconnected player
+					t.logger.info("Player `%s` is back in the tournament", player.name)
+					t.players[player.name] = player
+					player.tournament = t
+					# update the sockets
+					t.sendUpdateToWebSocket()
+				else:
+					# ok, nothing to do, the player is already registred
+					pass
 		else:
 			if t.nbMaxPlayers == 0 or len(t.players) < t.nbMaxPlayers:
-				# add the player in the players list
-				t.players.append(player)
+				# add the player in the players dictionary
 				t.logger.info("Player `%s` has joined the tournament", player.name)
-				player.logger.info("We have entered the tournament `%s`", t.name)
+				t.players[player.name] = player
+				player.tournament = t
 				# update the sockets
 				t.sendUpdateToWebSocket()
 			else:
@@ -285,6 +299,21 @@ class Tournament(BaseClass):
 				player.logger.info("Impossible to enter the tournament `%s`, it already has its maximum number of players",
 				                   t.name)
 				raise ValueError("The tournament `%s` already has its maximum number of players" % t.name)
+
+
+	def unregisterPlayer(self, playerName):
+		"""
+		Called by PlayerSocket when the player disconnects
+		The player's name is kept in the dictionary, but with no player associated (with None instead)
+		:param player:
+		:return:
+		"""
+		# check if the player is in that tournament
+		if playerName not in self._players:
+			raise ValueError("The player is not register in the tournament %s" % self.name)
+		# remove that player
+		self._players[playerName] = None
+		self.logger.info("Player `%s` has quit the tournament", playerName)
 
 
 
@@ -313,19 +342,16 @@ class Tournament(BaseClass):
 		return {"HTMLmodes": modes, "HTMLmodeOptions": options, "JavascriptModeOptions": jOptions}
 
 
-	def HTMLlistOfGames(self):
+	def playerHTMLrepr(self, playerName):
 		"""
-		Returns a HTML string to display the list of games
-		It displays informations from the dictionary _games
+		Get the HTML representation of a player from its name
+		Check if the player is still connected or not
+		:param playerName: (string) name of the player
+		:return: (string) HTML representation
 		"""
-		HTMLgames = []
-		for (p1, p2), (score, g) in self._games.items():       # unpack all the games of the phase
-			if g:
-				HTMLgames.append("%s (%d) vs (%d) %s (%s)" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr(), g.HTMLrepr()))
-			else:
-				HTMLgames.append("%s (%d) vs (%d) %s" % (p1.HTMLrepr(), score[0], score[1], p2.HTMLrepr()))
+		p = self._players[playerName]
+		return p.HTMLrepr() if p else playerName
 
-		return "<br/>".join(HTMLgames)
 
 
 	def endOfGame(self, winner, looser):
@@ -339,14 +365,14 @@ class Tournament(BaseClass):
 		# log it
 		self.logger.info("`%s` won its game against `%s`", winner.name, looser.name)
 		# modify the score in the dictionary
-		if (winner, looser) in self._games:
-			score = self._games[(winner, looser)][0]
+		if (winner.name, looser.name) in self._games:
+			score = self._games[(winner.name, looser.name)][0]
 			score[0] += 1
-			self._games[(winner, looser)][1] = None
+			self._games[(winner.name, looser.name)][1] = None
 		else:
-			score = self._games[(looser, winner)][0]
+			score = self._games[(looser.name, winner.name)][0]
 			score[1] += 1
-			self._games[(looser, winner)][1] = None
+			self._games[(looser.name, winner.name)][1] = None
 		# remove one item from the queue
 		self._queue.get()
 		self._queue.task_done()
@@ -362,9 +388,10 @@ class Tournament(BaseClass):
 			# do noting, since a phase is already running
 			return
 
-		# first launch
+		# first launch ?
 		if not self.hasBegan:
-			# we first need to get the list of 2-tuple (player1,player2) of players who will play together in the phase
+			# we first need to get the list of 2-tuple (player1's name, player2's name)
+			# of players who will play together in the phase
 			try:
 				phase, self._matches = next(self._matchGen)
 			except StopIteration:
@@ -372,29 +399,42 @@ class Tournament(BaseClass):
 			else:
 				self.newPhase(phase)
 		else:
+			# otherwise, start a new phase
 			self.newPhase()
 
-		# build the dictionary of the games (pair of players -> list of score (tuple) and current game
-		# !TODO: rename _games variable: it's more than a simple match (several rounds)
-		self._games = {(p1, p2): [[0, 0], None] for p1, p2 in self._matches if p1 and p2}
+		# build the dictionary of the games (pair of players' name -> list of score (tuple) and current game
+		# (we remove fake players with "" as name)
+		self._games = {(pName1, pName2): [[0, 0], None] for pName1, pName2 in self._matches if pName1 and pName2}
 		# run the games
 		for self._round in range(1, self.nbRounds4Victory + 1):
 
-			for (p1, p2), (score, _) in self._games.items():
+			for (pName1, pName2), (score, _) in self._games.items():
 
 				if max(score) < self.nbRounds4Victory:
 					# choose who starts (-1 for random)
 					start = (self._round-1) % 2 if self._round < self.nbRounds4Victory else -1
-					# !!TODO : pass the TIMEOUT parameter
-					self._games[(p1, p2)][1] = Game.getTheGameClass()(p1, p2, start=start, tournament=self, **kwargs)
-					self.logger.info("The game `%s` vs `%s` starts", p1.name, p2.name)
-					self._queue.put_nowait(None)
+
+					# run the game only if the two players are here (otherwise, one wins directly)
+					player1, player2 = self._players[pName1], self._players[pName2]
+					if player1 and player2:
+
+						self._games[(pName1, pName2)][1] = Game.getTheGameClass()(
+								player1, player2, start=start, tournament=self, **kwargs)
+						self.logger.info("The game `%s` vs `%s` starts", pName1, pName2)
+						self._queue.put_nowait(None)
+					else:
+						# one player is not playing anymore (disconnected), so the other wins
+						score = self._games[(pName1, pName2)][0]
+						if player1:
+							score[0] += 1
+						else:
+							score[1] += 1
 
 			# update the websockets (no need to update everytime a game is added)
 			self.sendUpdateToWebSocket()
 			# and wait for all the games to end (before running the next round)
 			self._queue.join()
-			time.sleep(1)       # TODO: check why is not fully working when we remove this sleep....
+			time.sleep(1)       # !!TODO: check why is not fully working when we remove this sleep....
 
 		# update the scores
 		self.updateScore()
@@ -417,21 +457,30 @@ class Tournament(BaseClass):
 
 		:return:
 		"""
+		# build the list of games HTML representation
 		listGames = []
-
 		if self.isPhaseRunning:
 			# build the HTML representation for the running games
 			for (p1, p2), (score, game) in self._games.items():
+				HTMLp1 = self.playerHTMLrepr(p1)
+				HTMLp2 = self.playerHTMLrepr(p2)
 				if game:
-					listGames.append("%s: %s %s %s" % (game.HTMLrepr(), p1.HTMLrepr(), score, p2.HTMLrepr()))
+					listGames.append("%s %s %s (%s)" % (HTMLp1, score, HTMLp2, game.HTMLrepr()))
+				else:
+					listGames.append("%s %s %s" % (HTMLp1, score, HTMLp2))
 		else:
 			# build the HTML representation for the next games
 			for p1, p2 in self._matches:
 				if p1 and p2:
-					listGames.append("%s vs %s" % (p1.HTMLrepr(), p2.HTMLrepr()))
+					HTMLp1 = self.playerHTMLrepr(p1)
+					HTMLp2 = self.playerHTMLrepr(p2)
+					listGames.append("%s vs %s" % (HTMLp1, HTMLp2))
+
+		# build the list of players HTML representation
+		listPlayers = [self.playerHTMLrepr(name) for name in self._players.keys()]
 
 		# return the dictionary used by the websocket
-		return {'nbPlayers': len(self._players), 'Players': [p.HTMLrepr() for p in self._players],
+		return {'nbPlayers': len(self._players), 'Players': listPlayers,
 		        'HTMLbutton': self.HTMLButton(),
 		        'phase': self.getStatus(), 'Games': listGames,
 		        'score': self.HTMLscore(),
@@ -444,7 +493,7 @@ class Tournament(BaseClass):
 		"""
 		TO BE OVERLOADED
 		"""
-		yield [None, None]
+		yield "", [("", "")]
 
 
 	def HTMLscore(self):

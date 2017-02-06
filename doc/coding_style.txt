@@ -10,8 +10,9 @@ For Python, we follow PEP8 coding style, except for the following rules:
 
 [ToDo List]
 We use the following convention/patterns for the todo list:
-- TODO: general ToDo task (a question like "should we do this?")
-- FIXME: something do not fully work, to fix
-- REVIEW someone need to review this
-these pattern may be preceeded by ! or !! to indicate the priority ("!!FIXME" indicates high priority bug to fix)
+- "TODO:" general ToDo task (a question like "should we do this?")
+- "FIXME:" something do not fully work, to fix
+- "REVIEW" someone need to review this
+- "NOTIMPLEMENTED" for a function/method/code not yet implemented (but should be)
+these pattern may be preceded by ! or !! to indicate the priority ("!!FIXME" indicates high priority bug to fix)
 

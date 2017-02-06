@@ -58,11 +58,31 @@ class RegularPlayer(Player, BaseClass):
 		self._waitingGame = Event()
 		self._waitingGame.clear()
 
+		# Tournament
+		self._tournament = None
+
 		# and last, call the BaseClass constructor
 		BaseClass.__init__(self, name)
 		self.logger.info("=================================")
 		self.logger.info(name + " just log in (from " + address + ".")
 
+
+	@property
+	def tournament(self):
+		return self._tournament
+
+	@tournament.setter
+	def tournament(self, t):
+		self._tournament = t
+		self.logger.info("We have entered the tournament `%s`", t.name)
+
+	def unregisterTournament(self):
+		"""
+		Remove itself from a tournament (called by PlayerSocket when the player disconnect)
+		"""
+		if self._tournament is not None:
+			self.logger.debug("Remove from `%s` tournament", self._tournament.name)
+			self._tournament.unregisterPlayer(self.name)
 
 
 	@property

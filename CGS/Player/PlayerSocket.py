@@ -168,8 +168,9 @@ class PlayerSocketHandler(BaseRequestHandler):
 		try:
 			if self._player is not None:
 				self.logger.info("Connection closed with player %s (%s)", self._player.name, self.client_address[0])
+				self._player.unregisterTournament()
 				RegularPlayer.removeInstance(self._player.name)
-				del self._player
+				self._player = None
 			else:
 				logger.info("Connection closed with client %s", self.client_address[0])
 
@@ -285,6 +286,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		- or "NAME {options}": play agains training player
         Returns nothing
 		"""
+		# !TODO: normalize the options: should be "[options]", "TRAINING <name> [options]" or "TOURNAMENT <name> [options]"
 		# get the WAIT_GAME message
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME"):

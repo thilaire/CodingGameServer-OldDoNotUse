@@ -35,21 +35,21 @@ class League(Tournament):
 		# initial score (empty for the moment, we don't know the players)
 		self._score = {}
 
+
 	def MatchsGenerator(self):
 		"""
-		Use the round robin tournament algorithm
+		Use the round robin tournament algorithm to generate the matches of each phase
 		see http://en.wikipedia.org/wiki/Round-robin_tournament and
 		http://stackoverflow.com/questions/11245746/league-fixture-generator-in-python/11246261#11246261
 		"""
-		# score
-		self._score = {p: 0 for p in self.players}
+		# score (indexed by players' name)
+		self._score = {pName: 0 for pName in self.players.keys()}
 
 		# copy the player list
-		# !TODO: check if they are all here ?
-		rotation = list(self._players)
-		# if player number is odd, we use None as a fake player
+		rotation = list(self._players.keys())
+		# if player number is odd, we use "" as a fake player
 		if len(rotation) % 2:
-			rotation.append(None)
+			rotation.append("")
 
 		# then we iterate using round robin algorithm
 		for i in range(0, len(rotation) - 1):
@@ -59,6 +59,10 @@ class League(Tournament):
 			yield phase, list(zip(*[iter(rotation)] * 2))
 			# prepare the next list by rotating the list
 			rotation = [rotation[0]] + [rotation[-1]] + rotation[1:-1]
+
+		# end of the tournament
+		# !FIXME: who wins when equality ??
+		self._winner = max(self._score, key=lambda key: self._score[key])
 
 	def updateScore(self):
 		"""
@@ -79,7 +83,8 @@ class League(Tournament):
 		Returns a HTML string
 		"""
 		if self._score:
-			return "<ul>"+"".join("<li>%s: %d points</li>" % (p.HTMLrepr(), score) for p, score in self._score.items())+"</ul>"
+			return "<ul>"+"".join("<li>%s: %d points</li>" % (self.playerHTMLrepr(pName), score)
+				                      for pName, score in self._score.items())+"</ul>"
 		else:
 			return ""
 
