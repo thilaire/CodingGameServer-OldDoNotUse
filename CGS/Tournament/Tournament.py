@@ -79,7 +79,12 @@ class Tournament(BaseClass):
 	"""
 	allInstances = {}         # dictionary of all the tournaments
 	HTMLoptions = ""          # some options to display in an HTML form
-	HTMLgameoptions = ""       # some options to display game options in an HTML form
+	HTMLgameoptions = """
+	<label>
+		Delay between each move : <input name="delay" type="number" value="0" required/>
+	</label>
+	"""
+      # some options to display game options in an HTML form
 	# !TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
 	mode = ""               # type of the tournament
 
