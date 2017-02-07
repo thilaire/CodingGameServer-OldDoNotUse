@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/Player/{{ playerName }}" );
+    var lastgame = '';
+    var player1 = '';
+    var player2 = '';
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        if (data.hasOwnProperty('currentGame'))
+        {
+            if (data['currentGame'] != lastgame)
+            {
+
+                lastgame = data['currentGame'];
+                if (data['currentGame'] != '') {
+                    if (data.hasOwnProperty('player1'))
+                            player1 = data['player1'];
+                    if (data.hasOwnProperty('player2'))
+                            player2 = data['player2'];
+                    document.getElementById('div_gameheader').innerHTML =
+                            'Game ' + data['currentGame'] + ' : ' + player1 + ' Vs ' + player2;
+                    var ws2 = new WebSocket("ws://{{ host }}:{{ webPort }}/websocket/Game/"+data['currentGame'])
+                    ws2.onmessage = function(evt) {
+                    /* the server send a dictionary (JSON) with information about the game */
+                    var gdata = JSON.parse(evt.data);
+                    for(var el in gdata)
+                     {
+                         if (gdata.hasOwnProperty(el))
+                            document.getElementById('div_'+el).innerHTML = gdata[el];
+                    }
+                    ws2.send('OK');
+                    }
+                }
+                else {
+                    ws2.close();
+                    document.getElementbyId('div_gameheader').innerHTML = 'Not playing...'
+                }
+            }
+        }
+    };
+
+</script>
+{% endblock %}
+
+
+{% block content %}
+    <h2>Page of player {{ playerName }} </h2>
+
+    <div id="div_gameheader">
+    Not playing...
+    </div>
+<br/>
+<!-- This is specic to labyrinth. TODO: change name -->
+
+<div id="div_labycontent">
+</div>
+{% endblock %}

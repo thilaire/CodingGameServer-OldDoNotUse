@@ -232,7 +232,8 @@ def player(playerName):
 	pl = RegularPlayer.getFromName(playerName)
 	if pl:
 		# TODO: use a template
-		return pl.HTMLpage()
+		return template('player/Player.html', host=Config.host, webPort=Config.webPort,
+		                playerName=playerName)
 	else:
 		return template('noObject.html', className='player', objectName=playerName)
 

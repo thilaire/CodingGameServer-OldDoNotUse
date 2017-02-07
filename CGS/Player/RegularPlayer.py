@@ -100,11 +100,25 @@ class RegularPlayer(Player, BaseClass):
 			self.logger.info("Enter in game " + g.name)
 			# since we have a game, then we can set the Event
 			self._waitingGame.set()
+
 		else:
 			self.logger.info("Leave the game " + self._game.name)
 			# since we do not have a game, we can clear the the Event
 			self._waitingGame.clear()
+
 		self._game = g
+		self.sendUpdateToWebSocket()
+
+	def getDictInformations(self):
+		currentGame = ''
+		player1 = ''
+		player2 = ''
+		if self._game:
+			currentGame = self._game.name
+			player1,player2 = (p.name for p in self._game._players)
+		return {'currentGame' : currentGame, 'player1' : player1, 'player2' : player2}
+		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
+		# self.name, self._players[0].name, self._players[1].name, self)
 
 
 	def waitForGame(self):

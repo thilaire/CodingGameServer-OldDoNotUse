@@ -417,7 +417,6 @@ class Game(BaseClass):
 		nPlayer = 0 if player is self._players[0] else 1
 		self._comments.append(comment, nPlayer)
 
-		self.sendUpdateToWebSocket()
 
 
 
