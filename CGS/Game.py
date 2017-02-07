@@ -154,7 +154,8 @@ class Game(BaseClass):
 			try:
 				self._delay = int(options['delay'])
 			except ValueError:
-				raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
+				self._delay = 0
+				#raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
 
 		# time out for the move
 		if 'timeout' not in options:
