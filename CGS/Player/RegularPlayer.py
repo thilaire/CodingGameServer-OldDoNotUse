@@ -15,7 +15,7 @@ File: Player.py
 	-> defines the generic client player's behavior
 
 """
-
+from _socket import SHUT_RDWR
 from threading import Event
 
 from CGS.Player import Player
@@ -43,12 +43,13 @@ class RegularPlayer(Player, BaseClass):
 	allInstances = {}  # dictionary of all the instances
 
 
-	def __init__(self, name, address):
+	def __init__(self, name, address, socket):
 		"""
 		Regular Player constructor
 		Parameters:
 		- name: (string) name of the player
 		- address: (string) network address (used once for logging)
+		- socket: (PlayerSocket) PlayerSocket object associated
 		"""
 
 		# call the Player constructor
@@ -60,6 +61,9 @@ class RegularPlayer(Player, BaseClass):
 
 		# Tournament
 		self._tournament = None
+
+		# PlayerSocket
+		self._socket = socket
 
 		# and last, call the BaseClass constructor
 		BaseClass.__init__(self, name)
@@ -131,6 +135,8 @@ class RegularPlayer(Player, BaseClass):
 		self._waitingGame.clear()  # clear it for the next game...
 
 
+
+
 	def HTMLrepr(self):
 		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
 
@@ -138,3 +144,8 @@ class RegularPlayer(Player, BaseClass):
 	def HTMLpage(self):
 		# TODO: return a dictionary to fill a template
 		return self.HTMLrepr()
+
+	def disconnect(self):
+		"""Test"""
+		self._socket.request.shutdown(SHUT_RDWR)
+		self._socket.request.close()

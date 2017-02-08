@@ -63,7 +63,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 			# get the name from the client and create the player
 			self._player = None
 			name = self.getPlayerName()
-			self._player = RegularPlayer(name, self.client_address[0])
+			self._player = RegularPlayer(name, self.client_address[0], self)
 
 			while True:
 				# then, wait for a (new) game
@@ -204,6 +204,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 		Send data (with self.request.sendall) and log it
 		:param data: (str) data to send
 		"""
+
 		try:
 			head = SIZE_FMT % len(data.encode("utf-8"))
 			self.request.sendall(str(head).encode('utf-8'))

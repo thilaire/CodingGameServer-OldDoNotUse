@@ -238,6 +238,24 @@ def player(playerName):
 		return template('noObject.html', className='player', objectName=playerName)
 
 
+
+@route('/player/disconnect/<playerName>')
+def disconnectPlayer(playerName):
+	"""
+	Disconnect a player
+	Only for debug...
+	!FIXME: activate this only in debug or dev mode
+	TODO: if necessary, add a disconnectAllPlayer
+	:param playerName:
+	:return:
+	"""
+	pl = RegularPlayer.getFromName(playerName)
+	if pl:
+		pl.disconnect()
+		redirect('/')
+	else:
+		return template('noObject.html', className='player', objectName=playerName)
+
 # ==========
 # Websockets
 # ==========
