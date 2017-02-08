@@ -39,7 +39,7 @@ from server.BaseClass import BaseClass
 weblogger = getLogger('bottle')
 
 # Path to the template (it will be completed with <gameName>/server/templates/)
-TEMPLATE_PATH[:] = ['CGS/templates']
+TEMPLATE_PATH[:] = ['server/templates']
 
 
 def runWebServer(host, port, quiet):
@@ -60,7 +60,7 @@ def runWebServer(host, port, quiet):
 
 	# update the template paths so that in priority,
 	# it first looks in <gameName>/server/templates/ and then in CGS/server/templates
-	TEMPLATE_PATH.append(Game.getTheGameName() + "/server/templates")
+	TEMPLATE_PATH.append('games/' + Game.getTheGameName() + "/server/templates")
 	TEMPLATE_PATH.reverse()
 	# add the base url to all the templates
 	Jinja2Template.defaults['base_url'] = 'http://%s:%s/' % (host, port)
