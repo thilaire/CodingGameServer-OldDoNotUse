@@ -17,7 +17,7 @@ File: League.py
 """
 
 
-from CGS.Tournament import Tournament, numbering
+from server.Tournament import Tournament, numbering
 
 
 class League(Tournament):

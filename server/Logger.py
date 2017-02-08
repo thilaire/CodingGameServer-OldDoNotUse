@@ -81,7 +81,7 @@ def configureRootLogger(args):
 	# store the configuration in Config (datat used elsewhere)
 	gameName = args['<gameName>']
 	Config.mode = 'prod' if args['--prod'] else 'dev' if args['--dev'] else 'debug'
-	Config.logPath = join(gameName, Template(args['--log']).render(hostname=gethostname()))
+	Config.logPath = join('games', gameName, Template(args['--log']).render(hostname=gethostname()))
 	Config.webPort = args['--web']
 	Config.host = args['--host']
 

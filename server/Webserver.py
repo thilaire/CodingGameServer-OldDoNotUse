@@ -29,11 +29,11 @@ from geventwebsocket.handler import WebSocketHandler
 from geventwebsocket import WebSocketError
 from os.path import isfile, join
 from functools import wraps										# use to wrap a logger for bottle
-from CGS.Game import Game
-from CGS.Player import RegularPlayer
-from CGS.Logger import Config
-from CGS.Tournament import Tournament
-from CGS.BaseClass import BaseClass
+from server.Game import Game
+from server.Player import RegularPlayer
+from server.Logger import Config
+from server.Tournament import Tournament
+from server.BaseClass import BaseClass
 
 # weblogger
 weblogger = getLogger('bottle')
@@ -244,11 +244,11 @@ def disconnectPlayer(playerName):
 	"""
 	Disconnect a player
 	Only for debug...
-	!FIXME: activate this only in debug or dev mode
-	TODO: if necessary, add a disconnectAllPlayer
 	:param playerName:
 	:return:
 	"""
+	# !FIXME: activate this only in debug or dev mode
+	# TODO: if necessary, add a disconnectAllPlayer
 	pl = RegularPlayer.getFromName(playerName)
 	if pl:
 		pl.disconnect()

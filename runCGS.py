@@ -32,10 +32,10 @@ from socketserver import ThreadingTCPServer  # socket server (with multi-threads
 from colorama import Fore
 from docopt import docopt  # used to parse the command line
 
-from CGS.Game import Game
-from CGS.Logger import configureRootLogger
-from CGS.Player import PlayerSocketHandler  # TCP socket handler for players
-from CGS.Webserver import runWebServer  # to run the webserver (bottle)
+from server.Game import Game
+from server.Logger import configureRootLogger
+from server.Player import PlayerSocketHandler  # TCP socket handler for players
+from server.Webserver import runWebServer  # to run the webserver (bottle)
 
 usage = """
 Coding Game Server
@@ -74,16 +74,16 @@ if __name__ == "__main__":
 
 	# import the <gameName> module and store it (in Game)
 	try:
-		mod = import_module(gameName + '.server.' + gameName)
+		mod = import_module('games.' +gameName + '.server.' + gameName)
 		if gameName not in mod.__dict__:
 			print(
-					Fore.RED + "Error: The file `" + gameName + "/server/" + gameName
+					Fore.RED + "Error: The file `games/" + gameName + "/server/" + gameName
 					+ ".py` must contain a class named `" + gameName + "`." + Fore.RESET
 			)
 			quit()
 		Game.setTheGameClass(mod.__dict__[gameName])
 	except ImportError as e:
-		print(Fore.RED + "Error: Impossible to import the file `" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
+		print(Fore.RED + "Error: Impossible to import the file `games/" + gameName + "/server/" + gameName + ".py`." + Fore.RESET)
 		print(e)
 		quit()
 

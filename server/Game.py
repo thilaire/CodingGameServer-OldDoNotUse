@@ -23,9 +23,9 @@ from random import seed as set_seed, randint, choice
 from threading import Barrier, BrokenBarrierError
 from time import time
 
-from CGS.Comments import CommentQueue
-from CGS.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
-from CGS.BaseClass import BaseClass
+from server.Comments import CommentQueue
+from server.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
+from server.BaseClass import BaseClass
 
 
 def crc24(octets):

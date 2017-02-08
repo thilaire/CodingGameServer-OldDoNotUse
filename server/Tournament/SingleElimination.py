@@ -17,7 +17,7 @@ File: SimpleElimination.py
 
 """
 
-from CGS.Tournament import Tournament
+from server.Tournament import Tournament
 
 
 

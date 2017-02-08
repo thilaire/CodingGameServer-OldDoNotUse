@@ -20,7 +20,7 @@ File: WebSocketBase.py
 import logging
 from geventwebsocket import WebSocketError
 import json
-from CGS.Logger import configureBaseClassLogger
+from server.Logger import configureBaseClassLogger
 logger = logging.getLogger()
 
 

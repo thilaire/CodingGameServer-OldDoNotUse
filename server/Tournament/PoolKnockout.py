@@ -17,7 +17,7 @@ File: Mode.py
 """
 
 
-from CGS.Tournament import Tournament, numbering
+from server.Tournament import Tournament, numbering
 import random
 from math import frexp
 

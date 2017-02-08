@@ -18,8 +18,8 @@ File: Player.py
 from _socket import SHUT_RDWR
 from threading import Event
 
-from CGS.Player import Player
-from CGS.BaseClass import BaseClass
+from server.Player import Player
+from server.BaseClass import BaseClass
 
 
 class RegularPlayer(Player, BaseClass):

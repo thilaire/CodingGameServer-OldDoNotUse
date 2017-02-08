@@ -73,6 +73,7 @@ class CommentQueue:
 
 		Returns a string (to send to the client)
 		"""
+		# FIXME: modify this so that it could also send last comments to websocket
 		# get the list of unread comments
 		comments = []
 
