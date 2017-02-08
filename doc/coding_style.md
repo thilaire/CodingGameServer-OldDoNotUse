@@ -1,5 +1,7 @@
-[Python]
-For Python, we follow PEP8 coding style, except for the following rules:
+# Coding style guidelines (for CodingGameServer)
+
+### code in Python
+For the server, we follow PEP8 coding style, except for the following rules:
 - W191 (indentations contain tabs)
 - E303 (too many blank lines)
 - E101 (indentation contains mixed spaces and tabs): just because some lines are split and indented with spaces (tabs do not work)
@@ -8,7 +10,7 @@ For Python, we follow PEP8 coding style, except for the following rules:
 - N806 (variable in function should be lowercase)
 
 
-[ToDo List]
+### ToDo List
 We use the following convention/patterns for the todo list:
 - "TODO:" general ToDo task (a question like "should we do this?")
 - "FIXME:" something do not fully work, to fix
