@@ -36,7 +36,7 @@ MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 100e3, 'Tournament': 1e6}   # 10k
 MAX_BASECLASS_FOLDER = {'Game':  1e6, 'Player': 5e6, 'Tournament': 1e6}   # 5Mo per game, player and tournament folders
 
 
-# logging levels (see 'Logging.txt'), depending on the mode
+# logging levels (see 'Logging.md'), depending on the mode
 LOW_DEBUG_LEVEL = 5
 MESSAGE_LEVEL = 35
 activity_level = {
