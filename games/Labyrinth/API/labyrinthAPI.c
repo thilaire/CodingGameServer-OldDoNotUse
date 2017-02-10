@@ -30,7 +30,7 @@ unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not
  * Parameters:
  * - serverName: (string) address of the server (it could be "localhost" if the server is run in local, or "pc4521.polytech.upmc.fr" if the server runs there)
  * - port: (int) port number used for the connection
- * - name: (string) name of the bot : max 20 characters (checked by the server)
+ * - name: (string) name of the player : max 20 characters (checked by the server)
  */
 void connectToServer( char* serverName, int port, char* name)
 {
