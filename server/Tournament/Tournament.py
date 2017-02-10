@@ -317,8 +317,13 @@ class Tournament(BaseClass):
 		# check if the player is in that tournament
 		if playerName not in self._players:
 			raise ValueError("The player is not register in the tournament %s" % self.name)
-		# remove that player
-		self._players[playerName] = None
+		if self.hasBegan:
+			# put that player in 'standby'
+			self._players[playerName] = None
+		else:
+			# remove that player
+			del self._players[playerName]
+
 		self.logger.info("Player `%s` has quit the tournament", playerName)
 		# update the sockets
 		self.sendUpdateToWebSocket()

@@ -1,5 +1,4 @@
 /*
-
 * --------------------- *
 |                       |
 |   -= Labyrinth =-     |
@@ -104,7 +103,6 @@ void dispDebug(const char* fct, int level, const char* msg, ...)
 * Return the remaining length of the message (0 is the message is completely read)
 * !FIXME: if allocated memory for buf is < MAX_LENGTH, leads to memory fault
 */
-
 int read_inbuf(const char *fct, char *buf, size_t nbuf){
 	static char stream_size[HEAD_SIZE];/* size of the message to be receivied, static to avoid allocate memory at each call*/
 	int r;
@@ -250,16 +248,23 @@ void closeCGSConnection( const char* fct)
  */
 void waitForGame( const char* fct, char* training, char* gameName, char* data)
 {
+    int r;
     if (training)
 	    sendString( fct,"WAIT_GAME %s", training);
 	else
 	    sendString( fct,"WAIT_GAME ");
 
-	/* read Labyrinth name */
-	bzero(buffer,1000);
-	int r = read_inbuf(fct,buffer,MAX_LENGTH);
-	if (r>0)
-		dispError( fct, "Too long answer from 'WAIT_GAME' command (sending:%s)");
+	/* read Labyrinth name
+	 If the name send is "NOT_READY", then we need to wait again
+	 This (stupid) polling is here to allow the server to dectect (at least at the polling sampling period)
+	 if we have disconnected or not
+	 (that's the only way for the server to detect disconnection, ie sending something and check if the socket is still open)*/
+	do{
+        bzero(buffer,1000);
+        r = read_inbuf(fct,buffer,MAX_LENGTH);
+        if (r>0)
+            dispError( fct, "Too long answer from 'WAIT_GAME' command (sending:%s)");
+    } while (strcmp(buffer,"NOT_READY")==0);
 
 	dispDebug(fct,1, "Receive Labyrinth name=%s", buffer);
 	strcpy( gameName, buffer);

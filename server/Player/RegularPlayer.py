@@ -125,14 +125,21 @@ class RegularPlayer(Player, BaseClass):
 		# self.name, self._players[0].name, self._players[1].name, self)
 
 
-	def waitForGame(self):
+	def waitForGame(self, timeout=1):
 		"""
 		Wait for a new game
+		:param
+		 - timeout: (int) timeout in second
+		Returns True if a Game has started, False if timeout, and we need to wait again
 		"""
 		# WAIT until the event _waitingGame is set by the game.setter of the player
 		# (so when the game assigned itself to the game property of a player)
-		self._waitingGame.wait()
-		self._waitingGame.clear()  # clear it for the next game...
+		# there is a timeout (1s)
+		if self._waitingGame.wait(timeout=timeout):
+			self._waitingGame.clear()  # clear it for the next game...
+			return True
+		else:
+			return False
 
 
 

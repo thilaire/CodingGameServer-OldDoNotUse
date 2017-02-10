@@ -228,8 +228,8 @@ int main()
 	char name[100];
 	sprintf(name, "THlaby%d",getpid());
 	printf("Je suis %s\n", name);
-	connectToServer( "localhost", 1234, name);
-	//connectToServer( "localhost", 1234, "THlaby78835");
+	//connectToServer( "localhost", 1234, name);
+	connectToServer( "localhost", 1234, "THlaby16110");
 
 	/* play over and over...
 	(this loop is not necessary if you only want to play one game, but will be useful for tournament)*/

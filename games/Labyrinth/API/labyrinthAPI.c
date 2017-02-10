@@ -16,7 +16,7 @@ File: labyrinthAPI.c
 
 */
 
-#include "GameAPI.h"
+#include "clientAPI.h"
 #include <stdio.h>
 #include "labyrinthAPI.h"
 

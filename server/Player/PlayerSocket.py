@@ -144,6 +144,8 @@ class PlayerSocketHandler(BaseRequestHandler):
 				self.sendData(str(err))
 			except ConnectionError:
 				pass
+			except DisconnectionError:
+				pass
 
 		except DisconnectionError:
 			# ends the game
@@ -339,7 +341,12 @@ class PlayerSocketHandler(BaseRequestHandler):
 		self.sendData("OK")
 
 		# wait for the Game
-		self._player.waitForGame()
+		# and send every second a "NOT_READY" if the game do not start
+		# in order to know if the client has disconnected
+		gameHasStarted = self._player.waitForGame(5)
+		while not gameHasStarted:
+			self.sendData("NOT_READY")
+			gameHasStarted = self._player.waitForGame(3)
 
 		# now send the game name
 		self.sendData(self.game.name)
