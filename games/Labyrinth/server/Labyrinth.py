@@ -25,9 +25,10 @@ from server.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
 from server.Game import Game
 from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_UP, MOVE_RIGHT, \
 	DO_NOTHING, Ddx, Ddy, INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND, ROTATE_ENERGY
+
+from .AstarPlayer import AstarPlayer
 from .DoNothingPlayer import DoNothingPlayer
 from .PlayRandomPlayer import PlayRandomPlayer
-from .AstarPlayer import AstarPlayer
 
 
 regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
@@ -169,9 +170,8 @@ class Labyrinth(Game):
 	"""
 
 	# dictionary of the possible training Players (non-regular players)
-	# FIXME: build it automatically from Player.__subclasses__() ???
-	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer,
-	             "ASTAR": AstarPlayer}   # type -> class of the Player
+	type_dict = {"DO_NOTHING": DoNothingPlayer, "PLAY_RANDOM": PlayRandomPlayer, "ASTAR": AstarPlayer}
+
 
 
 	def __init__(self, player1, player2, **options):
