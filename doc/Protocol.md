@@ -5,9 +5,9 @@ For the server, the functions concerned are in `server/Player/PlayerSocket.py`, 
 
 Here are (in that order), the different actions:
 
-1. Client opens TCP connection on server HOST and port PORT         (client:`connectToCGS`, server:`handle`)
+1) Client opens TCP connection on server HOST and port PORT         (client:`connectToCGS`, server:`handle`)
 
-2. Name of the client       (client: `connectToServer`, server: `handle` and `getPlayerName`)
+2) Name of the client       (client: `connectToServer`, server: `handle` and `getPlayerName`)
    1. Client sends `"CLIENT_NAME %s"` with its name (max 20 char. in `[a-zA-Z0-9_]`)
    2. Server acknowledges (send `"OK"`) if the name is valid
 
