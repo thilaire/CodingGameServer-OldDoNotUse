@@ -12,9 +12,9 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
+Status: still in dev...
 
-File: GameAPI.c
+File: clientAPI.c
 	Functions for the Game API (connexion to the Coding Game Server)
 
 
@@ -33,7 +33,7 @@ File: GameAPI.c
 #include <unistd.h>
 #include <stdarg.h>
 
-#include "GameAPI.h"
+#include "clientAPI.h"
 
 
 

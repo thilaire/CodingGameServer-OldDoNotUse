@@ -2,7 +2,7 @@
 // Created by Julien Brajard et Thibault Hilaire 01/02/2017.
 //
 
-//Programme Do Nothing pouvant participer au tournoi
+// `Do Nothing` player that can play to Labyrinth game
 
 
 
@@ -31,32 +31,28 @@ int main()
 	(this loop is not necessary if you only want to play one game, but will be useful for tournament)*/
 	while (1)
 	{
-
 		/* wait for a game, and retrieve informations about it */
-	  waitForLabyrinth("TOURNAMENT TopTournament",labName,&sizeX,&sizeY);
-	  // waitForLabyrinth( "", labName, &sizeX, &sizeY);
+		waitForLabyrinth("TOURNAMENT TopTournament",labName,&sizeX,&sizeY);
+		// waitForLabyrinth( "", labName, &sizeX, &sizeY);
 		labData = (char*) malloc( sizeX * sizeY );
 		player = getLabyrinth( labData);
-	
-		do {
 
+		do
+		{
 			/* display the labyrinth */
 			printLabyrinth();
 			if (player==1)	/* The opponent plays */
 			{
 				ret = getMove( &move);
-			
 			}
 			else
 			{
 				//.... choose what to play
-			  move.type = DO_NOTHING ;
-			  move.value = 0;
-			
-			  ret = sendMove(move);
-				
-			}
+				move.type = DO_NOTHING ;
+				move.value = 0;
 
+				ret = sendMove(move);
+			}
 			/* change player */
 			player = ! player;
 

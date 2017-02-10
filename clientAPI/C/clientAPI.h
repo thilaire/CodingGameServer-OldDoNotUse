@@ -14,8 +14,8 @@ Authors: T. Hilaire, J. Brajard
 Licence: GPL
 Status: still in dev... (not even a beta)
 
-File: GameAPI.h
-	Functions' prototypes for the Game API
+File: clientAPI.h
+	Functions' prototypes for the client API
 
 
 */
