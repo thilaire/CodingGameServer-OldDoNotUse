@@ -15,7 +15,9 @@ Here are (in that order), the different actions:
    1. Client sends `"WAIT_GAME %s"` with the type of the game (an empty string for a regular game, or the name of the type, like `"DO_NOTHING"`)
    2. Server acknowledges (send `"OK"`)
    3. Server waits for the game to start
-   4. Server sends `"%s"` the name of the game
+   4. Every 3 seconds, the server answers "NOT_READY" when the game has not started yet.
+ This allows to detect disconnection from the client during that phase (we can only check disconnection when we send or receive something, not when we wait...). This is a *light* polling, since we wait with an Event, *but* with a 3 seconds timeout. 
+   4. Finally, when the game starts, the server sends `"%s"` the name of the game
    5. Server sends `"%s"` the data of the game (the size of the labyrinth, for example)
 
 4) Get the full datas of the game       (client: `getGameData`, server: `sendGameData`)

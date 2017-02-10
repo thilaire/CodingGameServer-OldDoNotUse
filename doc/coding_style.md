@@ -5,6 +5,7 @@ For the server, we follow PEP8 coding style, except for the following rules:
 - W191 (indentations contain tabs)
 - E303 (too many blank lines)
 - E101 (indentation contains mixed spaces and tabs): just because some lines are split and indented with spaces (tabs do not work)
+- E501 (line too long): we avoid them, but sometimes it is usefull (long comments, or long url in comments)
 - N802 (function name should be lowercase)
 - N803 (argument name should be lowercase)
 - N806 (variable in function should be lowercase)

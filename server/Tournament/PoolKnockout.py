@@ -204,8 +204,11 @@ class PoolKnockout(Tournament):
 		if self._cycle == 1:
 
 			for t in self._Draw[::-1]:
-				HTMLs += "".join("%s (%d) vs %s (%d)<br>" % (self.playerHTMLrepr(t[2*i]), self._score[t[2*i]][2], self.playerHTMLrepr(t[2*i+1]),
-							self._score[t[2*i+1]][2]) for i in range(len(t)//2))
+				HTMLs += "".join("%s (%d) vs %s (%d)<br>" % (
+									self.playerHTMLrepr(t[2*i]),
+									self._score[t[2*i]][2],
+									self.playerHTMLrepr(t[2*i+1]),
+									self._score[t[2*i+1]][2]) for i in range(len(t)//2))
 				HTMLs += "<br>"
 
 		if self._score and self._groups:

@@ -90,8 +90,7 @@ class League(Tournament):
 		Returns a HTML string
 		"""
 		if self._score:
-			return "<ul>"+"".join("<li>%s: %d points</li>" % (self.playerHTMLrepr(pName), score)
-				                      for pName, score in self._score.items())+"</ul>"
+			return "<ul>"+"".join("<li>%s: %d points</li>" % (self.playerHTMLrepr(pName), score) for pName, score in self._score.items())+"</ul>"
 		else:
 			return ""
 
