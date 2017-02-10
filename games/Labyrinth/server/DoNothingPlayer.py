@@ -21,11 +21,17 @@ from .Constants import DO_NOTHING
 
 
 class DoNothingPlayer(TrainingPlayer):
+	"""
+	This class defines a stupid training player that does... nothing
+	(it plays DO_NOTHING every time)
+	It is used for the first part of the project (players need an opponent that does nothing to check their	code)
+	"""
 
 	def __init__(self, **_):
+		"""Initialize the Training Player
+		no options, nothing to do with options
+		"""
 		super().__init__('Do_nothing')
-
-		# no options, so nothing to do with options
 
 
 	def playMove(self):

@@ -73,10 +73,12 @@ class RegularPlayer(Player, BaseClass):
 
 	@property
 	def tournament(self):
+		"""Returns the tournament the player is involved in"""
 		return self._tournament
 
 	@tournament.setter
 	def tournament(self, t):
+		"""Setter for the tournament"""
 		self._tournament = t
 		self.logger.info("We have entered the tournament `%s`", t.name)
 
@@ -85,21 +87,25 @@ class RegularPlayer(Player, BaseClass):
 		Remove itself from a tournament (called by PlayerSocket when the player disconnect)
 		"""
 		if self._tournament is not None:
+			self._tournament = None
 			self.logger.debug("Remove from `%s` tournament", self._tournament.name)
 			self._tournament.unregisterPlayer(self.name)
 
 
 	@property
 	def isRegular(self):
+		"""Indicates if the player is a regular player or a training player"""
 		return True
 
 
 	@property
 	def game(self):
+		"""Returns the game the player is involved in"""
 		return self._game
 
 	@game.setter
 	def game(self, g):
+		"""Setter for the player"""
 		if g is not None:
 			self.logger.info("Enter in game " + g.name)
 			# since we have a game, then we can set the Event
@@ -114,13 +120,16 @@ class RegularPlayer(Player, BaseClass):
 		self.sendUpdateToWebSocket()
 
 	def getDictInformations(self):
+		"""
+		Returns a dictionary with all the infos the webPage needs
+		"""
 		currentGame = ''
 		player1 = ''
 		player2 = ''
 		if self._game:
 			currentGame = self._game.name
-			player1,player2 = (p.name for p in self._game._players)
-		return {'currentGame' : currentGame, 'player1' : player1, 'player2' : player2}
+			player1, player2 = (p.name for p in self._game.players)
+		return {'currentGame': currentGame, 'player1': player1, 'player2': player2}
 		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 		# self.name, self._players[0].name, self._players[1].name, self)
 
@@ -145,14 +154,16 @@ class RegularPlayer(Player, BaseClass):
 
 
 	def HTMLrepr(self):
+		"""Returns the HTML representation of the player"""
 		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
 
 
-	def HTMLpage(self):
-		# TODO: return a dictionary to fill a template
-		return self.HTMLrepr()
 
 	def disconnect(self):
-		"""Test"""
+		"""
+		Disconnect the player
+		Used to force the player to disconnect
+		"""
 		self._socket.request.shutdown(SHUT_RDWR)
 		self._socket.request.close()
+

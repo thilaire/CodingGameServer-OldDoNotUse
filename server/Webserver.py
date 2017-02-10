@@ -72,6 +72,9 @@ def runWebServer(host, port, quiet):
 	run(host=host, port=port, quiet=quiet, server='gevent', handler_class=WebSocketHandler)
 
 
+# ================
+#   static files
+# ================
 def static_file_from_templates(fileName):
 	"""
 	Returns a static_file from the template paths
@@ -89,11 +92,13 @@ def static_file_from_templates(fileName):
 # some static files
 @route('/favicon.ico')
 def favicon():
+	"""Returns the favicon"""
 	return static_file_from_templates('favicon.ico')
 
 
 @route('/style.css')
 def css():
+	"""Returns the CSS style"""
 	return static_file_from_templates('style.css')
 
 
@@ -150,6 +155,10 @@ def create_new_game():
 
 @route('/game/<gameName>')
 def game(gameName):
+	"""Returns the webpage of a game
+	<gameName> is the name of the game
+	If the name is not valid, the answer with the noObject page
+	"""
 	g = Game.getFromName(gameName)
 	if g:
 		return template('game/Game.html', host=Config.host, webPort=Config.webPort,
@@ -324,16 +333,25 @@ def classWebSocket(clsName, name):
 
 @route('/logs')
 def log():
+	"""Returns the activity.log file"""
 	return static_file('activity.log', root=Config.logPath)
 
 
 @route('/logs/player/<playerName>')
 def logP(playerName):
+	"""
+	Returns a player log file
+	:param playerName: (string) name of the player
+	"""
 	return static_file(playerName+'.log', root=join(Config.logPath, 'players'))
 
 
 @route('/logs/game/<gameName>')
 def logG(gameName):
+	"""
+	Returns a game log file
+	:param gameName: (string) name of the game
+	"""
 	return static_file(gameName+'.log', root=join(Config.logPath, 'games'))
 
 
@@ -343,6 +361,7 @@ def logG(gameName):
 @error(404)
 @view('error404.html')
 def error404():
+	"""Returns error 404 page"""
 	# TODO: log this
 	return {'url': request.url}
 #

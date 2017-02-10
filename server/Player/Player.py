@@ -48,18 +48,18 @@ class Player:
 
 	@property
 	def game(self):
+		"""Returns the game"""
 		return self._game
 
 	@game.setter
 	def game(self, g):
+		"""Setter of the game"""
 		self._game = g
 
 	# TODO: remove, because no ones is using this (need to be checked)
 	@property
 	def opponent(self):
-		"""
-		Returns the opponent of a player
-		"""
+		"""Returns the opponent of a player"""
 		if self._game.players[0] is self:
 			return self._game.players[1]
 		else:
@@ -82,14 +82,19 @@ class TrainingPlayer(Player):
 
 	@property
 	def logger(self):
+		"""Returns the logger"""
 		return self._logger
 
 	@property
 	def name(self):
+		"""Returns the name"""
 		return self._name
 
 	@property
 	def isRegular(self):
+		"""Indicates if the player is regular or a training player
+		(it is a training player)
+		"""
 		return False
 
 

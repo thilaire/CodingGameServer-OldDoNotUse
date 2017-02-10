@@ -74,7 +74,7 @@ if __name__ == "__main__":
 
 	# import the <gameName> module and store it (in Game)
 	try:
-		mod = import_module('games.' +gameName + '.server.' + gameName)
+		mod = import_module('games.' + gameName + '.server.' + gameName)
 		if gameName not in mod.__dict__:
 			print(
 					Fore.RED + "Error: The file `games/" + gameName + "/server/" + gameName

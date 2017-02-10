@@ -32,7 +32,7 @@ from jinja2 import Template
 
 # Max File Size (in octets)
 MAX_ACTIVITY_SIZE = 1e6     # 1Mo for the activity.log file
-MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 100e3, 'Tournament': 1e6}   # 10ko per game and player, 1Mo per tournament
+MAX_BASECLASS_SIZE = {'Game':  10e3, 'Player': 100e3, 'Tournament': 1e6}  # 10ko per game and player, 1Mo per tournament
 MAX_BASECLASS_FOLDER = {'Game':  1e6, 'Player': 5e6, 'Tournament': 1e6}   # 5Mo per game, player and tournament folders
 
 
@@ -53,6 +53,7 @@ lockDict = {}
 
 # global variables used as configuration variables
 class Config:
+	"""Simple class to store the configuration parameters"""
 	mode = ''       # default mode, set by configureRootLogger
 	logPath = ''    # path where to store the log
 	webPort = ''    # port of the web server
@@ -61,11 +62,13 @@ class Config:
 
 # function used to log message at low_debug and message levels
 def low_debug(self, msg, *args, **kws):
+	"""Log LOW_DEBUG in the logger"""
 	if self.isEnabledFor(LOW_DEBUG_LEVEL):
 		self._log(LOW_DEBUG_LEVEL, msg, args, **kws)
 
 
 def message(self, msg, *args, **kws):
+	"""Log MESSAGE in the logger"""
 	if self.isEnabledFor(MESSAGE_LEVEL):
 		self._log(MESSAGE_LEVEL, msg, args, **kws)
 
@@ -127,6 +130,7 @@ def configureRootLogger(args):
 		# see http://stackoverflow.com/questions/35408728/catch-warning-in-python-2-7-without-stopping-part-of-progam
 		# noinspection PyUnusedLocal
 		def custom_fallback(prompt="Password: ", stream=None):
+			"""Simple fallback to get the password, see getpass module"""
 			print("WARNING: Password input may be echoed (can not control echo on the terminal)")
 			# noinspection PyProtectedMember
 			return getpass._raw_input(prompt)  # Use getpass' custom raw_input function for security

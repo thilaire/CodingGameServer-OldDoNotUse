@@ -155,7 +155,7 @@ class Game(BaseClass):
 				self._delay = int(options['delay'])
 			except ValueError:
 				self._delay = 0
-				#raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
+				# raise ValueError("The 'delay' value is invalid ('delay=%s')" % options['delay'])
 
 		# time out for the move
 		if 'timeout' not in options:
@@ -193,6 +193,8 @@ class Game(BaseClass):
 
 
 	def HTMLrepr(self):
+		"""Returns HTML representation of the game"""
+		# TODO: check if this is used somewhere
 		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
 		       (self.name, self.name, self.players[0].name, self.players[1].name)
 

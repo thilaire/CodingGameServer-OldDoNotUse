@@ -25,6 +25,17 @@ logger = logging.getLogger()
 
 
 class BaseClass:
+	"""
+	This class is the base class of the classes Player, Game and Tournament
+
+	It put in common:
+	- the dictionary of all the instances (all the players, all the games, etc.)
+	- the name
+	- the logger
+	- some methods to manage the webSockets
+	(send informations about objects and list of objects to webpages, through websockets)
+
+	"""
 
 	allInstances = {}          # unnecessary (will be overwritten by the inherited classe, and unused)
 	_LoIWebSockets = []       # list of webSockets for the lists of Instance (LoI) informations
@@ -68,10 +79,12 @@ class BaseClass:
 	# ===========
 	@property
 	def name(self):
+		"""Returns the name of the object"""
 		return self._name
 
 	@property
 	def logger(self):
+		"""Returns the logger of the object"""
 		return self._logger
 
 	# ========================
@@ -92,6 +105,13 @@ class BaseClass:
 
 	@classmethod
 	def removeInstance(cls, name):
+		"""
+		Remove one instance
+		- remove from the dictionary of all the instances
+		- close the logger handlers associated (close the log files)
+		Parameters:
+		- name: (string) name of the instance
+		"""
 		# remove from the list of instances
 		if name in cls.allInstances:
 			obj = cls.allInstances[name]

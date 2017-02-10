@@ -23,6 +23,13 @@ boolConv = {'true': True, 'false': False}
 
 
 class AstarPlayer(TrainingPlayer):
+	"""
+	class AstarPlayer that create Astar training players
+
+	-> this player do not consider line/column rotation, and move only along thez shortest path
+	(found with a A* algorithm)
+	see https://en.wikipedia.org/wiki/A*_search_algorithm
+	"""
 
 	def __init__(self, **_):
 		super().__init__('Astar')

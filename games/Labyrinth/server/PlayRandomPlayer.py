@@ -25,8 +25,16 @@ boolConv = {'true': True, 'false': False}
 
 
 class PlayRandomPlayer(TrainingPlayer):
-
+	"""
+	This class implements a training player that plays... randomly
+	Every player should be able to beat him
+	"""
 	def __init__(self, **options):
+		"""
+		Initialize the training player
+		The option "rotate=true" (default) or "rotate=false" is possible
+		This option indicates if the player can also rotate the lines/columns or not
+		"""
 		super().__init__('Play_Random')
 
 		# check "rotate" option

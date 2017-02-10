@@ -58,7 +58,11 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 
 	def handle(self):
-
+		"""
+		Function that handle the connection with the client (player)
+		All the connection protocol is managed here (see doc/Protocol.md)
+		After identifying the player, there is an endless loop, following the protocol (waitForGame, sendDataGame, etc.)
+		"""
 		try:
 			# get the name from the client and create the player
 			self._player = None
@@ -237,6 +241,10 @@ class PlayerSocketHandler(BaseRequestHandler):
 
 	@property
 	def logger(self):
+		"""
+		Return the looger
+		(the general logger, or the player's logger if a player already exists)
+		"""
 		if self._player:
 			return self._player.logger
 		else:

@@ -30,7 +30,17 @@ from .PlayRandomPlayer import PlayRandomPlayer
 from .AstarPlayer import AstarPlayer
 
 
+regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
+
+
 def xshift(L, x, dx):
+	"""
+	Function to do a column rotation
+	Parameters:
+	- L: (list) the column
+	- x: (int) column number
+	- dx: (+1 or -1) direction of the rotation
+	"""
 	LL = [l[x] for l in L]
 	LL = LL[-dx:] + LL[:-dx]
 	for l in L:
@@ -38,17 +48,22 @@ def xshift(L, x, dx):
 	return L
 
 
-regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
-
 
 def yshift(L, y, dy):
+	"""
+	Function to do a line rotation
+	Parameters:
+	- L: (list) the column
+	- y: (int) line number
+	- dy: (+1 or -1) direction of the rotation
+	"""
 	L[y] = L[y][-dy:] + L[y][:-dy]
 	return L
 
 
 def tadd(tuple1, tuple2, modu):
 	"""
-	Make element wise sum of tuples
+	Make element-wise modular sum of tuples
 	:param tuple1:
 	:param tuple2:
 	:param modu:
@@ -195,25 +210,33 @@ class Labyrinth(Game):
 
 	@property
 	def treasure(self):
+		"""Returns the treasure"""
 		return self._treasure
 
 	@property
 	def playerPos(self):
+		"""Returns the positions of the players"""
 		return self._playerPos
 
 	@property
 	def playerEnergy(self):
+		"""Returns the energy of the players"""
 		return self._playerEnergy
 
 	@property
 	def lab(self):
+		"""Returns the lab"""
 		return self._lab
 
 	def HTMLrepr(self):
+		"""Returns an HTML representation of a Labyrinth"""
 		return "<A href='/game/%s'>%s</A>" % (self.name, self.name)
 
 	def getDictInformations(self):
-
+		"""
+		Returns a dictionary for HTML display
+		:return:
+		"""
 		conv = Ansi2HTMLConverter()
 		html = conv.convert(str(self))
 		html = html.replace(u'\u2589', '<span style="background-color:black"> </span>')  # black box
@@ -275,10 +298,12 @@ class Labyrinth(Game):
 
 	@property
 	def L(self):
+		"""Returns the Length of the labyrinth"""
 		return self._L
 
 	@property
 	def H(self):
+		"""Returns the Height of the labyrinth"""
 		return self._H
 
 	def updateGame(self, move):

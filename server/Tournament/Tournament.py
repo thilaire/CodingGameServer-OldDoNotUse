@@ -84,7 +84,7 @@ class Tournament(BaseClass):
 		Delay between each move : <input name="delay" type="number" value="0" required/>
 	</label>
 	"""
-      # some options to display game options in an HTML form
+	# some options to display game options in an HTML form
 	# !TODO: clarify (may be just change the name) the difference betwwen HTMLoptions and HTMLgameoptions
 	mode = ""               # type of the tournament
 
@@ -120,7 +120,7 @@ class Tournament(BaseClass):
 			raise ValueError("The number of needed rounds for a victory is not valid")
 
 		self._players = {}              # dictionary (name: player) of engaged players
-		self._games = {}        		# list of current games
+		self._games = {}        		# dictionary of current games
 		self._queue = Queue()           # queue only used for join method, to wait for all the tasks to be done
 		self._matches = []              # list of current (or next) matches in the phase
 		self._state = 0                 # current state
@@ -138,28 +138,30 @@ class Tournament(BaseClass):
 		self._logger.message("The tournament %s is now created (%s)", name, self.__class__.__name__)
 
 
-	@property
-	def name(self):
-		return self._name
 
 	@property
 	def nbMaxPlayers(self):
+		"""Returns the number max of players in the tournament (0 for no limit)"""
 		return self._nbMaxPlayers
 
 	@property
 	def nbRounds4Victory(self):
+		"""Returns the number of rounds needed for a victory"""
 		return self._nbRounds4Victory
 
 	@property
 	def players(self):
+		"""Returns dictionary of players"""
 		return self._players
 
 
 	def HTMLrepr(self):
+		"""Returns the HTML representation of the tournament"""
 		return "<B><A href='/tournament/%s'>%s</A></B>" % (self.name, self.name)
 
 	@property
 	def games(self):
+		"""Return the dictionary of games"""
 		return self._games
 
 	@property
@@ -200,7 +202,10 @@ class Tournament(BaseClass):
 		self.logger.message("The tournament is now over: %s wins !!", self._winner)
 		self._state = 3
 		Tournament.removeInstance(self.name)
-		# !!TODO: disconnect all the players of that tournament ?
+		# Disconnect all the players of that tournament
+		for p in self._players.values():
+			p.disconnect()
+
 
 	@property
 	def phase(self):

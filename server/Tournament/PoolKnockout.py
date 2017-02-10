@@ -25,6 +25,9 @@ from math import frexp
 
 
 class PoolKnockout(Tournament):
+	"""
+	Implement a PoolKnockout Tournament, ie a two stages (pool tournament + knockout tournament) tournament
+	"""
 	mode = "Two stages (pool + knockout) Tournament"
 	HTMLoptions = """
 	<label>
@@ -107,7 +110,7 @@ class PoolKnockout(Tournament):
 		nbrounds = []
 		for rotation in groups:
 			if len(rotation) % 2:
-				rotation.append("") # append a fake player if we have an odd number of players
+				rotation.append("")  # append a fake player if we have an odd number of players
 			nbrounds.append(len(rotation)-1)
 		nmax = max(nbrounds)
 
@@ -164,7 +167,7 @@ class PoolKnockout(Tournament):
 
 		# update the winner
 		(finalist1, finalist2), (score, _) = list(self._games.items())[0]
-		self._winner = finalist1 if score[0]>score[1] else finalist2
+		self._winner = finalist1 if score[0] > score[1] else finalist2
 
 	def updateScore(self):
 		"""
@@ -202,7 +205,7 @@ class PoolKnockout(Tournament):
 
 			for t in self._Draw[::-1]:
 				HTMLs += "".join("%s (%d) vs %s (%d)<br>" % (self.playerHTMLrepr(t[2*i]), self._score[t[2*i]][2], self.playerHTMLrepr(t[2*i+1]),
-				                                        self._score[t[2*i+1]][2]) for i in range(len(t)//2))
+							self._score[t[2*i+1]][2]) for i in range(len(t)//2))
 				HTMLs += "<br>"
 
 		if self._score and self._groups:
