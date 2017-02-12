@@ -251,8 +251,6 @@ class Labyrinth(Game):
 		"""
 		Convert a Game into string (to be send to clients, and display)
 		"""
-		# TODO: add informations about last move, etc.
-
 		lines = []
 		for y in range(self.H):
 			st = []
