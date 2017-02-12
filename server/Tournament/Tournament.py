@@ -276,7 +276,7 @@ class Tournament(BaseClass):
 		"""
 		# check if the tournament exists
 		if tournamentName not in cls.allInstances:
-			raise ValueError("The tournament '%s' doesn't not exist" % tournamentName)
+			raise ValueError("The tournament '%s' doesn't exist" % tournamentName)
 		t = cls.allInstances[tournamentName]
 
 		# check if the tournament is open
