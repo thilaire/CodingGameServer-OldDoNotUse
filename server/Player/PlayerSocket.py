@@ -22,7 +22,7 @@ import shlex
 from re import sub
 from socketserver import BaseRequestHandler
 
-from server.Constants import MOVE_LOSE
+from server.Constants import LOSING_MOVE
 from server.Constants import SIZE_FMT
 from server.Game import Game
 from server.Player.RegularPlayer import RegularPlayer
@@ -99,7 +99,7 @@ class PlayerSocketHandler(BaseRequestHandler):
 						if self.game is None:   # the game is already finished due to TIMEOUT
 							# Timeout !
 							self.sendData("OK")
-							return_code, msg = MOVE_LOSE, "Timeout !"
+							return_code, msg = LOSING_MOVE, "Timeout !"
 							self.sendData(str(return_code))
 							self.sendData(msg)
 						# play move

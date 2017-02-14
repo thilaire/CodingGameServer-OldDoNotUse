@@ -14,7 +14,7 @@ Then, you should also fill:
 
 """
 
-from server.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
+from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE
 from server.Game import Game
 
 # import here your training players
@@ -98,18 +98,18 @@ class TemplateGame(Game):
 		- msg: a message to send to the player, explaining why the game is ending
 		"""
 		# parse the move and check if it's in correct form
-		# returns the tuple (MOVE_LOSE, "The move is not in correct form  !") if not valid
+		# returns the tuple (LOOSING_MOVE, "The move is not in correct form  !") if not valid
 
 		# check if the move is possible
-		# returns (MOVE_LOSE, "explanations....") if not valid (give the full reason why it is not valid)
+		# returns (LOOSING_MOVE, "explanations....") if not valid (give the full reason why it is not valid)
 
 		# move the player
 		# update the intern data
 		# use self._whoPlays to get who plays (0 or 1)
 
-		# if won, returns the tuple (MOVE_WIN, "congratulation message!")
-		# otherwise, just returns (MOVE_OK, "")
-		return MOVE_OK, ""
+		# if won, returns the tuple (WINNING_MOVE, "congratulation message!")
+		# otherwise, just returns (NORMAL_MOVE, "")
+		return NORMAL_MOVE, ""
 
 
 	def getDataSize(self):

@@ -9,8 +9,8 @@ particular API (e.g. Labyrinth)
 
 typedef enum
 {
-	MOVE_OK = 0,
-	MOVE_WIN = 1,
-	MOVE_LOSE = -1
+	NORMAL_MOVE = 0,
+	WINNING_MOVE = 1,
+	LOOSING_MOVE = -1
 } t_return_code;
 #endif

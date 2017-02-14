@@ -133,10 +133,10 @@ int getLabyrinth( char* lab);
  * - move: a move
  *
  * Returns a return_code 
- * MOVE_OK for normal move, 
- * MOVE_WIN for a winning move, -1 
- * MOVE_LOSE for a losing (or illegal) move
- * this code is relative to the opponent (MOVE_WIN if HE wins, ...)
+ * NORMAL_MOVE for normal move,
+ * WINNING_MOVE for a winning move, -1
+ * LOSING_MOVE for a losing (or illegal) move
+ * this code is relative to the opponent (WINNING_MOVE if HE wins, ...)
  */
 t_return_code getMove( t_move* move );
 
@@ -149,10 +149,10 @@ t_return_code getMove( t_move* move );
  * - move: a move
  *
  * Returns a return_code 
- * MOVE_OK for normal move, 
- * MOVE_WIN for a winning move, -1 
- * MOVE_LOSE for a losing (or illegal) move
- * this code is relative to your programm (MOVE_WIN if YOU win, ...)
+ * NORMAL_MOVE for normal move,
+ * WINNING_MOVE for a winning move, -1
+ * LOSING_MOVE for a losing (or illegal) move
+ * this code is relative to your programm (WINNING_MOVE if YOU win, ...)
  */
 t_return_code sendMove( t_move move );
 

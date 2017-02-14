@@ -389,7 +389,7 @@ t_return_code sendCGSMove( const char* fct, char* move)
 
 	
 	/* TODO: that message is not handle or given to the user.. Should we printf it ?
-	 TH: according to me, we need to print it when the result is not MOVE_OK	 */
+	 TH: according to me, we need to print it when the result is not NORMAL_MOVE	 */
 
 	return result;
 }

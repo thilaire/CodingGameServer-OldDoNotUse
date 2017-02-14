@@ -24,7 +24,7 @@ from threading import Barrier, BrokenBarrierError
 from time import time
 
 from server.Comments import CommentQueue
-from server.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE, TIMEOUT_TURN, MAX_COMMENTS
+from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE, TIMEOUT_TURN, MAX_COMMENTS
 from server.BaseClass import BaseClass
 
 
@@ -222,19 +222,19 @@ class Game(BaseClass):
 		Called after having update the game
 		Check if it's the end of the game (and call endOfGame), or update the next player
 		Parameters:
-		- return_code: (int) code returned by updateGame (MOVE_OK, MOVE_WIN or MOVE_LOSE)
+		- return_code: (int) code returned by updateGame (NORMAL_MOVE, WINNING_MOVE or LOOSING_MOVE)
 		- msg: (string) message when the move is not OK
 		"""
 		# check if the player wins
-		if return_code == MOVE_OK:
+		if return_code == NORMAL_MOVE:
 			# Wait for the delay time
 			timemod.sleep(self._delay/1000)
 			# change who plays
 			self._whoPlays = self.getNextPlayer()
-		elif return_code == MOVE_WIN:
+		elif return_code == WINNING_MOVE:
 			# Game won by the opponent, end of the game
 			self.endOfGame(self._whoPlays, msg)
-		else:  # return_code == MOVE_LOSE
+		else:  # return_code == LOOSING_MOVE
 			# Game won by the regular player, end of the game
 			self.endOfGame(1 - self._whoPlays, msg)
 
@@ -290,13 +290,13 @@ class Game(BaseClass):
 		If it doesn't answer in TIMEOUT_TURN seconds, then he losts the game
 		Returns:
 			- last move: (string) string describing the opponent last move (exactly the string it sends)
-			- last return_code: (int) code (MOVE_OK, MOVE_WIN or MOVE_LOSE) describing the last move
+			- last return_code: (int) code (NORMAL_MOVE, WINNING_MOVE or LOSING_MOVE) describing the last move
 		"""
 
 		# check if the opponent doesn't have disconnected
 		if self._players[self._whoPlays].game is None:
 			self.endOfGame(1-self._whoPlays, "Opponent has disconnected")
-			return "", MOVE_LOSE
+			return "", LOSING_MOVE
 
 		# wait for the move of the opponent if the opponent is a regular player
 		if self._players[self._whoPlays].isRegular:
@@ -310,7 +310,7 @@ class Game(BaseClass):
 				# Timeout !!
 				# the opponent has lost the game
 				self.endOfGame(1 - self._whoPlays, "Timeout")
-				return self._lastMove, MOVE_LOSE
+				return self._lastMove, LOSING_MOVE
 
 		else:
 			# the opponent is a training player
@@ -346,7 +346,7 @@ class Game(BaseClass):
 		# check if the opponent doesn't have disconnected
 		if self._players[self._whoPlays].game is None:
 			self.endOfGame(self._whoPlays, "Opponent has disconnected")
-			return MOVE_WIN, "Opponent has disconnected"
+			return WINNING_MOVE, "Opponent has disconnected"
 
 		# log that move
 		self.logger.info("'%s' plays %s" % (self.players[self._whoPlays].name, move))
@@ -369,7 +369,7 @@ class Game(BaseClass):
 			except BrokenBarrierError:
 				# Timeout !
 				self.endOfGame(self._whoPlays, "Timeout")
-				return MOVE_WIN, "Timeout of the opponent!"
+				return WINNING_MOVE, "Timeout of the opponent!"
 
 			# update who plays next and check for the end of the game
 			self.manageNextTurn(return_code, msg)
@@ -384,7 +384,7 @@ class Game(BaseClass):
 				# Timeout !!
 				# the player has lost the game
 				self.endOfGame(1 - self._whoPlays, "Timeout")
-				return MOVE_LOSE, "Timeout !"
+				return LOSING_MOVE, "Timeout !"
 
 			# play that move, update the game and keep the last move
 			return_code, msg = self.updateGame(move)

@@ -22,7 +22,7 @@ int main()
 {
 	char labName[50];					/* name of the labyrinth */
 	char* labData;						/* data of the labyrinth */
-	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
+	t_return_code ret = NORMAL_MOVE;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
 	int player;
 	int sizeX,sizeY;
@@ -53,7 +53,7 @@ int main()
 	    ret = sendMove(move);
 	  }
 	
-	if ((player ==1 && ret == MOVE_WIN) || (player==0 && ret == MOVE_LOSE))
+	if ((player ==1 && ret == WINNING_MOVE) || (player==0 && ret == LOOSING_MOVE))
 	  printf("I lose the game\n");
 	
 	/* we do not forget to free the allocated array */

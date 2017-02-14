@@ -16,7 +16,7 @@ int main()
 {
 	char labName[50];					/* name of the labyrinth */
 	char* labData;						/* data of the labyrinth */
-	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
+	t_return_code ret = NORMAL_MOVE;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
 	int player;
 	int sizeX,sizeY;
@@ -56,9 +56,9 @@ int main()
 			/* change player */
 			player = ! player;
 
-		} while (ret==MOVE_OK);
+		} while (ret==NORMAL_MOVE);
 
-		if ( (player==0 && ret==MOVE_WIN) || (player==1 && ret==MOVE_LOSE) )
+		if ( (player==0 && ret==WINNING_MOVE) || (player==1 && ret==LOSING_MOVE) )
 			printf("\n Unfortunately, the opponent wins\n");
 		else
 			printf("\n Héhé, I win!!\n");

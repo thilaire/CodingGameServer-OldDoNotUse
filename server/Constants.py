@@ -23,9 +23,9 @@ TIMEOUT_TURN = 10		    # time (in seconds) to play a move
 # 0 is ok
 # >0 for a winning move
 # <0 for an illegal move
-MOVE_OK = 0
-MOVE_WIN = 1
-MOVE_LOSE = -1       # TODO: find a better constant name
+NORMAL_MOVE = 0
+WINNING_MOVE = 1
+LOSING_MOVE = -1
 
 # Formatting string indicating  the length of the message
 SIZE_FMT = "%04d"

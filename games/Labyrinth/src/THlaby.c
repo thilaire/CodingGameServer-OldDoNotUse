@@ -217,7 +217,7 @@ int main()
 {
 
 	t_laby laby;						/* data of the labyrinth */
-	t_return_code ret = MOVE_OK;		/* indicates the status of the previous move */
+	t_return_code ret = NORMAL_MOVE;		/* indicates the status of the previous move */
 	t_move move;						/* a move */
     int nmove;                          /* number of moves */
     char toto[100];
@@ -278,9 +278,9 @@ int main()
 
 
 
-		} while (ret==MOVE_OK);
+		} while (ret==NORMAL_MOVE);
 
-		if ( (laby.player==laby.us && ret==MOVE_WIN) || (laby.player!=laby.us && ret==MOVE_LOSE) )
+		if ( (laby.player==laby.us && ret==WINNING_MOVE) || (laby.player!=laby.us && ret==LOOSING_MOVE) )
 			printf("\n Unfortunately, we loose... :-(\n");
 		else
 			printf("\n Héhé, I win!!\n");

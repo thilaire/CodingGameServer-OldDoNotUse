@@ -21,7 +21,7 @@ from re import compile
 from ansi2html import Ansi2HTMLConverter
 from colorama import Fore
 
-from server.Constants import MOVE_OK, MOVE_WIN, MOVE_LOSE
+from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE
 from server.Game import Game
 from .Constants import ROTATE_LINE_LEFT, ROTATE_LINE_RIGHT, ROTATE_COLUMN_UP, ROTATE_COLUMN_DOWN, MOVE_UP, MOVE_RIGHT, \
 	DO_NOTHING, Ddx, Ddy, INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND, ROTATE_ENERGY
@@ -316,17 +316,17 @@ class Labyrinth(Game):
 		result = regdd.match(move)
 		# check if the data receive is valid
 		if result is None:
-			return MOVE_LOSE, "The move is not in correct form ('%d %d') !"
+			return LOSING_MOVE, "The move is not in correct form ('%d %d') !"
 		# get the type and the value
 		move_type = int(result.group(1))
 		value = int(result.group(2))
 		# check the possible values
 		if not (ROTATE_LINE_LEFT <= move_type <= DO_NOTHING):
-			return MOVE_LOSE, "The type is not valid !"
+			return LOSING_MOVE, "The type is not valid !"
 		if (ROTATE_LINE_LEFT <= move_type <= ROTATE_LINE_RIGHT) and not (0 <= value < self.H):
-			return MOVE_LOSE, "The line number is not valid !"
+			return LOSING_MOVE, "The line number is not valid !"
 		if (ROTATE_COLUMN_UP <= move_type <= ROTATE_COLUMN_DOWN) and not (0 <= value < self.L):
-			return MOVE_LOSE, "The column number is not valid !"
+			return LOSING_MOVE, "The column number is not valid !"
 
 		# move the player
 		if MOVE_UP <= move_type <= MOVE_RIGHT:
@@ -335,7 +335,7 @@ class Labyrinth(Game):
 			y = (y + Ddy[move_type]) % self.H
 
 			if not self._lab[x][y]:
-				return MOVE_LOSE, "Outch! There's a wall where you want to move!"
+				return LOSING_MOVE, "Outch! There's a wall where you want to move!"
 
 			# play the move (move the player on the lab)
 			self._playerPos[self._whoPlays] = (x, y)
@@ -345,17 +345,17 @@ class Labyrinth(Game):
 
 			# check if won
 			if (x, y) == self._treasure:
-				return MOVE_WIN, "Treasor found !!"
+				return WINNING_MOVE, "Treasor found !!"
 			else:
-				return MOVE_OK, ""
+				return NORMAL_MOVE, ""
 
 		elif move_type == DO_NOTHING:
 			self._playerEnergy[self._whoPlays] += 1
-			return MOVE_OK, ""
+			return NORMAL_MOVE, ""
 
 		elif ROTATE_LINE_LEFT <= move_type <= ROTATE_COLUMN_DOWN:
 			if self._playerEnergy[self._whoPlays] < ROTATE_ENERGY:
-				return MOVE_LOSE, "not enough energy to make a rotation"
+				return LOSING_MOVE, "not enough energy to make a rotation"
 			# rotation
 			xm = -1  # column to move
 			ym = -1  # row to move
@@ -383,9 +383,9 @@ class Labyrinth(Game):
 			# update energy
 			self._playerEnergy[self._whoPlays] -= ROTATE_ENERGY
 
-			return MOVE_OK, ""
+			return NORMAL_MOVE, ""
 
-		return MOVE_LOSE, "Rotation not yet implemented"
+		return LOSING_MOVE, "Rotation not yet implemented"
 
 
 	def getData(self):
