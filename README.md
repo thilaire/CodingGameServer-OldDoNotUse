@@ -18,20 +18,20 @@ So, CGS provides a (complete) framework to set up such a server (and web-server)
 
 
 ## How to run it ?
-Before use it for your own game, the 1st thing is to try it with the supplied game.
+Before using it for your own game, the 1st thing is to try it with the Labyrinth game.
 You need:
 - Python 3.4+
-- the following packages: `colorama`, `colorlog`, `docopt`, `bottle`, `jinja2`, `ansi2html`, `karellen-geventws`
+- the following packages: `colorama`, `colorlog`, `docopt`, `bottle`, `jinja2`, `ansi2html`, `karellen-geventws`.
 Type `pip install colorama colorlog docopt bottle jinja2 ansi2html karellen-geventws` to install them.
 
 Finally, to run it:
 ```
 ./runCGS.py Labyrinth --dev
 ```
-It will run the TCP server on port 1234, and the webserver on port 8088 (you can change those port on command-line, see the help with `./runCGS --help`). Note that the `--dev` option is to run it in `dev` mode (ie with some logs to know what's going on)
+It will run the TCP server on port 1234, and the webserver on port 8088 (you can change those port on command-line, see the help with `./runCGS --help`). Note that the `--dev` option is to run it in `dev` mode (ie do some logging in `games/Labyrinth/logs/` to know what's going on)
 Remark: this have only been tested on Unix-based OS (only on Linux and Mac OS), but it *should* work on Windows (...or not...)
 
-You can connect to the webserver (by opening the webpage http://localhost:8088/) and check how ugly our webpages are for the moment (the functionality are present, so in fact we just need to write some fancy templates instead of the ugly ones...).
+You can connect to the webserver (by opening the webpage [http://localhost:8088](http://localhost:8088/) ) and check how ugly our webpages are for the moment (the functionality are present, so in fact we just need to write some fancy templates instead of the ugly ones...).
 
 Then, you can connect your player to make it play....
 Wait, you need to write your own player, for that...
