@@ -8,12 +8,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Constants.py
 	Contains the constants of the game Labyrinth
 	-> defines the constants used for the client communication
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 

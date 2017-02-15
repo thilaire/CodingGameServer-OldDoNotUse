@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,13 +7,14 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Player.py
 	Contains the class RegularPlayer
 	-> defines the generic client player's behavior
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
+
 from _socket import SHUT_RDWR
 from threading import Event
 

@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,12 +7,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: League.py
 	Contains the League class
 	-> defines the behavior of a league tournament
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 

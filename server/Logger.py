@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -9,10 +8,11 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Logger.py
 	contain function to configure the different loggers
+
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 import logging  # logging system

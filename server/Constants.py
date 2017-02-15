@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,11 +7,11 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Constants.py
 	Contains the constants and config parameters used in the games
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 

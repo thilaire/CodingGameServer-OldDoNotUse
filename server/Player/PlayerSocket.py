@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,13 +7,13 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: PlayerSocket.py
 	Contains the Socket Handler for the player
 	-> implements the protocol client <-> server
 	-> answers to each request of the client
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 import logging

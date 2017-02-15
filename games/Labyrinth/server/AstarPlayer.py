@@ -8,11 +8,12 @@
 
 Authors: J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: AstarPlayer.py
 	Contains the class AstarPlayer
 	-> defines a player that uses Astar algorithm to move along the shortest path (but do not move the walls)
+
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 from server.Player import TrainingPlayer

@@ -1,23 +1,20 @@
 /*
 
-* --------------------- *
-|                       |
-|   -= Labyrinth =-     |
-|                       |
-| based on the          |
-|   Coding Game Server  |
-|                       |
-* --------------------- *
-
+* ------------------------------ *
+|                                |
+|   -= Coding Game Server =-     |
+|                                |
+|       client API in C          |
+|                                |
+* ------------------------------ *
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev... (not even a beta)
 
 File: clientAPI.h
 	Functions' prototypes for the client API
 
-
+Copyright 2016-2017 T. Hilaire, J. Brajard
 */
 
 

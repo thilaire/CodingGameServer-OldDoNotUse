@@ -8,11 +8,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: playRandomPlayer.py
 	Contains the class playRandomPlayer
 	-> defines a dummy player that play randomly every time (but do not loose)
+
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 from server.Player import TrainingPlayer

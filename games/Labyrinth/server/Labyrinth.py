@@ -8,12 +8,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Labyrinth.py
 	Contains the class Labyrinth
 	-> defines the Labyrinth game (its rules, moves, etc.)
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 from random import shuffle, random, randint

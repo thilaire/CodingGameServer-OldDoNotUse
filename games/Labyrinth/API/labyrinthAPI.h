@@ -3,17 +3,20 @@
 |                          |
 |   -= LabyrinthAPI =-     |
 |                          |
+| based on                 |
+| Coding Game Server       |
+|                          |
 * ------------------------ *
 
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: beta version
 
 File: labyrinthAPI.h
 	Contains the client API for the Labyrinth game
+	-> based on clientAPI.h
 
-
+Copyright 2016-2017 T. Hilaire, J. Brajard
 */
 
 

@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,14 +7,16 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: webserver.py
 	Contains the webserver routines (based on bottle)
 	-> all the routes are defined here
 	-> the template files used are in templates
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
+
+
 from gevent import monkey
 monkey.patch_all()
 

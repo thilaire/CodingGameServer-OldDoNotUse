@@ -8,12 +8,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: DoNothingPlayer.py
 	Contains the class DoNothingPlayer
 	-> defines a stupid player that does... nothing (it plays DO_NOTHING every time)
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 from server.Player import TrainingPlayer

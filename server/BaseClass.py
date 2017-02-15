@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,13 +7,13 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: WebSocketBase.py
 	Contains the base class to answer to websockets asking for information about the derived clas
 	-> defines the generic behavior wrt websockets
 	-> Game, RegularPlayer, Tournament will derived from it
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 import logging

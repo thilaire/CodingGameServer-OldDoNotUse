@@ -11,7 +11,6 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: runCGS.py
 	Main file/entry for the Coding Game Server
@@ -20,10 +19,8 @@ File: runCGS.py
 CGS requires Python3 and the following packages: colorama, colorlog, docopt, bottle, jinja2, gevent-websocket
 >> pip install colorama colorlog docopt bottle jinja2 ansi2html karellen-geventws
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
-
-# from gevent import monkey
-# monkey.patch_all()
 
 import threading  # to run threads
 from importlib import import_module    # to dynamically import modules

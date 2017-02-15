@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,11 +7,11 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Comments.py
 	ALl needed to deal with comments
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 from collections import namedtuple

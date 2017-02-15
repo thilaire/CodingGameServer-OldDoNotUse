@@ -1,22 +1,20 @@
 /*
-* --------------------- *
-|                       |
-|   -= Labyrinth =-     |
-|                       |
-| based on the          |
-|   Coding Game Server  |
-|                       |
-* --------------------- *
+* ------------------------------ *
+|                                |
+|   -= Coding Game Server =-     |
+|                                |
+|       client API in C          |
+|                                |
+* ------------------------------ *
 
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: clientAPI.c
 	Functions for the Game API (connexion to the Coding Game Server)
 
-
+Copyright 2016-2017 T. Hilaire, J. Brajard
 */
 
 /* TODO: allows to try to connect to a list of servers? Or just returns 0 if the connection fails */

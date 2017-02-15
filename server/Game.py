@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,12 +7,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Game.py
 	Contains the class Game
 	-> defines the generic Game's behavior (this class will be inherits for each game, like the Labyrinth)
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 

@@ -1,5 +1,4 @@
 """
-
 * --------------------- *
 |                       |
 |   Coding Game Server  |
@@ -8,13 +7,13 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Tournament.py
 	Contains the class Tournament
 	-> defines the generic Tournament's behavior
 	-> should not be used directly to build a Tournament object (its subclasses are used)
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 

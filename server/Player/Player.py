@@ -8,12 +8,12 @@
 
 Authors: T. Hilaire, J. Brajard
 Licence: GPL
-Status: still in dev...
 
 File: Player.py
 	Contains the class Player
 	-> defines the generic player's behavior
 
+Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 import logging
