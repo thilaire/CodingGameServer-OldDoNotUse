@@ -192,12 +192,6 @@ class Game(BaseClass):
 		self.logger.debug("The timeout is set to %ds" % self._timeout)
 
 
-	def HTMLrepr(self):
-		"""Returns HTML representation of the game"""
-		# TODO: check if this is used somewhere
-		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
-		       (self.name, self.name, self.players[0].name, self.players[1].name)
-
 
 	def partialEndOfGame(self, whoLooses):
 		"""
@@ -498,6 +492,18 @@ class Game(BaseClass):
 		Returns the next player (but do not update self._whoPlays)
 		"""
 		return 1 - self._whoPlays
+
+
+	def HTMLrepr(self):
+		"""
+		Returns HTML representation of the game
+
+		IT CAN BE OVERLOADED BY THE CHILD CLASS
+		"""
+		return "<B><A href='/game/%s'>%s</A></B> (%s vs %s)" % \
+		       (self.name, self.name, self.players[0].name, self.players[1].name)
+
+
 
 
 	def updateGame(self, move):
