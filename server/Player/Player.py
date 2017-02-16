@@ -20,8 +20,8 @@ import logging
 
 
 # disabled logger (so training players have a logger, even if it doesn't log anything)
-logger = logging.getLogger("disable-logger")
-logger.disabled = True
+disabledLogger = logging.getLogger("disable-logger")
+disabledLogger.disabled = True
 
 
 
@@ -56,7 +56,6 @@ class Player:
 		"""Setter of the game"""
 		self._game = g
 
-	# TODO: remove, because no ones is using this (need to be checked)
 	@property
 	def opponent(self):
 		"""Returns the opponent of a player"""
@@ -78,7 +77,7 @@ class TrainingPlayer(Player):
 		# name
 		self._name = name
 		# logger
-		self._logger = logger       # TODO: check if this is somewhere used or not (if not, remove it)
+		self._logger = disabledLogger
 
 	@property
 	def logger(self):
