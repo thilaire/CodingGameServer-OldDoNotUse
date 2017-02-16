@@ -422,13 +422,13 @@ class Tournament(BaseClass):
 		# (we remove fake players with "" as name)
 		self._games = {(pName1, pName2): [[0, 0], None] for pName1, pName2 in self._matches if pName1 and pName2}
 		# run the games
-		for self._round in range(1, self.nbRounds4Victory + 1):
+		for self._round in range(1, 2*self.nbRounds4Victory + 1):
 
 			for (pName1, pName2), (score, _) in self._games.items():
 
 				if max(score) < self.nbRounds4Victory:
-					# choose who starts (-1 for random)
-					start = (self._round-1) % 2 if self._round < self.nbRounds4Victory else -1
+					# choose who starts (-1 for random, ie for the last round)
+					start = (self._round-1) % 2 if self._round < 2*self.nbRounds4Victory else -1
 
 					# run the game only if the two players are here (otherwise, one wins directly)
 					player1, player2 = self._players[pName1], self._players[pName2]
