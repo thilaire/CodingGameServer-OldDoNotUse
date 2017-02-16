@@ -112,3 +112,4 @@ if __name__ == "__main__":
 # TODO: send pretty emails (when send from webserver)
 # !TODO: allows the C API do not quit when there is an error (and to get back the error message) -> in some hidden variables "onErrorContinue" and "lastError" ?
 # !TODO: unify the docstrings (`Parameters` vs `param:`, check with sphinx)
+# FIXME: when a player play (or wait for a move) but it's not his turn, the client exits and disconnects. This should be a problem in tournament (should only loose the game): in the client API, should display the error and return LOSING_MOVE/WINNING_MOVE

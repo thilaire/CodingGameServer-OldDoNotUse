@@ -91,7 +91,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 						else:
 							# we cannot ask for a move, since it's our turn to play
 							self.sendData("It's our turn to play, so we cannot ask for a move!")
-							# TODO: should the player loose ? Or just wait for the deconnection done by the client API?
 
 					elif data.startswith("PLAY_MOVE "):
 						# check if it's not too late (timeout)
@@ -217,7 +216,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 				self.request.sendall(data.encode('utf-8'))
 			else:
 				# that's a trick when we want to send an empty message...
-				# TODO: change this (do not send any empty message? always send X octets messages?)
 				self.request.sendall(''.encode('utf-8'))
 			if self._player:
 				self.logger.low_debug("Send '%s' to %s (%s) ", data, self._player.name, self.client_address[0])
@@ -309,7 +307,6 @@ class PlayerSocketHandler(BaseRequestHandler):
 				if "=" in terms[0]:
 					trainingPlayerName = ""
 					tournamentName = ""
-					# TODO: remove the potential spaces (around the =, for example), by applying split to keys and values
 					options = dict([token.split('=') for token in terms])
 				elif terms[0] == 'TOURNAMENT':
 					trainingPlayerName = ""
