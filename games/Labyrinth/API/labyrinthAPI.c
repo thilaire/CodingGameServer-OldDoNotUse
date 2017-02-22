@@ -56,29 +56,39 @@ void closeConnection()
 
 
 
-/* ------------------------------------------------------------------------------
- * Wait for a Game, and retrieve its name and first data (typically, array sizes)
+/* ----------------------------------------------------------------
+ * Wait for a Labyrinth, and retrieve its name and its size
  *
  * Parameters:
- * - training: string (max 50 characters) type of the training player we want to play with
- *   (empty string for regular game)
- * - labyrinthName: string (max 50 characters), corresponds to the game name
+ * - gameType: string (max 50 characters) type of the game
+ *              we want to play
+ *             (empty string for regular game)
+ * - labyrinthName: string (max 50 characters),
+ *                  corresponds to the game name
  * - sizeX, sizeY: sizes of the labyrinth
  *
- * training is a string like "NAME key1=value1 key2=value1 ..."
- * - NAME can be empty. It gives the type of the training player
- * - key=value pairs are used for options (each training player has its own options)
- *   invalid keys are ignored, invalid values leads to error
- *   the following options are common to every training player (when NAME is not empty):
- *   - timeout: allows an define the timeout when training (in seconds)
+ * gameType is a string like
+ * "[TOURNAMENT <name> | TRAINING <name>] {options}"
+ * where:
+ * - {options} is in form "key1=value1 key2=value2 ..."
+ * - <name> is the name of the tournament or the name of the training player
+ * so the following message are accepted:
+ *   - "WAIT_GAME {options}": wait for a regular game (with options)
+ *   - "WAIT_GAME TOURNAMENT <name> {options}": register in the tournament <name> and wait for a game
+ *   - "WAIT_GAME TRAINING <name> {options}": play agains a training player
  *
- * the NAME could be:
+ * The options is composed by "key=value" pairs (invalid keys are ignored, invalid values leads to error)
+ * The following options are common to every training player (when NAME is not empty or not TOURNAMENT):
+ *   - 'timeout': allows an define the timeout when training (in seconds)
+ *   - 'seed': allows to set the seed of the random generator
+ *   - 'start': allows to set who starts ('0' or '1')
+ * For training player, the <name> could be:
  * - "DO_NOTHING" to play against DO_NOTHING player (player that does not move)
- * - "PLAY_RANDOM" for a player that make random (but legal) moves (option "rotation=False/True")
- *
- *
+ * - "PLAY_RANDOM" for a player that make random (legal) moves (option "rotate=False/True")
+ * - "ASTAR" for a player that move the shortest way to the treasure
+ *   (without making any rotation)
  */
-void waitForLabyrinth( char* training, char* labyrinthName, int* sizeX, int* sizeY)
+void waitForLabyrinth( char* gameType, char* labyrinthName, int* sizeX, int* sizeY)
 {
 	char data[128];
 	/* wait for a game */

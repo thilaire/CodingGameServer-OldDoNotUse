@@ -40,34 +40,36 @@ void closeConnection()
 }
 
 
-/* ----------------------------------------------------------------
- * Wait for a Game, and retrieve its name and first data
- * (typically, array sizes)
+ /* ----------------------------------------------------------------
+ * Wait for a Game, and retrieve its name and first data (typically, array sizes)
  *
  * Parameters:
- * - gameType: string (max 50 characters)
- * - labyrinthName: string (max 50 characters),
- *                  corresponds to the game name
- * - insert your size data here...
+ * - fct: name of the function that calls waitForGame (used for the logging)
+ * - gameType: string (max 50 characters) type of the training player we want to play with (empty string for regular game)
+ * - gameName: string (max 50 characters), corresponds to the game name
+ * - data: string (max 128 characters), corresponds to the data
  *
- * gameType is a string like "NAME key1=value1 key2=value1 ..."
- * - NAME can be empty. It gives the type of the training player
- * - key=value pairs are used for options
- *   (each training player has its own options)
- *   invalid keys are ignored, invalid values leads to error
- *   the following options are common to every training player
- *   (when NAME is not empty or not TOURNAMENT):
- *        - 'timeout': allows an define the timeout
- *                   when training (in seconds)
- *        - 'seed': allows to set the seed of the random generator
- *        - 'start': allows to set who starts ('0' or '1')
- * gameType could also be : "TOURNAMENT name" where name is the name of the tournament
-  */
-void waitForTemplateGame( char* gameType, char* labyrinthName, ...)
+ * gameType is a string like
+ * "[TOURNAMENT <name> | TRAINING <name>] {options}"
+ * where:
+ * - {options} is in form "key1=value1 key2=value2 ..."
+ * - <name> is the name of the tournament or the name of the training player
+ * so the following message are accepted:
+ *   - "WAIT_GAME {options}": wait for a regular game (with options)
+ *   - "WAIT_GAME TOURNAMENT <name> {options}": register in the tournament <name> and wait for a game
+ *   - "WAIT_GAME TRAINING <name> {options}": play agains a training player
+ *
+ * The options is composed by "key=value" pairs (invalid keys are ignored, invalid values leads to error)
+ * The following options are common to every training player:
+ *   - 'timeout': allows an define the timeout when training (in seconds)
+ *   - 'seed': allows to set the seed of the random generator
+ *   - 'start': allows to set who starts ('0' or '1')
+ */
+void waitForTemplateGame( char* gameType, char* templateGameName, ...)
 {
 	char data[...];
 	/* wait for a game */
-	waitForGame( __FUNCTION__, gameType, labyrinthName, data);
+	waitForGame( __FUNCTION__, gameType, templateGameName, data);
 
 	/*
 	 *insert your code here to parse the data send by the server */

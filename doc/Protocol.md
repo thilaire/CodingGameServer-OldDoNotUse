@@ -12,7 +12,7 @@ Here are (in that order), the different actions:
    2. Server acknowledges (send `"OK"`) if the name is valid
 
 3) Waiting for a game       (client: `waitForGame`, server: `waitForGame`)
-   1. Client sends `"WAIT_GAME %s"` with the type of the game (an empty string for a regular game, or the name of the type, like `"DO_NOTHING"`)
+   1. Client sends `"WAIT_GAME %s"` where the string contains the type of the game (`"TRAINING <name>"` to play against a training player, `"TOURNAMENT <name>"` to play in a tournament, etc.)
    2. Server acknowledges (send `"OK"`)
    3. Server waits for the game to start
    4. Every 3 seconds, the server answers "NOT_READY" when the game has not started yet.
@@ -38,7 +38,7 @@ Now the client can send any of the following command (until the end of the game)
    6. Server sends `"%d"` the return_code (0 for move ok, +1 for winning move, -1 for losing move)
 
 6) Send its move            (client: `sendCGSMove`, server:`handle`)
-   1. Client sends "PLAY_MOVE %s" with its move
+   1. Client sends `"PLAY_MOVE %s"` with its move
    2. Server acknowledge (send `"OK"`) if it's the client's turn to play
    3. Server waits for the `GET_MOVE` of the opponent (and synchronize the two clients)
    4. Server sends `"%d"` the return_code (0 for move ok, +1 for winning move, -1 for losing move)

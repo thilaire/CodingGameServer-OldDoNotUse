@@ -284,20 +284,23 @@ class PlayerSocketHandler(BaseRequestHandler):
 	def waitForGame(self):
 		"""
 		Waits for a message "WAIT_GAME %s" and then wait for a game (with an Event)
-		%s is a string like (options is like "key1=value1 key2=value2 ...")
-		- "{options}": regular game (with options)
-		- "TOURNAMENT NAME {options}": tournament
-		- or "NAME {options}": play agains training player
+		%s is a string like "[TOURNAMENT <name> | TRAINING <name>] {options}" where:
+		- {options} is in form "key1=value1 key2=value2 ..."
+		- <name> is the name of the tournament or the name of the training player
+
+		so the following message are accepted:
+		- "WAIT_GAME {options}": wait for a regular game (with options)
+		- "WAIT_GAME TOURNAMENT <name> {options}": register in the tournament <name> and wait for a game
+		- "WAIT_GAME TRAINING <name> {options}": play agains a training player
         Returns nothing
 		"""
-		# !TODO: normalize the options: should be "[options]", "TRAINING <name> [options]" or "TOURNAMENT <name> [options]"
 		# get the WAIT_GAME message
 		data = self.receiveData()
 		if not data.startswith("WAIT_GAME"):
 			self.sendData("Bad protocol, should send 'WAIT_GAME %s' command")
 			raise ProtocolError("Bad protocol, should send 'WAIT_GAME %s' command")
 
-		# parse the game type (in the form "TOURNAMENT NAME key1=value1..." or "NAME key1=value1 key2=value2")
+		# parse the game type (in the form "TOURNAMENT NAME key1=value1..." or "TRAINING NAME key1=value1 key2=value2")
 		trainingPlayerName = ""
 		tournamentName = ""
 		options = {}
@@ -305,20 +308,18 @@ class PlayerSocketHandler(BaseRequestHandler):
 			terms = shlex.split(data[10:])
 			if terms:
 				if "=" in terms[0]:
-					trainingPlayerName = ""
-					tournamentName = ""
 					options = dict([token.split('=') for token in terms])
 				elif terms[0] == 'TOURNAMENT':
-					trainingPlayerName = ""
 					tournamentName = terms[1]
 					options = dict([token.split('=') for token in terms[2:]])
-				else:
-					trainingPlayerName = terms[0]
-					tournamentName = ""
+				elif terms[0] == 'TRAINING':
+					trainingPlayerName = terms[1]
 					options = dict([token.split('=') for token in terms[1:]])
+				else:
+					raise ValueError()
 		except ValueError:
 			strerr = "The string sent with 'WAIT_GAME' is not valid (should be '{options}'," \
-			         " 'NAME {options}' or 'TOURNAMENT NAME {options}', but is '%s' instead)"
+			         " 'TRAINING <name> {options}' or 'TOURNAMENT <name> {options}', but is '%s' instead)"
 			self.sendData(strerr)
 			raise ProtocolError(strerr)
 
