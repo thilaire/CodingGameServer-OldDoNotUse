@@ -20,8 +20,8 @@ Copyright 2017 M. Pecheux
 */
 
 
-#ifndef __API_CLIENT_TEMPLATE__
-#define __API_CLIENT_TEMPLATE__
+#ifndef __API_CLIENT_STARSHIPS__
+#define __API_CLIENT_STARSHIPS__
 #include "ret_type.h"
 
 typedef enum
