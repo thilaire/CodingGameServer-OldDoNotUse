@@ -11,7 +11,7 @@ CGS is a (simple) framework to create such a contest.
 To play the games, we need:
 - a server that the players, and mainly all the game (synchronize the players, create the games, play the games from the players move, define the game rules, etc.)
 - an API used to write the player programs (this API provides functions to connect to the server, get back the data from the game, send a move or get the move of the opponent, etc.)
-- optionnaly, a web-server to interact with the server and manage the tournaments, display the games, etc.
+- optionally, a web-server to interact with the server and manage the tournaments, display the games, etc.
 
 So, CGS provides a (complete) framework to set up such a server (and web-server), with dedicated API. For the moment, it is supplied with only one game (Labyrinth), but it has been design in order to ease the writing for a new game (you will have **only** to write code to manage the rules of your game and to display it).
 
