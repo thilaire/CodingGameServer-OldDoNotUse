@@ -27,9 +27,9 @@ int main()
 	
 	
 	/* wait for a game, and retrieve informations about it */
-	waitForLabyrinth( "DO_NOTHING timeout=10", boardName, &sizeX, &sizeY);
+	waitForBoard( "DO_NOTHING timeout=10", boardName, &sizeX, &sizeY);
 	boardData = (char*) malloc(sizeX * sizeY);
-	player = getLabyrinth(boardData);
+	player = getBoardData(boardData);
 	
 	/* display the board */
 	printBoard();
@@ -50,7 +50,7 @@ int main()
 	if ((player == 1 && ret == WINNING_MOVE) || (player == 0 && ret == LOOSING_MOVE))
 		printf("I lose the game\n");
 	
-	
+
 	/* we do not forget to free the allocated array */
 	free(boardData);
 	
