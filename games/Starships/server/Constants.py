@@ -21,7 +21,7 @@ Copyright 2016-2017 T. Hilaire, J. Brajard
 MOVE_UP = 0
 MOVE_DOWN = 1
 SHOOT = 2
-ASTEROID_PULL = 3
+ASTEROID_PUSH = 3
 DO_NOTHING = 4
 
 # simple dictionary of y offsets
@@ -29,4 +29,4 @@ Ddy = {MOVE_UP: -1, MOVE_DOWN: 1}
 
 INITIAL_ENERGY = 100
 SHOOT_ENERGY = 5
-ASTEROID_PULL_ENERGY = 15
+ASTEROID_PUSH_ENERGY = 15

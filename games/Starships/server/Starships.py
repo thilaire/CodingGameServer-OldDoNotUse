@@ -19,8 +19,8 @@ from colorama import Fore
 
 from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE
 from server.Game import Game
-from .Constants import MOVE_UP, MOVE_DOWN, SHOOT, ASTEROID_PULL, \
-	DO_NOTHING, Ddy, INITIAL_ENERGY, SHOOT_ENERGY, ASTEROID_PULL_ENERGY
+from .Constants import MOVE_UP, MOVE_DOWN, SHOOT, ASTEROID_PUSH, \
+	DO_NOTHING, Ddy, INITIAL_ENERGY, SHOOT_ENERGY, ASTEROID_PUSH_ENERGY
 
 # import here your training players
 from .TemplateTrainingPlayer import TemplateTrainingPlayer
@@ -279,6 +279,10 @@ class Starships(Game):
 		value = int(result.group(2))
 		if not (MOVE_UP <= move_type <= DO_NOTHING):
 			return LOSING_MOVE, "The type is not valid !"
+		if move_type == SHOOT and value < 1:
+			return LOSING_MOVE, "The shoot energy is not valid!"
+		if move_type == ASTEROID_PUSH and not (0 <= value < self.H):
+			return LOSING_MOVE, "The asteroid push line is not valid!"
 
 		# move the player
 		if move_type == MOVE_UP or move_type == MOVE_DOWN:
@@ -293,42 +297,129 @@ class Starships(Game):
 			self._playerPos[self._whoPlays] = (x, y)
 
 			# update energy
-			self._playerEnergy[self._whoPlays] += 1
+			self._playerEnergy[self._whoPlays] -= 1
 
-			# check if won
-			return NORMAL_MOVE, ""
+			# check if player looses
+			if(self._playerEnergy[self._whoPlays] <= 0):
+				return LOSING_MOVE, "You are out of energy!"
+			else:
+				return NORMAL_MOVE, ""
 
 		elif move_type == DO_NOTHING:
-			self._playerEnergy[self._whoPlays] += 1
-			return NORMAL_MOVE, ""
+			self._playerEnergy[self._whoPlays] -= 1
+
+			# check if player looses
+			if(self._playerEnergy[self._whoPlays] <= 0):
+				return LOSING_MOVE, "You are out of energy!"
+			else:
+				return NORMAL_MOVE, ""
 
 		elif move_type == SHOOT:
+			# check for energy
+			if self._playerEnergy[self._whoPlays] < SHOOT_ENERGY * value:
+				return LOSING_MOVE, "Not enough energy to shoot a laser Level %d!" % value
+
 			# get player line
 			player_y = self._playerPos[self._whoPlays][1]
 			# get line data
 			shot_line = []
 			for x in range(self._vL):
-				for y in range(self.H):
-					if y == player_y:
-						shot_line.append(self._board[x][y])
+				shot_line.append(self._board[x][player_y])
 
-			# search for the first asteroid on the line, if there is one
-			# in the view window
-			shot_x = next((x for x in shot_line if not x), None)
-			# if there is one, it is destroyed
-			if shot_x is not None:
-				shot_x = True
+			# move value = laser energy = nb of asteroids to destroy:
+			# while laser has energy: search for the first asteroid on
+			# the line, if there is one in the view window
+			for i in range(1, value):
+				shot_x = next((x for x in shot_line if not x), None)
+				# if there is one, it is destroyed
+				if shot_x is not None:
+					shot_x = True
 
 			# update energy
-			self._playerEnergy[self._whoPlays] -= SHOOT_ENERGY
+			self._playerEnergy[self._whoPlays] -= SHOOT_ENERGY * value
 
-			return NORMAL_MOVE, ""
+			# check if player looses
+			if(self._playerEnergy[self._whoPlays] <= 0):
+				return LOSING_MOVE, "You are out of energy!"
+			else:
+				return NORMAL_MOVE, ""
 
-		elif move_type == ASTEROID_PULL:
+		elif move_type == ASTEROID_PUSH:
+			# check for energy
+			if self._playerEnergy[self._whoPlays] < ASTEROID_PUSH_ENERGY
+				return LOSING_MOVE, "Not enough energy to pull an asteroid!"
+			
+			# get player line
+			player_x, player_y = self._playerPos[self._whoPlays]
+
+			# move value = line of the asteroid to move // the power touches asteroids
+			# on the same column as the player
+
+			# if it is above the player, the asteroid is moved one row up
+			if value < player_y:
+				# if top row: if there is an asteroid, just destroy it
+				if value == 0 and self._board[player_x][0] == False:
+					self._board[player_x][0] = True
+				# else, if there is an asteroid: move it up one row
+				# if it hits another, both are destroyed
+				elif value > 0 and self._board[player_x][value] == False:
+					# if empty cell above, move the asteroid
+					if self._board[player_x][value - 1] == True:
+						self._board[player_x][value - 1] = False
+					# else both asteroids cancel out: both cells are now empty
+					else:
+						self._board[player_x][value - 1] = True
+					# anyway old spot is 'freed'
+					self._board[player_x][value] = True
+
+			# if it is beneath, it is moved one row down
+			elif value > player_y:
+				# if bottom row: if there is an asteroid, just destroy it
+				if value == self.H - 1 and self._board[player_x][self.H - 1] == False:
+					self._board[player_x][self.H - 1] = True
+				# else, if there is an asteroid: move it down one row
+				# if it hits another, both are destroyed
+				elif value < self.H - 1 and self._board[player_x][value] == False:
+					# if empty cell below, move the asteroid
+					if self._board[player_x][value + 1] == True:
+						self._board[player_x][value + 1] = False
+					# else both asteroids cancel out: both cells are now empty
+					else:
+						self._board[player_x][value + 1] = True
+					# anyway old spot is 'freed'
+					self._board[player_x][value] = True
+			# if it is the same line, it is moved to the right
+			else:
+				# get line data on the right of the player
+				player_line = []
+				for x in range(player_x + 1, self._vL):
+					player_line.append(self._board[x][player_y])
+
+				# find first asteroid
+				asteroid_x = next((x for x in player_line if not x), None)
+				# if last column: if there is an asteroid, just destroy it
+				if asteroid_x == self._vL - 1 and self._board[self._vL - 1][player_y] == False:
+					self._board[self._vL - 1][player_y] = True
+				# else, if there is an asteroid: move it right one column
+				# if it hits another, both are destroyed
+				elif asteroid_x < self._vL - 1 and self._board[asteroid_x][player_y] == False:
+					# if empty cell right to it, move the asteroid
+					if self._board[asteroid_x + 1][player_y] == True:
+						self._board[asteroid_x + 1][player_y] = False
+					# else both asteroids cancel out: both cells are now empty
+					else:
+						self._board[asteroid_x + 1][player_y] = True
+					# anyway old spot is 'freed'
+					self._board[asteroid_x][player_y] = True
+
 			# update energy
-			self._playerEnergy[self._whoPlays] -= ASTEROID_PULL_ENERGY
+			self._playerEnergy[self._whoPlays] -= ASTEROID_PUSH_ENERGY
 
-			return NORMAL_MOVE, ""
+			# check if player looses
+			if(self._playerEnergy[self._whoPlays] <= 0):
+				return LOSING_MOVE, "You are out of energy!"
+			else:
+				return NORMAL_MOVE, ""
 
 		return NORMAL_MOVE, ""
 
