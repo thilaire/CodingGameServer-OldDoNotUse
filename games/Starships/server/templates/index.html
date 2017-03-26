@@ -11,7 +11,6 @@
         for (var cls in data)
         {
             /* we convert the list of instances in HTML */
-            //var HTML = [for (p of data[cls]) "<li>" + p + "</li>"].join("");
             if (data.hasOwnProperty(cls))
             {
                 var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
@@ -23,11 +22,8 @@
 </script>
 {% endblock %}
 
-
 {% block content %}
-<h1 class="title">{{GameName}}</h1>
-<div class="subtitle">A CGS-based game about spaceships and asteroids...</div>
-<table class="listsTable">
+<table class="customTable">
     <tr>
         <th>Connected players:</th>
         <th>Games:</th>
@@ -39,5 +35,4 @@
         <td><div id="listTournament"></div></td>
     </tr>
 </table>
-
 {% endblock %}

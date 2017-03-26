@@ -346,7 +346,7 @@ class Starships(Game):
 
 		elif move_type == ASTEROID_PUSH:
 			# check for energy
-			if self._playerEnergy[self._whoPlays] < ASTEROID_PUSH_ENERGY
+			if self._playerEnergy[self._whoPlays] < ASTEROID_PUSH_ENERGY:
 				return LOSING_MOVE, "Not enough energy to pull an asteroid!"
 			
 			# get player line

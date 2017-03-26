@@ -61,7 +61,7 @@ def runWebServer(host, port, quiet):
 
 	# update the template paths so that in priority,
 	# it first looks in <gameName>/server/templates/ and then in CGS/server/templates
-	TEMPLATE_PATH.append('games/' + Game.getTheGameName() + "/server/templates")
+	TEMPLATE_PATH.append('games/' + Game.getTheGameName() + "/server/templates/")
 	TEMPLATE_PATH.reverse()
 	# add the base url to all the templates
 	Jinja2Template.defaults['base_url'] = 'http://%s:%s/' % (host, port)
@@ -127,7 +127,7 @@ def new_game():
 	"""
 	Players = "\n".join(["<option>" + p.name + "</option>\n" for p in RegularPlayer.allInstances.values()])
 
-	return {"list_players": Players}
+	return {"GameName": Game.getTheGameName(), "list_players": Players}
 
 
 @route('/create_new_game.html', method='POST')
@@ -178,7 +178,7 @@ def new_tournament():
 	Page to create a new tournament
 	Build from HTMLFormDict class method of TournamentMode (build from all the tournament modes)
 	"""
-	return Tournament.HTMLFormDict()
+	return Tournament.HTMLFormDict(Game.getTheGameName())
 
 
 @route('/create_new_tournament.html', method='POST')
