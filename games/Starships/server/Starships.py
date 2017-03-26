@@ -14,6 +14,7 @@ Then, you should also fill:
 
 """
 
+from random import shuffle, random, randint
 from ansi2html import Ansi2HTMLConverter
 from colorama import Fore
 
