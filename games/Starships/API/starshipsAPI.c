@@ -24,7 +24,7 @@ Copyright 2017 M. Pecheux
 #include <stdio.h>
 #include "starshipsAPI.h"
 
-unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again */
+unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again) */
 
 
 /* -------------------------------------
@@ -87,7 +87,7 @@ void waitForBoard(char* training, char* boardName, int* sizeX, int* sizeY)
 	/* parse the data */
 	sscanf(data, "%d %d", sizeX, sizeY);
 
-	/* store the sizes, so that we can reuse them during getGalaxy */
+	/* store the sizes, so that we can reuse them during getBoardData */
 	nX = *sizeX;
 	nY = *sizeY;
 }
@@ -141,7 +141,6 @@ t_return_code getMove(t_move* move)
 
 	/* extract move */
 	sscanf(data, "%d %d", &(move->type), &(move->value));
-	//dispDebug(__FUNCTION__,2,"move type:%d, ret:%d",move->type,ret);
 
 	return ret;
 }
@@ -164,8 +163,8 @@ t_return_code sendMove(t_move move)
 {
     /* build the string move */
     char data[128];
-    sprintf( data, "%d %d", move.type, move.value);
-	// dispDebug(__FUNCTION__,"move send : %s",data);
+    sprintf(data, "%d %d", move.type, move.value);
+
     /* send the move */
 	return sendCGSMove(__FUNCTION__, data);
 }

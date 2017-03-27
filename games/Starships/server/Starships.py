@@ -14,7 +14,8 @@ Then, you should also fill:
 
 """
 
-from random import shuffle, random, randint
+from random import random, randint, choice
+from re import compile
 from ansi2html import Ansi2HTMLConverter
 from colorama import Fore
 
@@ -24,7 +25,10 @@ from .Constants import MOVE_UP, MOVE_DOWN, SHOOT, ASTEROID_PUSH, \
 	DO_NOTHING, Ddy, INITIAL_ENERGY, SHOOT_ENERGY, ASTEROID_PUSH_ENERGY
 
 # import here your training players
-from .TemplateTrainingPlayer import TemplateTrainingPlayer
+from .DoNothingPlayer import DoNothingPlayer
+
+
+regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
 
 
 def CreateBoard(sX, sY):
@@ -58,57 +62,22 @@ def CreateBoard(sX, sY):
 	L = 4*sX
 	H = 2*sY+1
 	# create a L*H array of False
-	board = [list((False,) * H) for _ in range(L)]
+	board = [list((True,) * H) for _ in range(L)]
 
-	shuffle(Directions)
-	stack = [(0, 0, list(Directions))]  # X, Y of the cell( 2x2 cell) and directions
-
-	while stack:
-		# get the position to treat, and the possible directions
-		x, y, direction = stack[-1]
-		dx, dy = direction.pop()  # remove one direction
-
-		# if it was the last direction to explore, remove that position to the stack
-		if not direction:
-			stack.pop()
-
-		# new cell
-		nx = x + dx
-		ny = y + dy
-		# check if we are out of bounds (ny==-1 is ok, but in that case, we will only consider
-		# the last line of the cell -> it will be the line number 0)
-		if not (0 <= nx <= sX and -1 <= ny < sY):
-			continue
-		# index of the "origin" of the cell
-		ox = 2 * nx
-		oy = 2 * ny + 2
-		# check if already visited
-		if board[ox][oy]:
-			continue
-		# else remove the corresponding wall (if within bounds)
-		if (0 <= (ox - dx) <= (2 * sX + 1)) and (0 <= (oy - dy) <= (2 * sY + 1)):
-			board[ox - dx][oy - dy] = True
-			board[4 * sX - ox + dx][oy - dy] = True  # and its symmetric
-		# remove the origin
-		board[ox][oy] = True
-		board[4 * sX - ox][oy] = True  # and its symmetric
-		if random() > 0.75:
-			board[ox + 1][oy - 1] = True
-			board[4 * sX - ox - 1][oy - 1] = True  # and its symmetric
-
-		# add it to the stack
-		shuffle(Directions)
-		stack.append((nx, ny, list(Directions)))
+	for i in range(max(L//10, 10), L):
+		for j in range(H):
+			if random() < 0.18:
+				board[i][j] = False
 
 	# get random name for the Board from 2 lists
 	nameparts1 = ['Sector', 'Galaxy', 'Quadrant', 'System', 'Planet', 'Wormhole', 'Blackhole', 'Supernova', 'Star']
 	nameparts2 = ['Arcturus', 'Andromeda', 'Cassiopeia', 'of Zonn', 'of Tron', 'of Alf']
-	name = random.choice(nameparts1) + ' '
-	r = random.randint(0, 100)
+	name = choice(nameparts1) + ' '
+	r = randint(0, 100)
 	if r < 20:
-		name += random.choice(['X', 'Y', 'Z', 'Theta', 'Omega', 'Alpha']) + '-' + str(random.randint(10, 30))
+		name += choice(['X', 'Y', 'Z', 'Theta', 'Omega', 'Alpha']) + '-' + str(randint(10, 30))
 	else:
-		name += random.choice(nameparts2)
+		name += choice(nameparts2)
 
 	return L, H, board, name
 
@@ -136,7 +105,7 @@ class Starships(Game):
 	"""
 
 	# dictionary of the possible training Players (name-> class)
-	type_dict = {"MY_TRAINING_PLAYER": TemplateTrainingPlayer}
+	type_dict = {"DO_NOTHING": DoNothingPlayer}
 
 
 
@@ -149,10 +118,8 @@ class Starships(Game):
 		"""
 
 		# random Board
-		totalSize = randint(8, 12)  # sX + sY is randomly in [8;11]
-		sX = randint(3, 5)
-		self._L, self._H, self._board, self._cutename = CreateBoard(sX, totalSize - sX)
-		self._vL, self._vH = 20, self._H
+		self._L, self._H, self._board, self._cutename = CreateBoard(randint(15, 20), randint(3, 5))
+		self._vL, self._vH = 50, self._H
 		self._xOffset = 0
 
 		# add treasure and players
@@ -221,13 +188,13 @@ class Starships(Game):
 		lines = []
 
 		# add game cutename (board random name)
-		lines.append(self._cutename.toupper() + ":")
+		lines.append(self._cutename.upper() + ":")
 
 		# add player names
 		colors = [Fore.BLUE, Fore.RED]
 		for i, pl in enumerate(self._players):
 			br = "[]" if self._whoPlays == i else "  "
-			lines.append(br[0] + colors[i] + "Player " + str(i + 1) + ": " + Fore.RESET + pl.name + colors[i] + "(Energy: " + str(self._playerEnergy[i]) + ")" + Fore.RESET + br[1])
+			lines.append(colors[i] + br[0] + "Player " + str(i + 1) + ": " + Fore.RESET + pl.name + colors[i] + "\t\tEnergy: " + str(self._playerEnergy[i]) + br[1] + Fore.RESET)
 
 		# display board
 		for y in range(self.H):
@@ -235,25 +202,24 @@ class Starships(Game):
 			for x in range(self._xOffset, self._xOffset + self._vL):
 				# add players if they are in the same place
 				if (x, y) == self._playerPos[0] and (x, y) == self._playerPos[1]:
-					st.append(Fore.MAGENTA + u"\u265F" + Fore.RESET)
+					st.append(Fore.MAGENTA + u"\u25b6" + Fore.RESET)
 				# add player1
 				elif (x, y) == self._playerPos[0]:
-					st.append(Fore.BLUE + u"\u265F" + Fore.RESET)
+					st.append(Fore.BLUE + u"\u25b6" + Fore.RESET)
 				# add player2
 				elif (x, y) == self._playerPos[1]:
-					st.append(Fore.RED + u"\u265F" + Fore.RESET)
+					st.append(Fore.RED + u"\u25b6" + Fore.RESET)
 				# add empty
-				elif self.lab[x][y]:
+				elif self._board[x][y]:
 					st.append(" ")
-				# or add wall
+				# or add asteroid
 				else:
-					st.append(u"\u2589")
-			# lines.append("|" + " ".join(st) + "|")
+					st.append(u"\u25cf")
 			lines.append("|" + "".join(st) + "|")
 
 		# head = "+" + "-" * (2 * self.L - 1) + "+\n"
-		head = "+" + "-" * self.L + "+\n"
-		return head + "\n".join(lines) + "\n" + head
+		head = "+" + "-" * self._vL + "+\n"
+		return "\n".join(lines[0:3]) + "\n" + head + "\n".join(lines[3:]) + "\n" + head
 
 	def updateGame(self, move):
 		"""
@@ -285,17 +251,21 @@ class Starships(Game):
 		if move_type == ASTEROID_PUSH and not (0 <= value < self.H):
 			return LOSING_MOVE, "The asteroid push line is not valid!"
 
+		# automatic screen scrolling for all players
+		for i in range(len(self._playerPos)):
+			px, py = self._playerPos[i]
+			self._playerPos[i] = px + 1, py
+
+		player_x, player_y = self._playerPos[self._whoPlays]
+
 		# move the player
 		if move_type == MOVE_UP or move_type == MOVE_DOWN:
-			x, y = self._playerPos[self._whoPlays]
-			x = x + 1							# automatic screen scrolling
-			y = (y + Ddy[move_type])			# player movement
+			# player move
+			self._playerPos[self._whoPlays] = (player_x, player_y + Ddy[move_type])
 
-			if not self._board[x][y]:
+			# check for asteroid crash
+			if not self._board[player_x][player_y]:
 				return LOSING_MOVE, "CRASH! You hit an asteroid!"
-
-			# play the move (move the player on the lab)
-			self._playerPos[self._whoPlays] = (x, y)
 
 			# update energy
 			self._playerEnergy[self._whoPlays] -= 1
@@ -307,6 +277,10 @@ class Starships(Game):
 				return NORMAL_MOVE, ""
 
 		elif move_type == DO_NOTHING:
+			# check for asteroid crash
+			if not self._board[player_x][player_y]:
+				return LOSING_MOVE, "CRASH! You hit an asteroid!"
+
 			self._playerEnergy[self._whoPlays] -= 1
 
 			# check if player looses
@@ -316,12 +290,14 @@ class Starships(Game):
 				return NORMAL_MOVE, ""
 
 		elif move_type == SHOOT:
+			# check for asteroid crash
+			if not self._board[player_x][player_y]:
+				return LOSING_MOVE, "CRASH! You hit an asteroid!"
+
 			# check for energy
 			if self._playerEnergy[self._whoPlays] < SHOOT_ENERGY * value:
 				return LOSING_MOVE, "Not enough energy to shoot a laser Level %d!" % value
 
-			# get player line
-			player_y = self._playerPos[self._whoPlays][1]
 			# get line data
 			shot_line = []
 			for x in range(self._vL):
@@ -346,12 +322,13 @@ class Starships(Game):
 				return NORMAL_MOVE, ""
 
 		elif move_type == ASTEROID_PUSH:
+			# check for asteroid crash
+			if not self._board[player_x][player_y]:
+				return LOSING_MOVE, "CRASH! You hit an asteroid!"
+
 			# check for energy
 			if self._playerEnergy[self._whoPlays] < ASTEROID_PUSH_ENERGY:
 				return LOSING_MOVE, "Not enough energy to pull an asteroid!"
-			
-			# get player line
-			player_x, player_y = self._playerPos[self._whoPlays]
 
 			# move value = line of the asteroid to move // the power touches asteroids
 			# on the same column as the player
@@ -440,7 +417,7 @@ class Starships(Game):
 		msg = []
 		for y in range(self.H):
 			for x in range(self._xOffset, self._xOffset + self._vL):
-				msg.append("0" if self.lab[x][y] else "1")
+				msg.append("0" if self._board[x][y] else "1")
 		return "".join(msg)
 
 	def getNextPlayer(self):

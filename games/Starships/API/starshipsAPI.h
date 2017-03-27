@@ -22,7 +22,7 @@ Copyright 2017 M. Pecheux
 
 #ifndef __API_CLIENT_STARSHIPS__
 #define __API_CLIENT_STARSHIPS__
-#include "ret_type.h"
+#include "../../../clientAPI/C/ret_type.h"
 
 typedef enum
 {
