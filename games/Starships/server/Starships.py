@@ -1,17 +1,19 @@
 """
-This file is a template for a new Game in CGS
 
-The two main methods to fill in are:
-	- the __init__ to build the game (you put all the intern data here)
-	- the updateMove, to check if a move is legal, to play it (and change the intern state of the game),
-	and returns if the move is legal or not
+* --------------------- *
+|                       |
+|   Coding Game Server  |
+|                       |
+* --------------------- *
 
-Then, you should also fill:
-	- the __str__ method, that build the string returns to the player to display the game
-	- the getDataSize and getData methods, for the client to know the initial state of the game
-	- the getDictInformations, to display the game on webpages
+Authors: T. Hilaire, J. Brajard
+Licence: GPL
 
+File: Starships.py
+	Contains the class Starships
+	-> defines the Starships game (its rules, moves, etc.)
 
+Copyright 2017 M. Pecheux
 """
 
 from random import random, randint, choice
@@ -22,9 +24,9 @@ from colorama import Fore
 from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE
 from server.Game import Game
 from .Constants import MOVE_UP, MOVE_DOWN, SHOOT, ASTEROID_PUSH, \
-	DO_NOTHING, Ddy, INITIAL_ENERGY, SHOOT_ENERGY, ASTEROID_PUSH_ENERGY
+	DO_NOTHING, Ddy, INITIAL_ENERGY, SHOOT_ENERGY, ASTEROID_PUSH_ENERGY, \
+	ASTEROID_POP_CHANCE
 
-# import here your training players
 from .DoNothingPlayer import DoNothingPlayer
 
 
@@ -33,43 +35,35 @@ regdd = compile("(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
 
 def CreateBoard(sX, sY):
 	"""
-	Build a Board (an array of booleans: True=> empty, False=> wall)
-	:param sX: number of 2x2 blocks (over X)
-	:param sY: number of 2x2 blocks (over Y)
-	Build a random (4*sX) x (2*sY+1) board
+	Build a Board (an array of booleans: True => empty, False => asteroid)
+	:param sX: order of the number of cells (over X)
+	:param sY: order of the number of cells (over Y)
+	Build a random (4*sX) x (2*sY+1) board containing asteroids with a given chance,
+	otherwise simply an empty cell.
 
-	generation based on https://29a.ch/2009/9/7/generating-maps-mazes-with-python
+	Asteroids cannot pop too close to the initial positions of the players (there is
+	a minimum number of columns totally empty).
 
-	A cell is a 2x2 array
-	| U X |
-	| o R |
-	where o is the "origin" of the cell, U and R the Up and Right "doors" (to the next cell), and X a wall
-	(the 1st line and 2 column will be the fixed lines/columns of the labyrinth)
-
-	The board is composed of these cells (except that the 1st line of the board only have the half-bottom of cells)
-	and is symmetric with respect to the middle column
-
-	A path is randomly generated between all these cells, and "doors" are removed accordingly
-
-	Returns a tuple (L,H,board)
+	Returns a tuple (L, H, board, name).
 	- L: numbers of rows
 	- H: number of lines
 	- board: list of lists (board[x][y] with 0 <= x <= L and 0 <= y <= H)
+	- name: cutename of the Board
 
 	"""
-	Directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]
-
 	L = 4*sX
 	H = 2*sY+1
-	# create a L*H array of False
+	# create a L*H array of True (start with empty board, then pop asteroids)
 	board = [list((True,) * H) for _ in range(L)]
 
+	# go through all cells (skip the first columns)
 	for i in range(max(L//10, 10), L):
 		for j in range(H):
-			if random() < 0.18:
+			# get a random number and, if necessary, pop an asteroid
+			if random() < ASTEROID_POP_CHANCE:
 				board[i][j] = False
 
-	# get random name for the Board from 2 lists
+	# create a random 'cutename' for the Board (one that can be displayed in the server)
 	nameparts1 = ['Sector', 'Galaxy', 'Quadrant', 'System', 'Planet', 'Wormhole', 'Blackhole', 'Supernova', 'Star']
 	nameparts2 = ['Arcturus', 'Andromeda', 'Cassiopeia', 'of Zonn', 'of Tron', 'of Alf']
 	name = choice(nameparts1) + ' '
@@ -94,19 +88,18 @@ class Starships(Game):
 	- _waitingPlayer: Event used to wait for the players
 	- _lastMove, _last_return_code: string and returning code corresponding to the last move
 
-	Add here your own properties
+	Custom properties:
 	- _board: array (list of lists of booleans) representing the board
-	- _L,_H: length and height of the board
-	- _vL,_vH: view length and height of the board (visible for the players)
+	- _L, _H: length and height of the board
+	- _vL: view length of the board (visible part of the board for the players)
 	- _xOffset: global board x offset increasing each turn (automatic screen scrolling)
 	- _playerPos: list of the coordinates of the two players (player #0 and player #1)
 	- _playerEnergy: list of the energy level of the two players
-	- _cutename: display 'cutename' of the board
+	- _cutename: 'cutename' of the board (for server display of the game)
 	"""
 
 	# dictionary of the possible training Players (name-> class)
 	type_dict = {"DO_NOTHING": DoNothingPlayer}
-
 
 
 	def __init__(self, player1, player2, **options):
@@ -119,19 +112,16 @@ class Starships(Game):
 
 		# random Board
 		self._L, self._H, self._board, self._cutename = CreateBoard(randint(15, 20), randint(3, 5))
-		self._vL, self._vH = 50, self._H
+		self._vL = 50
 		self._xOffset = 0
 
-		# add treasure and players
+		# add players
 		self._playerPos = []  # list of coordinates
 		self._playerPos.append((0, 0))
 		self._playerPos.append((0, self._H - 1))
 
-		# Level of energy
+		# level of energy
 		self._playerEnergy = [INITIAL_ENERGY] * 2
-
-		for x, y in self._playerPos:
-			self._board[x][y] = True  # no wall here
 
 		# call the superclass constructor (only at the end, because the superclass constructor launches
 		# the players and they will immediately requires some Board's properties)
@@ -164,9 +154,8 @@ class Starships(Game):
 		return self._board
 
 	def HTMLrepr(self):
-		"""Returns an HTML representation of your game"""
-		# this, or something you want...
-		return "<A href='/game/%s'>%s</A>" % (self.name, self.name)
+		"""Returns an HTML representation of the game"""
+		return "<A href='/game/%s'>%s</A>" % (self.name, self._cutename)
 
 	def getDictInformations(self):
 		"""
@@ -175,7 +164,7 @@ class Starships(Game):
 		"""
 		conv = Ansi2HTMLConverter()
 		html = conv.convert(str(self))
-		html = html.replace(u'\u2589', '<span style="background-color:black"> </span>')  # black box
+		html = html.replace(u'\u2589', '<span style="background-color:black"> </span>')  # black circle
 		html = html.replace(u'\u265F', 'o')  # player
 
 		return {'boardcontent': html, 'energy': self._playerEnergy}
@@ -188,7 +177,7 @@ class Starships(Game):
 		lines = []
 
 		# add game cutename (board random name)
-		lines.append(self._cutename.upper() + ":")
+		lines.append("\n" + self._cutename.upper() + ":")
 
 		# add player names
 		colors = [Fore.BLUE, Fore.RED]
@@ -254,6 +243,9 @@ class Starships(Game):
 		# automatic screen scrolling for all players
 		for i in range(len(self._playerPos)):
 			px, py = self._playerPos[i]
+			# check for possible asteroid crash for other players
+			if i != self._whoPlays and not self._board[px + 1][py]:
+				return WINNING_MOVE, "Opponent hit asteroid!"
 			self._playerPos[i] = px + 1, py
 
 		player_x, player_y = self._playerPos[self._whoPlays]
@@ -404,14 +396,14 @@ class Starships(Game):
 	def getDataSize(self):
 		"""
 		Returns the size of the next incoming data
-		Here, the size of the board view window
+		Here, the size of the board view window (so, not the complete length!)
 		"""
 		return "%d %d" % (self._vL, self.H)
 
 
 	def getData(self):
 		"""
-		Return the datas of the game (when ask with the GET_GAME_DATA message)
+		Return the data of the game (when ask with the GET_GAME_DATA message)
 		Only takes into account the view window (not the entire board)
 		"""
 		msg = []

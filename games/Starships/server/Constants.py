@@ -14,8 +14,11 @@ File: Constants.py
 	-> defines the constants used for the client communication
 
 Copyright 2016-2017 T. Hilaire, J. Brajard
+Adaptation: 2017 M. Pecheux
 """
 
+# chance to pop an asteroid while creating the board
+ASTEROID_POP_CHANCE = 0.18
 
 # constants defining a move
 MOVE_UP = 0
