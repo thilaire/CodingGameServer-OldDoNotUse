@@ -1,7 +1,8 @@
-/* TEMPLATE
-Basic file to adapt to make your own program.
+/* MANUAL_PLAY
+Basic file to play the game and get a feel of the different possible moves.
 
-Allows you to get the board data and play one turn.
+Allows you to get the board data then enter the endless loop,
+and loop while nobody made a wrong move.
 */
 
 #include <stdio.h>
@@ -31,24 +32,30 @@ int main()
 	boardData = (char*) malloc(sizeX * sizeY);
 	player = getBoardData(boardData);
 	
-	/* display the board */
-	printBoard();
-	
-	/* opponent turn */
-	if (player == 1)
-	{
-		ret = getMove(&move);
+	while(ret == NORMAL_MOVE) {
+		/* get new board and display it */
+		sleep(1);
+		printBoard();
+		
+		/* opponent turn */
+		if (player == 1)
+		{
+			ret = getMove(&move);
+		}
+		/* your turn */
+		else
+		{
+			printf("Your move: ");
+			scanf("%d %d", &move.type, &move.value);
+			printf("\n");
+			ret = sendMove(move);
+		}
+
+		/* switch players */
+		player = !player;
 	}
-	/* your turn */
-	else
-	{
-		printf("Your move: ");
-		scanf("%d %d", &move.type, &move.value);
-		printf("\n");
-		ret = sendMove(move);
-	}
 	
-	if ((player == 1 && ret == WINNING_MOVE) || (player == 0 && ret == LOOSING_MOVE))
+	if ((player == 0 && ret == WINNING_MOVE) || (player == 1 && ret == LOOSING_MOVE))
 		printf("I lose the game :(\n");
 	else
 		printf("I win the game :)\n");
