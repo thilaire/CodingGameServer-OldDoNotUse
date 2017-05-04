@@ -24,7 +24,7 @@ Copyright 2017 M. Pecheux
 #include <stdio.h>
 #include "starshipsAPI.h"
 
-unsigned char nX, nY; 	/* store lab size, used for getLabyrinth (the user do not have to pass them once again) */
+unsigned char nX, nY; 	/* store lab size, used for getBoardData (the user do not have to pass them once again) */
 
 
 /* -------------------------------------
@@ -51,7 +51,7 @@ void connectToServer(char* serverName, int port, char* name)
 */
 void closeConnection()
 {
-	closeCGSConnection( __FUNCTION__ );
+	closeCGSConnection(__FUNCTION__);
 }
 
 

@@ -9,7 +9,7 @@
 * ------------------------ *
 
 
-Authors: M. Pecheux
+Authors: M. Pecheux (based on T. Hilaire and J. Brajard template file)
 Licence: GPL
 
 File: starshipsAPI.h
@@ -26,7 +26,7 @@ Copyright 2017 M. Pecheux
 
 typedef enum
 {
-	MOVE_UP = 	0,
+	MOVE_UP = 0,
 	MOVE_DOWN = 1,
 	SHOOT = 2,
 	ASTEROID_PULL = 3,
