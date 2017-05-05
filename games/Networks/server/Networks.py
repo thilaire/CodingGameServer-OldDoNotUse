@@ -297,8 +297,9 @@ class Networks(Game):
 		"""
 		conv = Ansi2HTMLConverter()
 		html = conv.convert(str(self))
-		html = html.replace(u'\u2589', '<span style="background-color:black"> </span>')  # black circle
-		html = html.replace(u'\u265F', 'o')  # player
+		for code in NODE_DISPLAY_CODES:
+			for c in code:
+				html = html.replace(c, 'x')
 
 		return {'boardcontent': html, 'energy': self._playerEnergy}
 
@@ -474,9 +475,17 @@ class Networks(Game):
 	def getDataSize(self):
 		"""
 		Returns the size of the next incoming data
-		Here, the size of the board view window (so, not the complete length!)
 		"""
 		return "%d %d" % (self.L, self.H)
+
+	def getCutename(self):
+		"""
+		Returns the cutename of the game (to display in html views)
+		"""
+		if hasattr(this, '_cutename'):
+			return self._cutename
+		else:
+			return None
 
 
 	def getData(self):

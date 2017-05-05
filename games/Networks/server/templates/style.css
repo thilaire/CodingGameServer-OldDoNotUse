@@ -4,6 +4,7 @@
   --secondary-color: #5c95fe;
   --addon-color: #5c95fe;
   --bghover-color: #000f2b;
+  --hover-color: #7eb7ff;
   <!-- --addon-color: #ff7788; -->
 }
 
@@ -49,7 +50,7 @@ body {
 }
 
 .title {
-    width: 35%;
+    width: 30%;
     padding: 5%;
     margin: auto;
 }
@@ -92,7 +93,21 @@ body {
 .container-cols .col ul {
     margin: 0px;
     list-style-type: none;
-    padding: 0px;
+    padding: 0 10px 0 10px;
+}
+
+.container-cols .col li {
+    margin-bottom: 1em;
+}
+
+.container-cols .col li a {
+    text-decoration: none;
+    color: var(--secondary-color);
+}
+
+.container-cols .col li a:hover {
+    text-decoration: none;
+    color: var(--hover-color);
 }
 
 h2, p {
@@ -184,7 +199,7 @@ select, input {
 
 #menu a {
     float: left;
-    padding: 12px 30px;
+    padding: 12px 22px;
     color: var(--main-color);
     text-transform: uppercase;
     font: bold 13px Arial, Helvetica;
@@ -490,8 +505,10 @@ select, input {
 
 /* footer */
 #footer {
+    background-color: black;
     font-size: 0.85em;
-    width: 90%;
+    width: 100%;
+    margin-left: -5%;
     position: fixed;
     bottom: 0px;
     text-align: center;
