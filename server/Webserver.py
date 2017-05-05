@@ -103,6 +103,12 @@ def css():
 	return static_file_from_templates('style.css')
 
 
+@route('/banner.png')
+def banner():
+	"""Returns the pages top banner PNG file"""
+	return static_file_from_templates('banner.png')
+
+
 # ================
 #   main page
 # ================
@@ -161,9 +167,14 @@ def game(gameName):
 	If the name is not valid, the answer with the noObject page
 	"""
 	g = Game.getFromName(gameName)
+
 	if g:
+		try:
+			displayName = g.getCutename()
+		except NotImplementedError:
+			displayName = gameName
 		return template('game/Game.html', host=Config.host, webPort=Config.webPort,
-		                gameName=gameName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
+		                gameName=displayName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noObject.html', className='game', objectName=gameName)
 
@@ -354,6 +365,18 @@ def logG(gameName):
 	:param gameName: (string) name of the game
 	"""
 	return static_file(gameName+'.log', root=join(Config.logPath, 'games'))
+
+
+# ================
+#   info page
+# ================
+@route('/about.html')
+@view("about.html")
+def index():
+	"""
+	Main page (based on index.html template)
+	"""
+	return {"GameName": Game.getTheGameName()}
 
 
 # =======
