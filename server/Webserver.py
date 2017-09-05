@@ -103,6 +103,12 @@ def css():
 	return static_file_from_templates('style.css')
 
 
+@route('/game/gamestyle.css')
+def css():
+	"""Returns the CSS game display style"""
+	return static_file_from_templates('game/gamestyle.css')
+
+
 @route('/banner.png')
 def banner():
 	"""Returns the pages top banner PNG file"""
@@ -174,7 +180,7 @@ def game(gameName):
 		except NotImplementedError:
 			displayName = gameName
 		return template('game/Game.html', host=Config.host, webPort=Config.webPort,
-		                gameName=displayName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
+		                gameName=gameName, displayName=displayName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noObject.html', className='game', objectName=gameName)
 
