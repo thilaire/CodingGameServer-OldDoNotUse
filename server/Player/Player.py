@@ -96,7 +96,9 @@ class TrainingPlayer(Player):
 		"""
 		return False
 
-
+	def HTMLrepr(self):
+		"""Returns the HTML representation of the player"""
+		return "<B><A href='/player/"+self._name+"'>"+self._name+"</A></B>"
 
 	def playMove(self):
 		"""
