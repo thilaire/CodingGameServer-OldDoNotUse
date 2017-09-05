@@ -77,6 +77,16 @@ class Node:
 		elif self.owner == 1:
 			return Fore.RED + NODE_DISPLAY_CODES[self.type][self.state] + Fore.RESET
 
+	def display_html(self):
+		if self.isGoal and self.delay == -1:
+			return '<span style="color: var(--green-color);">' + NODE_DISPLAY_CODES[self.type][len(NODE_DISPLAY_CODES[self.type]) - 1] + '</span>'
+		if self.owner == -1:
+			return '<span>' + NODE_DISPLAY_CODES[self.type][self.state] + '</span>'
+		elif self.owner == 0:
+			return '<span style="color: var(--blue-color);">' + NODE_DISPLAY_CODES[self.type][self.state] + '</span>'
+		elif self.owner == 1:
+			return '<span style="color: var(--red-color);">' + NODE_DISPLAY_CODES[self.type][self.state] + '</span>'
+
 	def __str__(self):
 		return str(NODE_CODES_START_ID + (self.owner+1)*NODE_CODES_LENGTH + sum(map(len, NODE_DISPLAY_CODES[:self.type])) + self.state)
 
@@ -88,6 +98,12 @@ class Link:
 	def display_str(self):
 		if self.direction == 0:
 			return "-"
+		elif self.direction == 1:
+			return "|"
+
+	def display_html(self):
+		if self.direction == 0:
+			return u"\u2014"
 		elif self.direction == 1:
 			return "|"
 
@@ -176,39 +192,88 @@ def CreateBoard(sX, sY):
 
 	# set goal node
 	goal_x, goal_y = L//2, H//2
+	middle_cell_old_value = board[goal_x][goal_y]
 	board[goal_x][goal_y] = Node(goal_x, goal_y, len(NODE_DISPLAY_CODES) - 1, True)
 
-	# output = ''
-	# for y in range(H):
-	# 	for x in range(L):
-	# 		if board[x][y] is None:
-	# 			output += ' '
-	# 		else:
-	# 			output += str(board[x][y])
-	# 	output += '\n'
-	# print (output)
+	# if ancient cell was not a node (it was a Link or None), there will be a connection
+	# problem after replacement: we need to create a small pattern around the goal node
+	# to force connection by adding rows/columns and creating links
+	# ----------------------
+	# if old cell was a Link
+	if middle_cell_old_value.__class__.__name__ == 'Link':
+		# if old cell was a horizontal link
+		if middle_cell_old_value.direction == 0:
+			# remember links in this column that will be cut later
+			links_in_column = []
+			for y in range(H):
+				if board[goal_x][y].__class__.__name__ == 'Link' and board[goal_x][y].direction == 0:
+					links_in_column.append(y)
 
-	# verify null connections to goal node and create them if necessary
-	connect_points = [board[goal_x-1][goal_y], board[goal_x][goal_y-1]]
-	connections_set = False
-	for point in connect_points:
-		if point is not None and point.__class__.__name__ == 'Link':
-			connections_set = True
-			break
-	if not connections_set:
+			# insert columns around the goal node to create space for new links
+			board.insert(goal_x, [None] * H);
+			board.insert(goal_x+2, [None] * H);
+			L += 2
+			goal_x += 1
+
+			# place nodes to replace cut off links and add links around them in the newly created columns
+			for y in range(H//2):
+				if y in links_in_column:
+					board[goal_x-1][y] = Link(0)
+					board[goal_x][y] = Node(goal_x, y, randint(0, NODE_TYPES), False)
+					board[goal_x+1][y] = Link(0)
+
+			# add the goal node links
+			board[goal_x-1][goal_y] = Link(0)
+			board[goal_x+1][goal_y] = Link(0)			
+
+		# else if old cell was a vertical link
+		elif middle_cell_old_value.direction == 1:
+			# remember links in this row that will be cut later
+			links_in_row = []
+			for x in range(L):
+				if board[x][goal_y].__class__.__name__ == 'Link' and board[x][goal_y].direction == 1:
+					links_in_row.append(x)
+
+			# insert rows around the goal node to create space for new links
+			for x in range(L):
+				board[x].insert(goal_y, None);
+				board[x].insert(goal_y+2, None);
+			H += 2
+			goal_y += 1
+
+			# place nodes to replace cut off links and add links around them in the newly created rows
+			for x in range(L//2):
+				if x in links_in_row:
+					board[x][goal_y-1] = Link(1)
+					board[x][goal_y] = Node(x, goal_y, randint(0, NODE_TYPES - 1), False)
+					board[x][goal_y+1] = Link(1)
+
+			# add the goal node links
+			board[goal_x][goal_y-1] = Link(1)
+			board[goal_x][goal_y+1] = Link(1)
+	# if old cell was null			
+	elif middle_cell_old_value is None:
+		links_in_row = []
 		for x in range(L):
-			if x != goal_x:
-				board[x].insert(goal_y, None)
-				if board[x][goal_y].__class__.__name__ == 'Node':
-					board[x][goal_y-1] = board[x][goal_x]
-					board[x][goal_y] = None
-				board[x].insert(goal_y, None)
-				board[x].insert(goal_y, None)
-				board[x].insert(goal_y+1, None)
-				board[x].insert(goal_y+1, None)
-				board[x].insert(goal_y+1, None)
+			if board[x][goal_y].__class__.__name__ == 'Link' and board[x][goal_y].direction == 1:
+				links_in_row.append(x)
+
+		for x in range(L):
+			board[x].insert(goal_y, None);
+			board[x].insert(goal_y+2, None);
+		H += 2
+		goal_y += 1
+
+		# place nodes to replace cut off links and add links around them in the newly created rows
+		for x in range(L//2):
+			if x in links_in_row:
+				board[x][goal_y-1] = Link(1)
+				board[x][goal_y] = Node(x, goal_y, randint(0, NODE_TYPES - 1), False)
+				board[x][goal_y+1] = Link(1)
+
+		# add the goal node links
 		board[goal_x][goal_y-1] = Link(1)
-		board[goal_x][goal_y-2] = Node(goal_x, goal_y-2, 0, False)
+		board[goal_x][goal_y+1] = Link(1)
 
 	# symmetrize the board: central symmetry around middle point
 	for x in range(L):
@@ -335,13 +400,21 @@ class Networks(Game):
 		Returns a dictionary for HTML display
 		:return:
 		"""
-		conv = Ansi2HTMLConverter()
-		html = conv.convert(str(self))
-		for code in NODE_DISPLAY_CODES:
-			for c in code:
-				html = html.replace(c, 'x')
+		# conv = Ansi2HTMLConverter()
+		# html = conv.convert(str(self))
+		# for code in NODE_DISPLAY_CODES:
+		# 	for c in code:
+		# 		html = html.replace(c, 'x')
 
-		return {'boardcontent': html, 'energy': self._playerEnergy}
+		values = []
+		for y in range(self.H):
+			for x in range(self.L):
+				if self.board[x][y] is None:
+					values.append('')
+				else:
+					values.append(self.board[x][y].display_html())
+
+		return {'width': self.L, 'values': values, 'energy': self._playerEnergy, 'curPlayerId': self._whoPlays}
 
 	def __str__(self):
 		"""
@@ -522,7 +595,7 @@ class Networks(Game):
 		"""
 		Returns the cutename of the game (to display in html views)
 		"""
-		if hasattr(this, '_cutename'):
+		if hasattr(self, '_cutename'):
 			return self._cutename
 		else:
 			return None
