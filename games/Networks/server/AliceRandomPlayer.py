@@ -19,13 +19,14 @@ Copyright 2017 M. Pecheux
 from server.Player import TrainingPlayer
 from random import choice, randint
 from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING, \
-	LINK_ENERGY, DESTROY_ENERGY, NODE_CODES_START_ID, NODE_DISPLAY_CODES, \
-	NODE_TYPES, NODE_CODES_LENGTH, MAX_NODES_COUNT
+	LINK_ENERGY, DESTROY_ENERGY
 
 boolConv = {'true': True, 'false': False}
 
 
 def check_type(element, typecheck):
+	"""Function that checks for class type (class is not yet
+	defined, so cannot use type() built-in...)"""
 	return element is not None and element.__class__.__name__ == typecheck
 
 
@@ -50,6 +51,40 @@ class AliceRandomPlayer(TrainingPlayer):
 		else:
 			raise ValueError("The option advanced=%s is incorrect." % options["advanced"])
 
+	def neighbours(self, x, y, us):
+		"""
+		:param x: coordinate of a point
+		:param y: coordinate of a point
+		:return: list of neighbours of the point (x,y)
+		"""
+		neighbours = []
+
+		if x > 1:
+			n = self.game.board[x-2][y]
+			l = self.game.board[x-1][y]
+			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+				check_type(l, "Link") and l.direction == 0:
+				neighbours.append(n)
+		if x < self.game.L-2:
+			n = self.game.board[x+2][y]
+			l = self.game.board[x+1][y]
+			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+				check_type(l, "Link") and l.direction == 0:
+				neighbours.append(n)
+		if y > 1:
+			n = self.game.board[x][y-2]
+			l = self.game.board[x][y-1]
+			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+				check_type(l, "Link") and l.direction == 1:
+				neighbours.append(n)
+		if y < self.game.H-2:
+			n = self.game.board[x][y+2]
+			l = self.game.board[x][y+1]
+			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+				check_type(l, "Link") and l.direction == 1:
+				neighbours.append(n)
+
+		return neighbours
 
 	def playMove(self):
 		"""
@@ -63,37 +98,10 @@ class AliceRandomPlayer(TrainingPlayer):
 		moves = []
 
 		# capture node
-		# get currently owned nodes neighbours
-		neighbours = []
+		# get currently owned nodes neighbours and add them to the moved list
 		for node in self.game.playerNode[us]:
-			x, y = node.x, node.y
-			if x > 1:
-				n = self.game.board[x-2][y]
-				l = self.game.board[x-1][y]
-				if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
-					check_type(l, "Link") and l.direction == 0:
-					neighbours.append((x-2, y))
-			if x < self.game.L-2:
-				n = self.game.board[x+2][y]
-				l = self.game.board[x+1][y]
-				if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
-					check_type(l, "Link") and l.direction == 0:
-					neighbours.append((x+2, y))
-			if y > 1:
-				n = self.game.board[x][y-2]
-				l = self.game.board[x][y-1]
-				if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
-					check_type(l, "Link") and l.direction == 1:
-					neighbours.append((x, y-2))
-			if y < self.game.H-2:
-				n = self.game.board[x][y+2]
-				l = self.game.board[x][y+1]
-				if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
-					check_type(l, "Link") and l.direction == 1:
-					neighbours.append((x, y+2))
-		# add each neighbour capture to possible moves list
-		for nx, ny in neighbours:
-			moves.append("%d %d %d" % (CAPTURE, nx, ny))
+			for n in self.neighbours(node.x, node.y, us):
+				moves.append("%d %d %d" % (CAPTURE, n.x, n.y))
 
 		# advanced moves
 		if self.advanced:
