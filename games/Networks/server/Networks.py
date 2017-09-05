@@ -29,6 +29,7 @@ from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING, \
 
 from .DoNothingPlayer import DoNothingPlayer
 from .AliceRandomPlayer import AliceRandomPlayer
+from .WhiteRabbitPlayer import WhiteRabbitPlayer
 
 
 regdd = compile("(\d+)\s+(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
@@ -50,6 +51,7 @@ class Node:
 		incapture_nodes.append(self)
 
 	def check_capture(self, player_nodes, incapture_nodes):
+#		print('(%d,%d) - delay = %d, state = %d' % (self.x, self.y, self.delay, self.state))
 		if self.delay == 0:
 			self.capture(self.owner)
 			player_nodes.append(self)
@@ -91,10 +93,6 @@ class Link:
 
 	def __str__(self):
 		return str(self.direction + 1)
-
-
-def check_type(element, typecheck):
-	return element is not None and element.__class__.__name__ == typecheck
 
 
 def CreateBoard(sX, sY):
@@ -176,18 +174,48 @@ def CreateBoard(sX, sY):
 		shuffle(Directions)
 		stack.append((nx, ny, list(Directions)))
 
-	# set goal node + verify null connections
+	# set goal node
 	goal_x, goal_y = L//2, H//2
 	board[goal_x][goal_y] = Node(goal_x, goal_y, len(NODE_DISPLAY_CODES) - 1, True)
-	if not (board[goal_x-1][goal_y] or board[goal_x+1][goal_y] or \
-		board[goal_x][goal_y-1] or board[goal_x][goal_y+1]):
-		board[goal_x-1][goal_y] = Link(0)
+
+	# output = ''
+	# for y in range(H):
+	# 	for x in range(L):
+	# 		if board[x][y] is None:
+	# 			output += ' '
+	# 		else:
+	# 			output += str(board[x][y])
+	# 	output += '\n'
+	# print (output)
+
+	# verify null connections to goal node and create them if necessary
+	connect_points = [board[goal_x-1][goal_y], board[goal_x][goal_y-1]]
+	connections_set = False
+	for point in connect_points:
+		if point is not None and point.__class__.__name__ == 'Link':
+			connections_set = True
+			break
+	if not connections_set:
+		for x in range(L):
+			if x != goal_x:
+				board[x].insert(goal_y, None)
+				if board[x][goal_y].__class__.__name__ == 'Node':
+					board[x][goal_y-1] = board[x][goal_x]
+					board[x][goal_y] = None
+				board[x].insert(goal_y, None)
+				board[x].insert(goal_y, None)
+				board[x].insert(goal_y+1, None)
+				board[x].insert(goal_y+1, None)
+				board[x].insert(goal_y+1, None)
+		board[goal_x][goal_y-1] = Link(1)
+		board[goal_x][goal_y-2] = Node(goal_x, goal_y-2, 0, False)
+
 	# symmetrize the board: central symmetry around middle point
 	for x in range(L):
 		for y in range(H):
-			if check_type(board[x][y], "Node"):
+			if type(board[x][y]) == Node:
 				board[L-1-x][H-1-y] = Node(L-1-x, H-1-y, board[x][y].type, board[x][y].isGoal)
-			elif check_type(board[x][y], "Link"):
+			elif type(board[x][y]) == Link:
 				board[L-1-x][H-1-y] = Link(board[x][y].direction)
 
 	# create a random 'cutename' for the Board (one that can be displayed in the server)
@@ -200,7 +228,7 @@ def CreateBoard(sX, sY):
 	else:
 		name = choice(nameparts1) + ' ' + choice(nameparts2)
 
-	return L, H, board, name
+	return L, H, board, name, board[goal_x][goal_y]
 
 
 class Networks(Game):
@@ -218,7 +246,7 @@ class Networks(Game):
 	Custom properties:
 	- _board: array (list of lists of integers) representing the board
 	- _L, _H: length and height of the board
-	- _goalNode: coordinated of the goal node in the middle of the board
+	- _goalNode: reference to the goal node in the middle of the board
 	- _playerNode: list of the nodes of the two players
 	- _inCaptureNode: list of the currently in-capture nodes if the two players
 	- _playerEnergy: list of the energy level of the two players
@@ -227,7 +255,8 @@ class Networks(Game):
 
 	# dictionary of the possible training Players (name-> class)
 	type_dict = {"DO_NOTHING": DoNothingPlayer,
-				 "ALICE_RANDOM": AliceRandomPlayer
+				 "ALICE_RANDOM": AliceRandomPlayer,
+				 "WHITE_RABBIT": WhiteRabbitPlayer
 				}
 
 
@@ -239,8 +268,9 @@ class Networks(Game):
 		:param options: dictionary of options (the options 'seed' and 'timeout' are managed by the Game class)
 		"""
 
-		# random Board
-		self._L, self._H, self._board, self._cutename = CreateBoard(randint(8, 10), randint(6, 8))
+		# random Board, cutename and goalNode
+	#	self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(8, 10), randint(6, 8))
+		self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(4, 6), randint(4, 6))
 
 		# add players
 		self._playerNode = [[], []]  # two lists of nodes
@@ -277,9 +307,19 @@ class Networks(Game):
 		return self._playerNode
 
 	@property
+	def inCaptureNodes(self):
+		"""Returns the nodes currently in-capture for both players"""
+		return self._inCaptureNode
+
+	@property
 	def playerEnergy(self):
 		"""Returns the energy of the players"""
 		return self._playerEnergy
+
+	@property
+	def goalNode(self):
+		"""Returns the reference to goal node (middle of the board)"""
+		return self._goalNode
 
 	@property
 	def board(self):
@@ -322,7 +362,7 @@ class Networks(Game):
 		# display board
 		for y in range(self.H):
 			st = []
-			for x in range(self._L):
+			for x in range(self.L):
 				# add blank cell
 				if self.board[x][y] is None:
 					st.append(" ")
@@ -373,7 +413,7 @@ class Networks(Game):
 
 		# capture node
 		if move_type == CAPTURE:
-			if not check_type(self.board[move_x][move_y], "Node"):
+			if not type(self.board[move_x][move_y]) == Node:
 				return LOSING_MOVE, "Cannot capture, not a node!"
 			if self.board[move_x][move_y].owner == self._whoPlays:
 				return LOSING_MOVE, "Cannot re-capture an already-owned node!"
@@ -383,17 +423,17 @@ class Networks(Game):
 				x, y = node.x, node.y
 				if x == move_x:
 					if move_y - y == 2 and \
-						(check_type(self.board[x][y+1], "Link") and self.board[x][y+1].direction == 1):
+						(type(self.board[x][y+1]) == Link and self.board[x][y+1].direction == 1):
 						neighbours_count += 1
 					elif move_y - y == -2 and \
-						(check_type(self.board[x][y-1], "Link") and self.board[x][y-1].direction == 1):
+						(type(self.board[x][y-1]) == Link and self.board[x][y-1].direction == 1):
 						neighbours_count += 1
 				elif y == move_y:
 					if move_x - x == 2 and \
-						(check_type(self.board[x+1][y], "Link") and self.board[x+1][y].direction == 0):
+						(type(self.board[x+1][y]) == Link and self.board[x+1][y].direction == 0):
 						neighbours_count += 1
 					elif move_x - x == -2 and \
-						(check_type(self.board[x-1][y], "Link") and self.board[x-1][y].direction == 0):
+						(type(self.board[x-1][y]) == Link and self.board[x-1][y].direction == 0):
 						neighbours_count += 1
 			# if no OK neighbours, losing move
 			if neighbours_count == 0:
@@ -418,7 +458,7 @@ class Networks(Game):
 				return LOSING_MOVE, "Not enough energy to destroy a link."
 
 			# check for non link cell
-			if not check_type(self.board[move_x][move_y], "Link"):
+			if not type(self.board[move_x][move_y]) == Link:
 				return LOSING_MOVE, "Not a link, cannot destroy."
 			# else, remove link (make blank cell)
 			self.board[move_x][move_y] = None
@@ -438,8 +478,8 @@ class Networks(Game):
 			if self.board[move_x][move_y]:
 				return LOSING_MOVE, "Cannot build link here, cell is already occupied."
 			# check for neighbours
-			if not check_type(self.board[move_x-1][move_y], "Node") or \
-				not check_type(self.board[move_x+1][move_y], "Node"):
+			if not type(self.board[move_x-1][move_y]) == Node or \
+				not type(self.board[move_x+1][move_y]) == Node:
 				return LOSING_MOVE, "No nodes to link here!"
 			# if everything is OK, add link
 			self.board[move_x][move_y] = Link(0)
@@ -459,8 +499,8 @@ class Networks(Game):
 			if self.board[move_x][move_y]:
 				return LOSING_MOVE, "Cannot build link here, cell is already occupied."
 			# check for neighbours
-			if not check_type(self.board[move_x][move_y-1], "Node") or \
-				not check_type(self.board[move_x][move_y+1], "Node"):
+			if not type(self.board[move_x][move_y-1]) == Node or \
+				not type(self.board[move_x][move_y+1]) == Node:
 				return LOSING_MOVE, "No nodes to link here!"
 			# if everything is OK, add link
 			self.board[move_x][move_y] = Link(1)
