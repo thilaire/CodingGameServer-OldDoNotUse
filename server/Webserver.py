@@ -179,7 +179,7 @@ def game(gameName):
 			displayName = g.getCutename()
 		except NotImplementedError:
 			displayName = gameName
-		return template('game/Game.html', host=Config.host, webPort=Config.webPort,
+		return template('game/Game.html', GameName=Game.getTheGameName(), host=Config.host, webPort=Config.webPort,
 		                gameName=gameName, displayName=displayName, player1=g.players[0].HTMLrepr(), player2=g.players[1].HTMLrepr())
 	else:
 		return template('noObject.html', className='game', objectName=gameName)
