@@ -4,7 +4,6 @@
 	--green-color: #55dd22;
 	--blue-color: #5565ff;
 	--active-bg-color: rgba(200, 200, 255, 0.15);
-	--player-spot-size: 15px;
 }
 
 .display {
@@ -14,8 +13,6 @@
 }
 
 .container {
-	/*width: 90%;
-	height: 100%;*/
 	border: 1px solid var(--border-color);
 	display: grid;
 	grid-template-rows: auto;
