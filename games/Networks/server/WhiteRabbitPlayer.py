@@ -82,7 +82,7 @@ class WhiteRabbitPlayer(TrainingPlayer):
 
 	def playMove(self):
 		"""
-		Plays the move -> here a random move
+		Plays the move -> here an A* equivalent move (best way to get closer to goal node)
 		Returns the move (string %d %d %d)
 		"""
 		# get our player number
@@ -95,28 +95,28 @@ class WhiteRabbitPlayer(TrainingPlayer):
 		loop = True
 
 		# Loop if data are style to explore
-		d = 0
-		while loop:
-			loop = False
-			min_node_add = 3
-			# one in two cells (avoid the link cells)
-			for x in range(0, self.game.L, 2):
-				for y in range(0, self.game.H, 2):
-					if delta[x][y] == d:
-						for n in self.neighbours(x, y, us):
-							if check_type(self.game.board[n.x][n.y], "Node") and \
-								delta[n.x][n.y] == -1:
-								loop = True
-								delta[n.x][n.y] = d+(n.type+1)
-								if n.type+1 < min_node_add:
-									min_node_add = n.type+1
-			d += min_node_add
+		new_deltas = {(self.game.goalNode.x, self.game.goalNode.y): 0}
+		checked = []
+		while len(new_deltas) > 0:
+			bestDelta = min(new_deltas, key=new_deltas.get)
+			x, y = bestDelta
+			d = new_deltas.pop(bestDelta)
+
+			for n in self.neighbours(x, y, us):
+				if check_type(self.game.board[n.x][n.y], "Node") and \
+						delta[n.x][n.y] == -1:
+					delta[n.x][n.y] = d+(n.type+1)
+					new_deltas[(n.x, n.y)] = d+(n.type+1)
+					checked.append((n.x, n.y))
 
 		# print('>> GOT DELTA ARRAY')
 		# o = '\n'
 		# for y in range(self.game.H):
 		# 	for x in range(self.game.L):
-		# 		o += '%02d ' % delta[x][y]
+		# 		if self.game.board[x][y] is None:
+		# 			o += '   '
+		# 		else:
+		# 			o += '%02d ' % delta[x][y]
 		# 	o += '\n'
 		# print(o)
 
