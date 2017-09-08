@@ -9,16 +9,16 @@
 Authors: M. Pecheux (based on J. Brajard template file)
 Licence: GPL
 
-File: WhiteRabbitPlayer.py
-	Contains the class WhiteRabbitPlayer
+File: NeoPlayer.py
+	Contains the class NeoPlayer
 	-> defines a player that uses Astar algorithm to move along the shortest path
-	(but do not use any special action like link creation/destruction)
+	and can do special action like link creation/destruction if necessary
 
 Copyright 2017 M. Pecheux
 """
 
 from server.Player import TrainingPlayer
-from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING
+from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING, DESTROY_ENERGY
 
 boolConv = {'true': True, 'false': False}
 
@@ -29,18 +29,20 @@ def check_type(element, typecheck):
 	return element is not None and element.__class__.__name__ == typecheck
 
 
-class WhiteRabbitPlayer(TrainingPlayer):
+class NeoPlayer(TrainingPlayer):
 	"""
-	class WhiteRabbitPlayer that create Astar training players
+	class NeoPlayer that create Astar professional training players
 
-	-> this player do not consider special actions, and move only along the shortest path
+	-> this player can perform special actions, and move only along the shortest path
 	(found with a A* algorithm)
 	see https://en.wikipedia.org/wiki/A*_search_algorithm
 	"""
 
 	def __init__(self, **_):
-		self.path = []		# a* path for the AI, i.e. list of coordinates tuples (the nodes left to capture)
-		super().__init__('WHITE RABBIT')
+		self.paths = [[], []]			# a* paths for the AI and its opponent (in that order),
+										# i.e. two lists of coordinates tuples (the nodes left to capture)
+		self.pathLengths = [-1, -1]		# paths lengths of this player and its opponent (in that order)
+		super().__init__('NEO')
 
 	def neighbours(self, x, y, us):
 		"""
@@ -155,28 +157,6 @@ class WhiteRabbitPlayer(TrainingPlayer):
 		# build the grid of distances to the start node
 		deltaG = self.getDistanceGrid(us, openSet[0])
 
-		# print('>> F SCORE ARRAY (to goal)')
-		# o = '\n'
-		# for y in range(self.game.H):
-		# 	for x in range(self.game.L):
-		# 		if self.game.board[x][y] is None:
-		# 			o += '   '
-		# 		else:
-		# 			o += '%02d ' % deltaF[x][y]
-		# 	o += '\n'
-		# print(o)
-
-		# print('>> G SCORE ARRAY (to start)')
-		# o = '\n'
-		# for y in range(self.game.H):
-		# 	for x in range(self.game.L):
-		# 		if self.game.board[x][y] is None:
-		# 			o += '   '
-		# 		else:
-		# 			o += '%02d ' % deltaG[x][y]
-		# 	o += '\n'
-		# print(o)
-
 		while len(openSet) > 0:
 			current = min(openSet, key=lambda t: deltaF[t[0]][t[1]])
 			if current == end:
@@ -212,9 +192,20 @@ class WhiteRabbitPlayer(TrainingPlayer):
 
 		return path
 
+	def getPathLength(self, path):
+		L = 0
+		for step in path:
+			L += self.game.board[step[0]][step[1]].type + 1
+		return L
+
 	def playMove(self):
 		"""
-		Plays the move -> here an A* equivalent move (best way to get closer to goal node)
+		Plays the move -> here:
+		- an A* equivalent move (best way to get closer to goal node) if the A* path
+		is shorter than the one of the opponent
+		- else a link creation/destruction to give an advantage to this AI or a
+		disadvantage to the opponent
+
 		Returns the move (string %d %d %d)
 		"""
 
@@ -229,24 +220,54 @@ class WhiteRabbitPlayer(TrainingPlayer):
 
 		# if there is no current path or the board has changed and the AI is
 		# not capturing the goal node, try to compute a new path
-		if (len(self.path) == 0 or opponentMoveType in [DESTROY, LINK_H, LINK_V]) \
+		if (len(self.paths[0]) == 0 or opponentMoveType in [DESTROY, LINK_H, LINK_V]) \
 				and self.game.goalNode not in self.game.inCaptureNodes[us]:
-			self.path = self.computePath(us)
+			self.paths[0] = self.computePath(us)
+			self.paths[1] = self.computePath(1-us)
+			self.pathLengths[0] = self.getPathLength(self.paths[0])
+			self.pathLengths[1] = self.getPathLength(self.paths[1])
+			self.pathLengths[self.game.currentPlayer] -= 1	# if playing right now, path can be considered 'shorter'
 
 		# if path is still null after computing:
 		# - there is no way to the goal
 		# - the goal is currently in-capture
-		if len(self.path) == 0:
+		if len(self.paths[0]) == 0:
 			if self.game.goalNode not in self.game.inCaptureNodes[us]:
-				self.game.sendComment(self, "I am blocked... I cannot move... Aaarg! You got me!!")
+				self.game.sendComment(self, "I should have taken the blue pill...")
 			else:
-				self.game.sendComment(self, "The White Rabbit has tumbled down the hole... loser!!")
+				self.game.sendComment(self, "I see the Matrix. Where we go from there is a choice I leave to you.")
 			return "%d 0 0" % DO_NOTHING
-		# else if path is possible but node is currently in-capture, wait for capture to complete
-		elif (len(self.game.inCaptureNodes[us]) != 0):
-			self.game.sendComment(self, "The White Rabbit is on its way to Wonderland!!")
-			return "%d 0 0" % DO_NOTHING
-		# else start capture of next node in path
 		else:
-			next_node = self.path.pop()
-			return "%d %d %d" % (CAPTURE, next_node[0], next_node[1])
+			# if opponent is closer to goal node, if possible, do special move
+			if self.pathLengths[1] < self.pathLengths[0] and len(self.paths[1]) >= 2 \
+				and self.game.playerEnergy[us] >= DESTROY_ENERGY:
+				opponent_next_nodes = self.paths[1][-2:]
+				opponent_next_nodes.reverse()
+				destroy_link_x, destroy_link_y = -1, -1
+				if opponent_next_nodes[0][0] == opponent_next_nodes[1][0]:
+					destroy_link_x = opponent_next_nodes[0][0]
+					destroy_link_y = opponent_next_nodes[1][1] - 1 if opponent_next_nodes[1][1] > opponent_next_nodes[0][1] else opponent_next_nodes[1][1] + 1
+				elif opponent_next_nodes[0][1] == opponent_next_nodes[1][1]:
+					destroy_link_y = opponent_next_nodes[0][1]
+					destroy_link_x = opponent_next_nodes[1][0] - 1 if opponent_next_nodes[1][0] > opponent_next_nodes[0][0] else opponent_next_nodes[1][0] + 1
+				
+				# if this link can be destroyed (not already destroyed)
+				if self.game.board[destroy_link_x][destroy_link_y] is not None:
+					# recompute paths and path lengths
+					self.paths[0] = self.computePath(us)
+					self.paths[1] = self.computePath(1-us)
+					self.pathLengths[0] = self.getPathLength(self.paths[0])
+					self.pathLengths[1] = self.getPathLength(self.paths[1])
+					self.pathLengths[self.game.currentPlayer] -= 1	# if playing right now, path can be considered 'shorter'
+
+					# send move
+					return "%d %d %d" % (DESTROY, destroy_link_x, destroy_link_y)
+
+			# else if path is possible but node is currently in-capture, wait for capture to complete
+			if (len(self.game.inCaptureNodes[us]) != 0):
+				self.game.sendComment(self, "There is no spoon...")
+				return "%d 0 0" % DO_NOTHING
+			# else start capture of next node in path
+			else:
+				next_node = self.paths[0].pop()
+				return "%d %d %d" % (CAPTURE, next_node[0], next_node[1])

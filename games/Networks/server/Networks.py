@@ -30,6 +30,7 @@ from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING, \
 from .DoNothingPlayer import DoNothingPlayer
 from .AliceRandomPlayer import AliceRandomPlayer
 from .WhiteRabbitPlayer import WhiteRabbitPlayer
+from .NeoPlayer import NeoPlayer
 
 
 regdd = compile("(\d+)\s+(\d+)\s+(\d+)")  # regex to parse a "%d %d" string
@@ -321,7 +322,8 @@ class Networks(Game):
 	# dictionary of the possible training Players (name-> class)
 	type_dict = {"DO_NOTHING": DoNothingPlayer,
 				 "ALICE_RANDOM": AliceRandomPlayer,
-				 "WHITE_RABBIT": WhiteRabbitPlayer
+				 "WHITE_RABBIT": WhiteRabbitPlayer,
+				 "NEO": NeoPlayer,
 				}
 
 
@@ -385,6 +387,11 @@ class Networks(Game):
 	def goalNode(self):
 		"""Returns the reference to goal node (middle of the board)"""
 		return self._goalNode
+
+	@property
+	def currentPlayer(self):
+		"""Returns the index of the player currently playing"""
+		return self._whoPlays
 
 	@property
 	def board(self):
