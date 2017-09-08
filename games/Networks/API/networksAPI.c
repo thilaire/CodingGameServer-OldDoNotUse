@@ -13,7 +13,7 @@ Authors: M. Pecheux (based on T. Hilaire and J. Brajard template file)
 Licence: GPL
 
 File: networksAPI.c
-	Contains the client API for the Starships game
+	Contains the client API for the Networks game
 	-> based on clientAPI.c
 
 Copyright 2017 M. Pecheux
@@ -24,7 +24,7 @@ Copyright 2017 M. Pecheux
 #include <stdio.h>
 #include "networksAPI.h"
 
-unsigned char nX, nY; 	/* store lab size, used for getBoardData (the user do not have to pass them once again) */
+unsigned char nX, nY; 	/* store board size, used for getBoardData (the user do not have to pass them once again) */
 
 
 /* -------------------------------------
@@ -137,7 +137,7 @@ t_return_code getMove(t_move* move)
     char data[128];
 
     /* get the move */
-    int ret = getCGSMove(__FUNCTION__, data,128);
+    int ret = getCGSMove(__FUNCTION__, data, 128);
 
 	/* extract move */
 	sscanf(data, "%d %d %d", &(move->type), &(move->x), &(move->y));

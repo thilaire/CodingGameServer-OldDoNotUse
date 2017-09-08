@@ -13,7 +13,7 @@ Authors: M. Pecheux
 Licence: GPL
 
 File: networksAPI.h
-	Contains the client API for the Starships game
+	Contains the client API for the Networks game
 	-> based on clientAPI.h
 
 Copyright 2017 M. Pecheux

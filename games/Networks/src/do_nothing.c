@@ -28,7 +28,7 @@ int main()
 	connectToServer("localhost", 1234, "prog_template");
 	
 	/* wait for a game, and retrieve informations about it */
-	waitForBoard("ALICE_RANDOM timeout=10", boardName, &sizeX, &sizeY);
+	waitForBoard("NEO timeout=10", boardName, &sizeX, &sizeY);
 	boardData = (char*) malloc(sizeX * sizeY);
 	player = getBoardData(boardData);
 	
