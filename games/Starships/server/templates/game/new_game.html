@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>New game:</h3>
+<form action="{{base_url}}create_new_game.html" method="POST">
+    <table class="customTable">
+        <tr>
+            <th style="text-align: left;">Available players:</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>{{list_players}}
+            <ul>
+                <li>test</li>
+                <li>test</li>
+                <li>test</li>
+                <li>test</li>
+            </ul>
+            </td>
+            <td style="text-align: center; vertical-align: middle;"><button name="send">Create Game</button></td>
+        </tr>
+    </table>
+    <!--<label>
+        Player 1:
+        <select name="player1">
+            {{list_players}}
+        </select>
+    </label>
+    <label>
+        Player2:
+        <select name="player2">
+            {{list_players}}
+        </select>
+    </label>
+    <button name="send">Create Game</button>-->
+</form>
+{% endblock %}

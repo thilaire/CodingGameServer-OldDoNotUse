@@ -334,7 +334,7 @@ class Tournament(BaseClass):
 
 
 	@classmethod
-	def HTMLFormDict(cls):
+	def HTMLFormDict(cls, gamename):
 		"""
 		Returns a dictionary to fill the template new_tournament.html
 		It's about all the existing types of tournament (subclasses of Tournament class)
@@ -355,7 +355,7 @@ class Tournament(BaseClass):
 		jOptions = "\n".join('document.getElementById("%s").style.display="none";' %
 		                     (sc.__name__,) for sc in cls.__subclasses__())
 
-		return {"HTMLmodes": modes, "HTMLmodeOptions": options, "JavascriptModeOptions": jOptions}
+		return {"GameName": gamename, "HTMLmodes": modes, "HTMLmodeOptions": options, "JavascriptModeOptions": jOptions}
 
 
 	def playerHTMLrepr(self, playerName):

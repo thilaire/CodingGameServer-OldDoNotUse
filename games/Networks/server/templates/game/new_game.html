@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>New game:</h3>
+<form action="{{base_url}}create_new_game.html" method="POST">
+    <div class="container-cols">
+        <div class="col">
+            <h3>Available players:</h3><br />
+            <label>
+                Player 1:
+                <select name="player1">
+                    {{list_players}}
+                </select>
+            </label>
+            <label>
+                Player2:
+                <select name="player2">
+                    {{list_players}}
+                </select>
+            </label>
+        </div>
+        <div class="col">
+            <button style="text-align: center; vertical-align: middle;" name="send">Create Game</button>
+        </div>
+    </div>
+</form>
+{% endblock %}
