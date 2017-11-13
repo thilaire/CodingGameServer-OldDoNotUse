@@ -7,7 +7,7 @@ and loop while nobody made a wrong move.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "networksAPI.h"
+#include <networksAPI.h>
 #include <unistd.h>
 
 
@@ -23,12 +23,15 @@ int main()
 	t_move move;						/* a move */
 	int player;
 	int sizeX, sizeY;
+	char Name[20];
+	sprintf(Name,"prog_%d",getpid());
 
 	/* connection to the server */
-	connectToServer("localhost", 1234, "prog_template");
+	connectToServer("localhost", 1234, Name);
 	
 	/* wait for a game, and retrieve informations about it */
-	waitForBoard("DO_NOTHING timeout=10", boardName, &sizeX, &sizeY);
+	//waitForBoard("DO_NOTHING timeout=10", boardName, &sizeX, &sizeY);
+	waitForBoard("", boardName, &sizeX, &sizeY);
 	boardData = (char*) malloc(sizeX * sizeY);
 	player = getBoardData(boardData);
 	

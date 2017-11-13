@@ -15,7 +15,7 @@ Copyright 2016-2017 T. Hilaire, J. Brajard
 """
 
 
-TIMEOUT_TURN = 10		    # time (in seconds) to play a move
+TIMEOUT_TURN = 60		    # time (in seconds) to play a move
 
 
 # return codes

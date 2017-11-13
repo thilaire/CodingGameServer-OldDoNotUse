@@ -7,10 +7,18 @@ and loop while nobody made a wrong move.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "networksAPI.h"
+#include <networksAPI.h>
 #include <unistd.h>
 
-
+void my_print(char * boardData, int sizeX, int sizeY) {
+    int i,j ;
+    for (i=0;i<sizeY;i++){
+    for (j=0;j<sizeX;j++){
+        printf ("%2d ",boardData[i*sizeX+j]);
+    }
+    printf("\n");
+}
+}
 extern int debug;	/* hack to enable debug messages */
 
 
@@ -36,7 +44,7 @@ int main()
 		/* get new board and display it */
 		sleep(1);
 		printBoard();
-		
+		my_print(boardData,sizeX,sizeY);
 		/* opponent turn */
 		if (player == 1)
 		{
