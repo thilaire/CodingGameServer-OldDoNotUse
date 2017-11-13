@@ -23,6 +23,13 @@ all: $(EXEC)
 #lib
 lib: $(LIBNAME)
 
+distrib: $(LIBNAME) $(SRC) $(MFILE)
+	mkdir -p ${C_SRC}
+	cp -f $(SRC) ${C_SRC}
+	sed 's!^APIDIR!APIDIR = '${C_INC}'!' $(MFILE) > tmp
+	sed 's!^LIBS!LIBS = -L'${C_LIB}'!' tmp > $(C_SRC)/makefile
+	rm -f tmp
+
 $(LIBNAME): $(LIBOBJ) $(LIBHEAD)
 	echo $(LIBOBJ)
 	ar r $@ $^
@@ -64,6 +71,6 @@ $(EXEC): $(OBJ)
 
 # règles supplémentaires
 clean:
-	rm -f *.a *.o *~ ${C_LIB}/* ${C_INC}/*
+	rm -f *.a *.o *~ ${C_LIB}/* ${C_INC}/* ${C_SRC}/*
 rmproper:
 	rm -f $(EXEC) *.o

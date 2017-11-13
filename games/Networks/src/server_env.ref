@@ -8,4 +8,4 @@ export C_API_CLIENT=${CGS_dir}/clientAPI/C
 export C_API_APPLI=${CGS_dir}//games/Networks/API
 export C_LIB=${distrib_dir}/lib
 export C_INC=${distrib_dir}/include
-export C_SRC=${distrib_dir}/include
+export C_SRC=${distrib_dir}/src
