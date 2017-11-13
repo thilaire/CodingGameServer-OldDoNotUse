@@ -20,9 +20,9 @@ Copyright 2017 M. Pecheux
 */
 
 
-#include "clientAPI.h"
+#include <clientAPI.h>
 #include <stdio.h>
-#include "networksAPI.h"
+#include <networksAPI.h>
 
 unsigned char nX, nY; 	/* store board size, used for getBoardData (the user do not have to pass them once again) */
 

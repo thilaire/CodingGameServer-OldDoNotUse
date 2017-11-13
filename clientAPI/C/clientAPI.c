@@ -327,7 +327,7 @@ int getGameData(const char* fct, char* data, size_t ndata)
  */
 t_return_code getCGSMove( const char* fct, char* move ,size_t nmove)
 {
-	int result;
+	t_return_code result;
 	sendString( fct, "GET_MOVE");
 
 	/* read move */
@@ -362,7 +362,7 @@ t_return_code getCGSMove( const char* fct, char* move ,size_t nmove)
  */
 t_return_code sendCGSMove( const char* fct, char* move)
 {
-	int result;
+	t_return_code result;
 	sendString( fct, "PLAY_MOVE %s", move);
 
 

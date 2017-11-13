@@ -22,8 +22,8 @@ Copyright 2017 M. Pecheux
 
 #ifndef __API_CLIENT_NETWORKS__
 #define __API_CLIENT_NETWORKS__
-#include "../../../clientAPI/C/ret_type.h"
-
+//#include "../../../clientAPI/C/ret_type.h"
+#include <ret_type.h>
 typedef enum
 {
 	CAPTURE = 0,

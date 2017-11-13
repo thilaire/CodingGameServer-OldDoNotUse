@@ -6,7 +6,7 @@ Allows you to get the board data and play one turn.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "networksAPI.h"
+#include <networksAPI.h>
 #include <unistd.h>
 
 

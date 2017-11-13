@@ -1,21 +1,58 @@
 # options de compilation
-APIDIR = ../API
+APIDIR = -I${C_API_CLIENT} -I${C_API_APPLI}
 CC = gcc
-CCFLAGS = -Wall -I $(APIDIR)
-LIBS =
-LDFLAGS = -lm
+CCFLAGS = -Wall $(APIDIR)
+LIBS = -L${C_LIB}
+LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = template.c
+SRC = manual_play.c
 OBJ = $(SRC:.c=.o)
 EXEC = main
+MFILE = makefile.generic
 
+# fichiers de la lib
+LIBSRC = networksAPI.c clientAPI.c
+LIBOBJ = $(LIBSRC:.c=.o)
+LIBNAME = libcgs.a
+LIBHEAD = ${C_API_CLIENT}/ret_type.h ${C_API_APPLI}/networksAPI.h
 
 # règle initiale
 all: $(EXEC)
 
+#lib
+lib: $(LIBNAME)
+
+$(LIBNAME): $(LIBOBJ) $(LIBHEAD)
+	echo $(LIBOBJ)
+	ar r $@ $^
+	ranlib $@
+	mkdir -p ${C_LIB}
+	cp $@ ${C_LIB}
+	mkdir -p ${C_INC}
+	cp $(LIBHEAD) ${C_INC}
+
+
 # dépendance des .h
-main.o:
+main.o: $(LIBNAME)
+networksAPI.o: clientAPI.h networksAPI.h ret_type.h
+clientAPI.o : clientAPI.h ret_type.h
+
+
+networksAPI.h:
+	ln -sf ${C_API_APPLI}/$@
+
+clientAPI.h:
+	ln -sf ${C_API_CLIENT}/$@
+
+networksAPI.c:
+	ln -sf ${C_API_APPLI}/$@
+
+clientAPI.c:
+	ln -sf ${C_API_CLIENT}/$@
+
+ret_type.h:
+	ln -sf ${C_API_CLIENT}/$@
 
 # règles de compilation
 %.o: %.c
@@ -27,6 +64,6 @@ $(EXEC): $(OBJ)
 
 # règles supplémentaires
 clean:
-	rm -f *.o *~
+	rm -f *.a *.o *~ ${C_LIB}/* ${C_INC}/*
 rmproper:
 	rm -f $(EXEC) *.o
