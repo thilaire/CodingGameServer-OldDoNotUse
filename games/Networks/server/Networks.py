@@ -336,8 +336,8 @@ class Networks(Game):
 		"""
 
 		# random Board, cutename and goalNode
-	#	self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(8, 10), randint(6, 8))
-		self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(4, 6), randint(4, 6))
+		#self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(4, 6), randint(4, 6))
+		self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(2, 2)
 
 		# add players
 		self._playerNode = [[], []]  # two lists of nodes
@@ -495,8 +495,11 @@ class Networks(Game):
 		if move_type == CAPTURE:
 			if not type(self.board[move_x][move_y]) == Node:
 				return LOSING_MOVE, "Cannot capture, not a node!"
-			if self.board[move_x][move_y].owner == self._whoPlays:
+			#if self.board[move_x][move_y].owner == self._whoPlays:
+			if self.board[move_x][move_y].owner >= 0 :
 				return LOSING_MOVE, "Cannot re-capture an already-owned node!"
+
+
 			# check if there are neighbours owned by current player
 			neighbours_count = 0
 			for node in self._playerNode[self._whoPlays]:
@@ -616,7 +619,14 @@ class Networks(Game):
 		msg = []
 		for y in range(self.H):
 			for x in range(self.L):
-				msg.append(str(self._board[x][y]))
+					if type(self._board[x][y]) == Node:
+						msg.append(str(3+self._board[x][y].type))
+					elif type(self._board[x][y]) == Link:
+						msg.append(str(self._board[x][y]))
+					else:
+						msg.append('0')
+
+		self.logger.debug(msg)
 		return "".join(msg)
 
 	def getNextPlayer(self):
