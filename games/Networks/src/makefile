@@ -27,8 +27,9 @@ distrib: $(LIBNAME) $(SRC) $(MFILE)
 	mkdir -p ${C_SRC}
 	cp -f $(SRC) ${C_SRC}
 	sed 's!^APIDIR!APIDIR = '${C_INC}'!' $(MFILE) > tmp
-	sed 's!^LIBS!LIBS = -L'${C_LIB}'!' tmp > $(C_SRC)/makefile
-	rm -f tmp
+	sed 's!^LIBS!LIBS = -L'${C_LIB}'!' tmp > tmp2
+	sed 's!^SRC!SRC = '$(SRC)'!' tmp2 > $(C_SRC)/makefile
+	rm -f tmp tmp2
 
 $(LIBNAME): $(LIBOBJ) $(LIBHEAD)
 	echo $(LIBOBJ)

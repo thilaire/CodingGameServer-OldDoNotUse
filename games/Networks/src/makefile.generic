@@ -6,7 +6,7 @@ LIBS
 LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = manual_play.c
+SRC
 OBJ = $(SRC:.c=.o)
 EXEC = main
 
