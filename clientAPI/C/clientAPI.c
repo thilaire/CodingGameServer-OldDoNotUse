@@ -29,9 +29,11 @@ Copyright 2016-2017 T. Hilaire, J. Brajard
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <strings.h>
 
 #include "clientAPI.h"
 
+#define h_addr h_addr_list[0] /* for backward compatibility */
 
 
 #define HEAD_SIZE 4 /*number of bytes to code the size of the message (header)*/

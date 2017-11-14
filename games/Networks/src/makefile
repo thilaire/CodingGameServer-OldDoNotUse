@@ -1,12 +1,12 @@
 # options de compilation
 APIDIR = -I${C_API_CLIENT} -I${C_API_APPLI}
 CC = gcc
-CCFLAGS = -Wall $(APIDIR)
+CCFLAGS = -std=c99 -Wall $(APIDIR)
 LIBS = -L${C_LIB}
 LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = manual_play.c
+SRC = do_nothing.c
 OBJ = $(SRC:.c=.o)
 EXEC = main
 MFILE = makefile.generic
