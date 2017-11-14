@@ -336,8 +336,8 @@ class Networks(Game):
 		"""
 
 		# random Board, cutename and goalNode
-		#self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(4, 6), randint(4, 6))
-		self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(2, 2)
+		self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(randint(4, 6), randint(4, 6))
+		#self._L, self._H, self._board, self._cutename, self._goalNode = CreateBoard(2, 2)
 
 		# add players
 		self._playerNode = [[], []]  # two lists of nodes
@@ -626,7 +626,7 @@ class Networks(Game):
 					else:
 						msg.append('0')
 
-		self.logger.debug(msg)
+		#self.logger.debug(msg)
 		return "".join(msg)
 
 	def getNextPlayer(self):
