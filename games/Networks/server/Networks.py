@@ -25,7 +25,8 @@ from server.Constants import NORMAL_MOVE, WINNING_MOVE, LOSING_MOVE
 from server.Game import Game
 from .Constants import CAPTURE, DESTROY, LINK_H, LINK_V, DO_NOTHING, \
 	LINK_ENERGY, DESTROY_ENERGY, NODE_CODES_START_ID, NODE_DISPLAY_CODES, \
-	NODE_TYPES, NODE_CODES_LENGTH, MAX_NODES_COUNT
+	NODE_TYPES, NODE_CODES_LENGTH, MAX_NODES_COUNT, \
+	INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND
 
 from .DoNothingPlayer import DoNothingPlayer
 from .AliceRandomPlayer import AliceRandomPlayer
@@ -344,7 +345,7 @@ class Networks(Game):
 		self._inCaptureNode = [[], []]	# two lists of nodes
 
 		# level of energy
-		self._playerEnergy = [0] * 2
+		self._playerEnergy = [INITIAL_ENERGY_FIRST, INITIAL_ENERGY_SECOND]
 
 		# capture opposite corners nodes for each player
 		start_nodes = [(0, 0), (self._L-1, self._H-1)]
