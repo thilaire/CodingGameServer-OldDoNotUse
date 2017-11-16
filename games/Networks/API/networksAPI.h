@@ -36,11 +36,11 @@ typedef enum
 
 /*
 A move is a tuple (type,value):
-- type can be MOVE_UP, MOVE_DOWN, SHOOT, PULL_ASTEROID or DO_NOTHING
-- in case of SHOOT, the value indicates the number of energy cells to consume
-(determines how many asteroids will be destroyed on the line)
-- in case of PULL_ASTEROID, the value indicates the number of energy cells to consume
-(determines how many cells the asteroid will be moved)
+- type can be CAPTURE, DESTROY, LINK_H, LINK_V or DO_NOTHING
+- in case of CAPTURE, the value indicates the coordinates
+of the node to be captured
+- in case of LINK_H, LINK_V or DESTROY the value indicates
+the coordinates of link to be created or destroyed.
 */
 typedef struct
 {
@@ -58,8 +58,8 @@ typedef struct
  * Parameters:
  * - serverName: (string) address of the server
  *   (it could be "localhost" if the server is run in local,
- *   or "pc4521.polytech.upmc.fr" if the server runs there)
- * - port: (int) port number used for the connection
+ *   or "pc4200.polytech.upmc.fr" if the server runs there)
+ * - port: (int) port number used for the connection (e.g. 1234)
  * - name: (string) name of the bot : max 20 characters
  *         (checked by the server)
  */
@@ -78,27 +78,31 @@ void closeConnection();
 
 
 /* ----------------------------------------------------------------
- * Wait for a Game, and retrieve its name and first data
- * (typically, array sizes)
+ * Wait for a Game, and retrieve its name and the size
+ * of the board
  *
  * Parameters:
- * - gameType: string (max 50 characters)
+ * - training: string (max 50 characters)
  * - boardName: string (max 50 characters),
- *                  corresponds to the game name
+ *        corresponds to the game name
  * - sizeX, sizeY: sizes of the board
+ *  Values poitned by boardName, sizeX and sizeY are initialized
+ *  by the function call
  *
- * gameType is a string like "NAME key1=value1 key2=value1 ..."
- * - NAME can be empty. It gives the type of the training player
+ * training is a string like "NAME key1=value1 key2=value1 ..."
+ * - NAME can be empty. If not, It gives the type of
+ *   the training player
  * - key=value pairs are used for options
  *   (each training player has its own options)
  *   invalid keys are ignored, invalid values leads to error
- *   the following options are common to every training player
+ *   the following keys are common to every training player
  *   (when NAME is not empty or not TOURNAMENT):
  *        - 'timeout': allows an define the timeout
  *                   when training (in seconds)
  *        - 'seed': allows to set the seed of the random generator
  *        - 'start': allows to set who starts ('0' or '1')
- * gameType could also be : "TOURNAMENT name" where name is the name of the tournament
+ * training could also be : "TOURNAMENT name" where name is the name of the tournament
+ * to be joined by the bot
   */
 void waitForBoard(char* training, char* boardName, int* sizeX, int* sizeY);
 
