@@ -42,13 +42,16 @@ int main()
 	/* your turn */
 	else
 	{
-		move.type = 3;
+		move.type = DO_NOTHING;
 		move.x = 0;
 		move.y = 0;
 		ret = sendMove(move);
 	}
-	
-	if ((player == 1 && ret == WINNING_MOVE) || (player == 0 && ret == LOOSING_MOVE))
+
+	if (ret == NORMAL_MOVE) {
+	    printf("The game should continue\n");
+	    }
+	else if ((player == 1 && ret == WINNING_MOVE) || (player == 0 && ret == LOOSING_MOVE))
 		printf("I lose the game :(\n");
 	else
 		printf("I win the game :)\n");
