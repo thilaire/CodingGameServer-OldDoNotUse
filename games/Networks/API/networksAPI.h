@@ -77,7 +77,7 @@ void connectToServer(char* serverName, int port, char* name);
 void closeConnection();
 
 
-/* ----------------------------------------------------------------
+/* --------------------------------------------------------------
  * Wait for a Game, and retrieve its name and the size
  * of the board
  *

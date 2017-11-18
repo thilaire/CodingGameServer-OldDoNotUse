@@ -321,12 +321,7 @@ class Networks(Game):
 	"""
 
 	# dictionary of the possible training Players (name-> class)
-	type_dict = {"DO_NOTHING": DoNothingPlayer,
-				 "ALICE_RANDOM": AliceRandomPlayer,
-				 "WHITE_RABBIT": WhiteRabbitPlayer,
-				 "NEO": NeoPlayer,
-				}
-
+	getData()
 
 	def __init__(self, player1, player2, **options):
 		"""

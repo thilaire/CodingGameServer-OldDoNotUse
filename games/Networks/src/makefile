@@ -6,7 +6,7 @@ LIBS = -L${C_LIB}
 LDFLAGS = -lm -lcgs
 
 # fichiers du projet
-SRC = do_nothing.c
+SRC = template.c
 OBJ = $(SRC:.c=.o)
 EXEC = main
 MFILE = makefile.generic
