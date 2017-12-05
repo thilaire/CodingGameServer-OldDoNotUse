@@ -52,17 +52,19 @@ class Node:
 		self.delay = len(NODE_DISPLAY_CODES[self.type]) - 1
 		incapture_nodes.append(self)
 
+		return incapture_nodes
+
 	def check_capture(self, player_nodes, incapture_nodes):
-#		print('(%d,%d) - delay = %d, state = %d' % (self.x, self.y, self.delay, self.state))
+		#print('(%d,%d) - delay = %d, state = %d, type = %d' % (self.x, self.y, self.delay, self.state, self.type))
 		if self.delay == 0:
 			self.capture(self.owner)
 			player_nodes.append(self)
 			incapture_nodes.remove(self)
-			return True
+			return player_nodes,incapture_nodes,True
 		elif self.delay > 0:
 			self.state += 1
 			self.delay -= 1
-			return False
+			return player_nodes,incapture_nodes,False
 
 	def capture(self, player):
 		self.owner = player
@@ -484,14 +486,18 @@ class Networks(Game):
 			return LOSING_MOVE, "The y coordinate is not valid!"
 
 		# update in-capture nodes
+
+
 		for i in range(len(self._playerNode)):
-			for n in self._inCaptureNode[i]:
-				if n.check_capture(self._playerNode[i], self._inCaptureNode[i]) and n.isGoal:
+			listenode = [n for n in self._inCaptureNode[i]]
+			for n in listenode:
+				self._playerNode[i],self._inCaptureNode[i],iscaptured = \
+					n.check_capture(self._playerNode[i], self._inCaptureNode[i])
+				if iscaptured and n.isGoal:
 					if i == self._whoPlays:
 						return WINNING_MOVE, "Captured goal node!"
 					else:
 						return LOSING_MOVE, "Opponent captured goal node!"
-
 		# capture node
 		if move_type == CAPTURE:
 			if not type(self.board[move_x][move_y]) == Node:
@@ -523,8 +529,8 @@ class Networks(Game):
 			if neighbours_count == 0:
 				return LOSING_MOVE, "No owned neighbour node, impossible to link!"
 			# else set node capture
-			self.board[move_x][move_y].set_capture(self._whoPlays, self._inCaptureNode[self._whoPlays])
-
+			self._inCaptureNode[self._whoPlays] = \
+				self.board[move_x][move_y].set_capture(self._whoPlays, self._inCaptureNode[self._whoPlays])
 			# update energy
 			self._playerEnergy[self._whoPlays] += 1
 
