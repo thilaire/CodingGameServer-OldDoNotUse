@@ -62,25 +62,25 @@ class AliceRandomPlayer(TrainingPlayer):
 		if x > 1:
 			n = self.game.board[x-2][y]
 			l = self.game.board[x-1][y]
-			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+			if check_type(n, "Node") and ( n.owner != us) and \
 				check_type(l, "Link") and l.direction == 0:
 				neighbours.append(n)
 		if x < self.game.L-2:
 			n = self.game.board[x+2][y]
 			l = self.game.board[x+1][y]
-			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+			if check_type(n, "Node") and (n.owner != us) and \
 				check_type(l, "Link") and l.direction == 0:
 				neighbours.append(n)
 		if y > 1:
 			n = self.game.board[x][y-2]
 			l = self.game.board[x][y-1]
-			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+			if check_type(n, "Node") and (n.owner != us) and \
 				check_type(l, "Link") and l.direction == 1:
 				neighbours.append(n)
 		if y < self.game.H-2:
 			n = self.game.board[x][y+2]
 			l = self.game.board[x][y+1]
-			if check_type(n, "Node") and (n.isGoal or n.owner != us) and \
+			if check_type(n, "Node") and (n.owner != us) and \
 				check_type(l, "Link") and l.direction == 1:
 				neighbours.append(n)
 
