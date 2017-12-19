@@ -3,7 +3,7 @@
 
 {% block script %}
 <script type="text/javascript">
-    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/Player/{{ playerName }}" );
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Player/{{ playerName }}" );
     var lastgame = '';
     var player1 = '';
     var player2 = '';
@@ -23,7 +23,7 @@
                             player2 = data['player2'];
                     document.getElementById('div_gameheader').innerHTML =
                             'Game ' + data['currentGame'] + ' : ' + player1 + ' Vs ' + player2;
-                    var ws2 = new WebSocket("ws://{{ host }}:{{ webPort }}/websocket/Game/"+data['currentGame']);
+                    var ws2 = new WebSocket("ws://"+window.location.host+"/websocket/Game/"+data['currentGame']);
                     ws2.onmessage = function(evt) {
                     /* the server send a dictionary (JSON) with information about the game */
                     var gdata = JSON.parse(evt.data);

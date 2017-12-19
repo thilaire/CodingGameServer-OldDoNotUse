@@ -3,7 +3,7 @@
 
 {% block script %}
 <script type="text/javascript">
-    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/ListOfInstances");
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/ListOfInstances");
     ws.onmessage = function (evt) {
         /* the server send a dictionary (JSON) with the list of instances (its HTML representation) of each class */
         var data = JSON.parse(evt.data);

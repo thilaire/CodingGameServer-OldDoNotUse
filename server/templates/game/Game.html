@@ -3,7 +3,7 @@
 
 {% block script %}
 <script type="text/javascript">
-    var ws = new WebSocket( "ws://{{ host }}:{{ webPort }}/websocket/Game/{{ gameName }}" );
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Game/{{ gameName }}" );
     ws.onmessage = function (evt) {
         /* the server send a dictionary (JSON) with information about the game */
         var data = JSON.parse(evt.data);
