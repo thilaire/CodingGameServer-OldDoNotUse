@@ -152,7 +152,11 @@ class NeoPlayer(TrainingPlayer):
 		capturedNodes = self.game.playerNode[us] + self.game.inCaptureNodes[us]
 		end = (self.game.goalNode.x, self.game.goalNode.y)
 
-		openSet.append(self.getBestNeighbour(deltaF, us, capturedNodes))
+                
+		BestNeighbour = self.getBestNeighbour(deltaF, us, capturedNodes)
+		if BestNeighbour is None:
+			return []
+		openSet.append(BestNeighbour)
 
 		# build the grid of distances to the start node
 		deltaG = self.getDistanceGrid(us, openSet[0])
