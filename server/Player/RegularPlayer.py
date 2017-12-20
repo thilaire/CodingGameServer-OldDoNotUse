@@ -87,9 +87,9 @@ class RegularPlayer(Player, BaseClass):
 		Remove itself from a tournament (called by PlayerSocket when the player disconnect)
 		"""
 		if self._tournament is not None:
-			self._tournament = None
 			self.logger.debug("Remove from `%s` tournament", self._tournament.name)
 			self._tournament.unregisterPlayer(self.name)
+			self._tournament = None
 
 
 	@property
