@@ -1,0 +1,11 @@
+#Ref file to define environment variables
+#to be copied in a file named server_env
+
+CGS_dir=/Users/brajard/Documents/enseignement/EPU/2017/CodingGameServer
+distrib_dir=/Users/brajard/Documents/enseignement/EPU/2017/project
+
+export C_API_CLIENT=${CGS_dir}/clientAPI/C
+export C_API_APPLI=${CGS_dir}//games/Networks/API
+export C_LIB=${distrib_dir}/lib
+export C_INC=${distrib_dir}/include
+export C_SRC=${distrib_dir}/src

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel='stylesheet' href='{{base_url}}game/gamestyle.css' type='text/css'/>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var initialized = false;
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Game/{{ gameName }}" );
+
+    $(document).ready(function() {
+        $('#player1 > player-spot').css('font', 'var(--blue-color)');
+        $('#player2 > player-spot').css('font', 'var(--red-color)');
+    });
+
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        var container = $('.container');
+        if (!initialized) {
+            container.css('grid-template-columns', 'repeat(' + data.width + ', 1fr)');
+            for (var d in data.values) {
+                var div = $('<div/>')
+                                .addClass('grid-item');
+                $('.container').append(div);
+                div.html(data.values[d]);
+            }
+            initialized = true;
+        } else {
+            container.children('div').each(function(i) {
+                $(this).html(data.values[i]);
+            });
+        }
+
+        var curPlayerId = data.curPlayerId;
+        var otherPlayerId = 1 - data.curPlayerId;
+
+        var player1Div = $('#player1');
+        var player2Div = $('#player2');
+
+        player1Div.html("Player #1: {{player1}} (Energy: " + data.energy[0] + ")");
+        player2Div.html("Player #2: {{player2}} (Energy: " + data.energy[1] + ")");
+        if (curPlayerId == 0) {
+            player1Div.addClass('active-player');
+            player2Div.removeClass('active-player');
+        }
+        else {
+            player1Div.removeClass('active-player');
+            player2Div.addClass('active-player');
+        }
+
+        ws.send('OK');
+    };
+</script>
+{% endblock %}
+
+
+{% block content %}
+<br/>
+<!-- This is specific to Networks -->
+
+<div class="display">
+    <div class="container"></div>
+    <div class="sidebar">
+        <div class="gameName">{{displayName}}</div>
+        <div id="player1" class="player">{{player1}}</div>
+        <div id="player2" class="player">{{player2}}</div>
+    </div>
+</div>
+{% endblock %}

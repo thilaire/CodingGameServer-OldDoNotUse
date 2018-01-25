@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    /* configure the webSocket */
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Tournament/{{ t.name }}" );
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        document.getElementById('div_nbPlayers').innerHTML = data['nbPlayers'];
+        document.getElementById('div_phase').innerHTML = data['phase'];
+        document.getElementById('div_score').innerHTML = data['score'];
+        document.getElementById('div_nextPhaseButton').innerHTML = data['HTMLbutton'];
+        document.getElementById('list_players').innerHTML = "<ul class='triple'>" + data['Players'].map(function (x){return "<li>"+x+"</li>"}).join("") + "</ul>";
+        document.getElementById('list_games').innerHTML = "<ul>" + data['Games'].map(function (x){return "<li>"+x+"</li>"}).join("") + "</ul>";
+        ws.send('OK');
+        /* configure the form to send data asynchroneously */
+        $("#nextPhaseButton").click(function(){
+           $.ajax({
+                 type: 'POST',
+                 url: "{{ base_url }}run_tournament/{{t.name}}",
+                 data: $('#nextPhaseForm').serialize()
+            });
+        });
+    };
+</script>
+{% endblock %}
+
+
+{% block content %}
+Tournament {{t.name}}
+<hr/>
+Parameters:
+<ul>
+    <li>nb Max Players = {{t.nbMaxPlayers}}</li>
+    <li>nb rounds for victory = {{t.nbRounds4Victory}}</li>
+    <li>mode = {{t.mode}}</li>
+</ul>
+<!-- websocket-updated data -->
+<hr/>
+
+    <div id="div_nbPlayers"></div> players are registred:
+<div id="list_players"></div>
+
+<hr/>
+
+<div id="div_phase"></div><br/>
+<div id="next_games"></div><br/>
+<div id="list_games"></div>
+
+    <form action="" id="nextPhaseForm">
+    {{ t.HTMLgameoptions }}
+    <br/>
+    <div id="div_nextPhaseButton"></div>
+    </form>
+
+<hr/>
+<div id="div_score"></div>
+
+
+{%  endblock %}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel='stylesheet' href='{{base_url}}style.css' type='text/css'/>
+    <title>{{GameName}} Web Interface</title>
+
+    <!-- load script for menu -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script>
+        $(function() {
+            if ($.browser.msie && $.browser.version.substr(0,1)<7)
+            {
+                $('li').has('ul').mouseover(function(){
+                    $(this).children('ul').css('visibility','visible');
+                }).mouseout(function(){
+                    $(this).children('ul').css('visibility','hidden');
+                })
+            }
+
+            /* Mobile */
+            $('#menu-wrap').prepend('<div id="menu-trigger">Menu</div>');
+            $("#menu-trigger").on("click", function(){
+                $("#menu").slideToggle();
+            });
+
+            // iPad
+            var isiPad = navigator.userAgent.match(/iPad/i) != null;
+            if (isiPad) $('#menu ul').addClass('no-transition');
+        });
+    </script>
+
+    <!-- block `stylesheets` -->
+    {% block stylesheets %}{% endblock%}
+    <!-- block `script` -->
+    {% block script%}{% endblock%}
+</head>
+<body>
+<!-- background grid -->
+<div id="grid"></div>
+
+<!-- banner -->
+<div class="banner">
+    <div class="title"><img src="{{base_url}}banner.png" width="100%" /></div>
+    <div class="subtitle">A CGS-based game about hackers and computer networks...</div>
+</div>
+
+<!-- menu -->
+<nav id="menu-wrap">
+<ul id="menu">
+    <li><a href="{{base_url}}index.html">Home</a></li>
+    <li>
+        <a href="#">Games</a>
+        <ul>
+            <li><a href="{{base_url}}new_game.html">New game</a></li>
+        </ul>
+    </li>
+    <li><a href="#">Players</a></li>
+    <li><a href="#">Tournament</a>
+        <ul>
+            <li><a href="{{base_url}}new_tournament.html">New tournament</a></li>
+        </ul>
+
+    </li>
+    <li><a href="#">Logs</a>
+        <ul>
+            <li><a href="#">Players logs</a></li>
+            <li><a href="#">Games logs</a></li>
+            <li><a href="#">Tournament logs</a></li>
+        </ul>
+    </li>
+    <li><a href="{{base_url}}about.html">About</a></li>
+</ul>
+</nav>
+
+<!-- content -->
+<div id="content">
+{% block content%}{% endblock%}
+</div>
+
+<!-- footer -->
+<div id="footer">
+    <p>(c) 2017 -- Coding Game Server: T. Hilaire, J. Brajard (adapted by M. Pêcheux) | Images by M. Pêcheux</p>
+</div>
+
+</body>
+</html>

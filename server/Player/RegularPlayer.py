@@ -87,9 +87,9 @@ class RegularPlayer(Player, BaseClass):
 		Remove itself from a tournament (called by PlayerSocket when the player disconnect)
 		"""
 		if self._tournament is not None:
-			self._tournament = None
 			self.logger.debug("Remove from `%s` tournament", self._tournament.name)
 			self._tournament.unregisterPlayer(self.name)
+			self._tournament = None
 
 
 	@property
@@ -124,12 +124,18 @@ class RegularPlayer(Player, BaseClass):
 		Returns a dictionary with all the infos the webPage needs
 		"""
 		currentGame = ''
+		currentGameDisplayName = ''
 		player1 = ''
 		player2 = ''
 		if self._game:
 			currentGame = self._game.name
+			try:
+				currentGameDisplayName = self._game.getCutename()
+			except NotImplementedError:
+				currentGameDisplayName = currentGame
+
 			player1, player2 = (p.name for p in self._game.players)
-		return {'currentGame': currentGame, 'player1': player1, 'player2': player2}
+		return {'currentGame': currentGame, 'currentGameDisplayName': currentGameDisplayName, 'player1': player1, 'player2': player2}
 		# return "Game %s (with players '%s' and '%s'\n<br><br>%s" % (
 		# self.name, self._players[0].name, self._players[1].name, self)
 

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>What is Networks?</h3>
+<div class="container-cols" style="padding-bottom: 3%">
+    <div class="col">
+        <h3>A CGS-based Game:</h3><br />
+        <ul style="text-align: justify;font-size:0.9em;">
+            <li>This game is based on J. Brajard and T. Hilaire <u>Coding Game Server (CGS)</u> framework. This Github project contains a bunch of files implementing a socket-based web server that can be used to develop a Coding Game.</li>
+            <li>The idea behind CGS was to propose a fun end-of-semester project to undergraduate students. Being involved in game programming made it easier to learn and code concepts from Game Theory such as min-max, A*... For now, the already created games are mainly turn-based, two players games.</li>
+            <li>If you want more info on the project, check out <a href="https://github.com/thilaire/CodingGameServer" target="_blank">the Github link</a>.</li>
+        </ul>
+    </div>
+    <div class="col">
+        <h3>A Web of Nodes,<br />a Net of Links:</h3><br />
+        <ul style="text-align: justify;font-size:0.9em;">
+            <li>In Networks, you are a <u>hacker</u> whose goal is to infiltrate a server and capture its core. To do so, you have to go through a series of computer nodes, the <u>HackCells</u>. Each HackCell is linked to others: it is only by hacking a node that you will get access to the adjacent nodes linked to it.</li>
+            <li>At the center of the web, there is the core HackCell. Just capture it to win the game. Seems fairly easy, yes?</li>
+            <li>But be careful! If your opponent is a good enough hacker, he may be able to destroy or create new links in the system and therefore turn the game around. <u>Plan your path</u> carefully, try to <u>block your adversary</u> as much as possible and always watch out for the unexpected...
+        </ul>
+    </div>
+    <div class="col">
+        <h3>3 Types of Nodes,<br />2 Hackers, 1 Winner!</h3><br />
+        <ul style="text-align: justify;font-size:0.9em;">
+            <li>When a grid of HackCells is created, it can contain <u>several types of nodes</u> that each take a certain amount of time to be conquered: diamonds are simple nodes that can be captured in 1 turn, squares need 2 turns and circles need 5 turns! Sometimes the obvious way is not the quickest...</li>
+            <li>Like all CGS-based games, Networks involves <u>2 players</u> that compete to reach the core node. As soon as either one captured it, the game stops and the hacker that got it wins.</li>
+            <li>Be sure not to make any <u>wrong move</u> or the system will be alerted of presence and push you out, thus the other player will win.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,4 @@
+# TO COMPILE A C PROGRAM
+# 1 : Copy server_env.ref in server_env
+# 2 : Modify server_env to specifiy locations for API, for lib and exec file
+# 3 : Add source ${SRC_PATH}/server_env in your .bashrc file where ${SRC_PATH} is the path of the server_env file

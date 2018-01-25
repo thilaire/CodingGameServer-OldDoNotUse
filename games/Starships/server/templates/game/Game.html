@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Game/{{ gameName }}" );
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        for(var el in data)
+        {
+            if (data.hasOwnProperty(el))
+                document.getElementById('div_'+el).innerHTML = data[el];
+        }
+        ws.send('OK')
+    };
+</script>
+{% endblock %}
+
+
+{% block content %}
+Game {{ gameName }} : {{ player1 }} Vs {{ player2 }}
+<br/>
+<!-- This is specic to labyrinth. TODO : move to labyrinth folder -->
+
+<div id="div_labycontent">
+    no labyrinth data received
+</div>
+Energy=<div id="div_energy"></div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+{% block script %}
+<script type="text/javascript">
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/ListOfInstances");
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with the list of instances (its HTML representation) of each class */
+        var data = JSON.parse(evt.data);
+        /* iterate on each class (RegularPlayer, Game and Tournament) */
+        for (var cls in data)
+        {
+            /* we convert the list of instances in HTML */
+            if (data.hasOwnProperty(cls))
+            {
+                var HTML = data[cls].map(function (x){return "<li>"+x+"</li>"}).join("");
+                document.getElementById('list'+cls).innerHTML = "<ul>"+HTML+"</ul>";
+            }
+        }
+        ws.send('OK')
+    };
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-cols">
+    <div class="col">
+        <h3>Connected players:</h3><br />
+        <div id="listRegularPlayer"></div>
+    </div>
+    <div class="col">
+        <h3>Games:</h3><br />
+        <div id="listGame"></div>
+    </div>
+    <div class="col">
+        <h3>Tournaments:</h3><br />
+        <div id="listTournament"></div>
+    </div>
+</div>
+{% endblock %}

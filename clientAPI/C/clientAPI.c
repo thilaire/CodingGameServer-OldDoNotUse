@@ -29,9 +29,11 @@ Copyright 2016-2017 T. Hilaire, J. Brajard
 #include <string.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <strings.h>
 
 #include "clientAPI.h"
 
+#define h_addr h_addr_list[0] /* for backward compatibility */
 
 
 #define HEAD_SIZE 4 /*number of bytes to code the size of the message (header)*/
@@ -108,21 +110,21 @@ int read_inbuf(const char *fct, char *buf, size_t nbuf){
 	if (!length)  {
 		bzero(stream_size,HEAD_SIZE);
 		r = read(sockfd, stream_size, HEAD_SIZE);
-		if (r<0)
+		if (r < 0)
 			dispError (fct, "Cannot read message's length (server has failed?)");
-		r = sscanf (stream_size,"%lu",&length);
-		if (r!=1)
+		r = sscanf (stream_size, "%lu", &length);
+		if (r != 1)
 			dispError (fct, "Cannot read message's length (server has failed?)");
 		dispDebug (fct, 3, "prepare to receive a message of length :%lu",length);
 	}
-	int mini = length>nbuf ? nbuf : length ;
-	bzero(buf,nbuf);
+	int mini = length > nbuf ? nbuf: length;
+	bzero(buf, nbuf);
 	r = read(sockfd, buf, mini);
-	if (r<0)
+	if (r < 0)
 		dispError(fct, "Cannot read message (called by : %s)");
   
-	length -= mini ; // length to be read again
-	return length ;
+	length -= mini; // length to be read again
+	return length;
 }
 
 
@@ -134,32 +136,32 @@ int read_inbuf(const char *fct, char *buf, size_t nbuf){
  * - str: string to send
  * - ...:  accept extra parameters for str (string expansion)
  */
-void sendString( const char* fct, const char* str, ...) {
+void sendString(const char* fct, const char* str, ...) {
 	va_list args;
-	va_start (args, str);
-	bzero(buffer,MAX_LENGTH);
+	va_start(args, str);
+	bzero(buffer, MAX_LENGTH);
 	vsprintf(buffer, str, args);
 	/* check if the socket is open */
-	if (sockfd<0)
+	if (sockfd < 0)
 		dispError( fct, "The connection to the server is not established. Call 'connectToServer' before !");
 
 	/* send our message */
 	int r = write(sockfd, buffer, strlen(buffer));
-	dispDebug( fct,2, "Send '%s' to the server", buffer);
+	dispDebug(fct,2, "Send '%s' to the server", buffer);
 	if (r < 0)
-		dispError( fct, "Cannot write to the socket (%s)",buffer);
+		dispError(fct, "Cannot write to the socket (%s)", buffer);
 
 	/* get acknowledgment */
-	r = read_inbuf(fct,buffer,MAX_LENGTH);
+	r = read_inbuf(fct, buffer, MAX_LENGTH);
 	//bzero(buffer,1000);
 	//r = read(sockfd, buffer, 255);
-	if (r>0)
-	  dispError( fct, "Acknowledgement message too long (sending:%s,receive:%s)", str,buffer);
+	if (r > 0)
+	  dispError(fct, "Acknowledgement message too long (sending:%s,receive:%s)", str,buffer);
 
-	if (strcmp(buffer,"OK"))
-		dispError( fct, "Error: The server does not acknowledge, but answered:\n%s",buffer);
+	if (strcmp(buffer, "OK"))
+		dispError(fct, "Error: The server does not acknowledge, but answered:\n%s",buffer);
 
-	dispDebug( fct,3, "Receive acknowledgment from the server");
+	dispDebug(fct, 3, "Receive acknowledgment from the server");
 }
 
 
@@ -273,7 +275,7 @@ void waitForGame( const char* fct, char* gameType, char* gameName, char* data)
             dispError( fct, "Too long answer from 'WAIT_GAME' command (sending:%s)");
     } while (strcmp(buffer,"NOT_READY")==0);
 
-	dispDebug(fct,1, "Receive Labyrinth name=%s", buffer);
+	dispDebug(fct,1, "Receive Game name=%s", buffer);
 	strcpy( gameName, buffer);
 
 	/* read Labyrinth size */
@@ -282,7 +284,7 @@ void waitForGame( const char* fct, char* gameType, char* gameName, char* data)
 	if (r>0)
 	  dispError( fct, "Answer from 'WAIT_GAME' too long");
 
-	dispDebug( fct,2, "Receive Labyrinth sizes=%s", buffer);
+	dispDebug( fct,2, "Receive Game sizes=%s", buffer);
 	strcpy( data, buffer);
 }
 
@@ -299,27 +301,27 @@ void waitForGame( const char* fct, char* gameType, char* gameName, char* data)
  *
  * Returns 0 if the client begins, or 1 if the opponent begins
  */
-int getGameData( const char* fct, char* data,size_t ndata)
+int getGameData(const char* fct, char* data, size_t ndata)
 {
-	sendString( fct, "GET_GAME_DATA");
+	sendString(fct, "GET_GAME_DATA");
 
 	/* read game data */
-	int r = read_inbuf(fct,data,ndata);
-	if (r>0)
+	int r = read_inbuf(fct, data, ndata);
+	if (r > 0)
 		dispError( fct, "too long answer from 'GET_GAME_DATA' command");
 
-	dispDebug( fct,2, "Receive labyrinth's data:%s", data);
+	dispDebug( fct,2, "Receive game's data:%s", data);
 
 
 	/* read if we begin (0) or if the opponent begins (1) */
 	bzero(buffer,1000);
 	r = read_inbuf(fct,buffer,MAX_LENGTH);
-	if (r>0)
-		dispError( fct, "too long answer from 'GET_GAME_DATA' ");
+	if (r > 0)
+		dispError(fct, "too long answer from 'GET_GAME_DATA' ");
 
-	dispDebug( fct,2, "Receive these player who begins=%s", buffer);
+	dispDebug(fct,2, "Receive these player who begins=%s", buffer);
 
-	return buffer[0]-'0';
+	return buffer[0] - '0';
 }
 
 
@@ -336,7 +338,7 @@ int getGameData( const char* fct, char* data,size_t ndata)
  */
 t_return_code getCGSMove( const char* fct, char* move ,size_t nmove)
 {
-	int result;
+	t_return_code result;
 	sendString( fct, "GET_MOVE");
 
 	/* read move */
@@ -371,7 +373,7 @@ t_return_code getCGSMove( const char* fct, char* move ,size_t nmove)
  */
 t_return_code sendCGSMove( const char* fct, char* move)
 {
-	int result;
+	t_return_code result;
 	sendString( fct, "PLAY_MOVE %s", move);
 
 

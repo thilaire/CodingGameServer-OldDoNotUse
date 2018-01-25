@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+<link rel='stylesheet' href='{{base_url}}game/gamestyle.css' type='text/css'/>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    var initialized = false;
+    var ws = new WebSocket( "ws://"+window.location.host+"/websocket/Player/{{ playerName }}" );
+    var lastgame = '';
+    var player1 = '';
+    var player2 = '';
+    ws.onmessage = function (evt) {
+        /* the server send a dictionary (JSON) with information about the game */
+        var data = JSON.parse(evt.data);
+        if (data.hasOwnProperty('currentGame')) {
+            if (data['currentGame'] != lastgame) {
+
+                lastgame = data['currentGame'];
+                if (data['currentGame'] != '') {
+                    if (data.hasOwnProperty('player1'))
+                            player1 = data['player1'];
+                    if (data.hasOwnProperty('player2'))
+                            player2 = data['player2'];
+                    document.getElementById('div_gameheader').innerHTML =
+                            'Currently playing: <span style="color: var(--blue-color);">' + player1 + '</span> Vs <span style="color: var(--red-color);">' + player2 + '</span> in <b>' + data['currentGameDisplayName'] + '</b>';
+                    var ws2 = new WebSocket("ws://"+window.location.host+"/websocket/Game/"+data['currentGame']);
+                    ws2.onmessage = function(evt) {
+                        /* the server send a dictionary (JSON) with information about the game */
+                        var gdata = JSON.parse(evt.data);
+                        var container = $('.container');
+                        if (!initialized) {
+                            container.css('grid-template-columns', 'repeat(' + gdata.width + ', 1fr)');
+                            for (var d in gdata.values) {
+                                var div = $('<div/>')
+                                                .addClass('grid-item');
+                                $('.container').append(div);
+                                div.html(gdata.values[d]);
+                            }
+                            initialized = true;
+                        } else {
+                            container.children('div').each(function(i) {
+                                $(this).html(gdata.values[i]);
+                            });
+                        }
+
+                        var curPlayerId = gdata.curPlayerId;
+                        var otherPlayerId = 1 - gdata.curPlayerId;
+
+                        var player1Div = $('#player1');
+                        var player2Div = $('#player2');
+
+                        player1Div.html("Player #1: " + player1 + " (Energy: " + gdata.energy[0] + ")");
+                        player2Div.html("Player #2: " + player2 + " (Energy: " + gdata.energy[1] + ")");
+                        if (curPlayerId == 0) {
+                            player1Div.addClass('active-player');
+                            player2Div.removeClass('active-player');
+                        }
+                        else {
+                            player1Div.removeClass('active-player');
+                            player2Div.addClass('active-player');
+                        }
+                        ws2.send('OK');
+                    }
+                }
+                else {
+                    ws2.close();
+                    document.getElementbyId('div_gameheader').innerHTML = 'Not playing...'
+                }
+            }
+        }
+    };
+
+</script>
+{% endblock %}
+
+
+{% block content %}
+    <h2>Page of player {{ playerName }} </h2>
+
+    <div id="div_gameheader">
+    Not playing...
+    </div>
+<br/>
+<!-- This is specic to Networks -->
+
+<div class="display">
+    <div class="container"></div>
+    <div class="sidebar">
+        <div class="gameName">{{displayName}}</div>
+        <div id="player1" class="player">{{player1}}</div>
+        <div id="player2" class="player">{{player2}}</div>
+    </div>
+</div>
+{% endblock %}
