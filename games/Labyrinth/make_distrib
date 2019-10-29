@@ -1,0 +1,79 @@
+CC = gcc
+CCFLAGS = -Wall -std=c99 -D_GNU_SOURCE
+ROOTDIR = /home/sasl/encad/brajard/projet
+PROJDIR = $(ROOTDIR)/CodingGameServer
+
+
+#Target directories
+#have to be created before
+TLIBDIR = $(ROOTDIR)/CGS_lib
+TSRCDIR = $(ROOTDIR)/CGS_distrib
+
+LDIR = $(TLIBDIR)/lib
+HDIR = $(TLIBDIR)/include
+
+#Source directory
+SRCDIR = $(PROJDIR)/Labyrinth/src
+
+#obj directory
+OBJDIR = $(PROJDIR)/Labyrinth/obj
+
+#GAPI : Game API
+GAPIDIR =  $(PROJDIR)/GameAPI/
+
+#LAPI : Labyrinth API
+LAPIDIR = $(PROJDIR)/Labyrinth/API
+
+#LIBRARY COMPILATION
+
+#header to include
+LHEAD = $(LAPIDIR)/labyrinthAPI.h $(GAPIDIR)/GameAPI.h $(GAPIDIR)/ret_type.h
+THEAD = $(LAPIDIR)/labyrinthAPI.h $(GAPIDIR)/ret_type.h
+LSRC = $(LAPIDIR)/labyrinthAPI.c $(GAPIDIR)/GameAPI.c
+LOBJ = $(OBJDIR)/labyrinthAPI.o  $(OBJDIR)/GameAPI.o
+
+
+
+
+lib: $(LDIR)/libcgs.a lheaders 
+template : $(TSRCDIR)/template.c $(TSRCDIR)/makefile
+
+$(LDIR)/libcgs.a: $(OBJDIR)/libcgs.a | $(LDIR)
+	cp $< $(LDIR)/
+
+lheaders: $(THEAD) | $(HDIR)
+	cp $(THEAD) $(HDIR)
+
+$(OBJDIR)/libcgs.a:  $(LOBJ) | $(OBJDIR)
+	ar r $@ $(LOBJ)
+	ranlib $@
+
+$(LDIR):
+	mkdir -p $@
+
+$(OBJDIR):
+	mkdir -p $@
+
+$(HDIR):
+	mkdir -p $@
+
+
+
+$(OBJDIR)/labyrinthAPI.o:  $(LAPIDIR)/labyrinthAPI.c $(LHEAD)
+	$(CC) $(CCFLAGS) -I$(GAPIDIR) -I$(LAPIDIR) -o $@ -c $< 
+
+$(OBJDIR)/GameAPI.o:  $(GAPIDIR)/GameAPI.c  $(GAPIDIR)/GameAPI.h $(GAPIDIR)/ret_type.h
+	$(CC) $(CCFLAGS) -I$(GAPIDIR) -I$(LAPIDIR) -o $@ -c $< 
+# règles de compilation
+%.o: %.c
+	$(CC) $(CCFLAGS) -I$(GAPIDIR) -I$(LAPIDIR) -o $(OBJDIR)/$@ -c $< 
+
+
+$(TSRCDIR)/template.c : $(SRCDIR)/template.c
+	cp -f $< $@
+
+$(TSRCDIR)/makefile : $(SRCDIR)/make_template
+	cp -f $< $@
+
+clean:
+	rm -f $(OBJDIR)/*  $(LDIR)/* $(HDIR)/* $(TSRCDIR)/*

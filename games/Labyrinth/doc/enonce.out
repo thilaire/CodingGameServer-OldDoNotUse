@@ -1,0 +1,18 @@
+\BOOKMARK [1][-]{section.0.1}{Organisation g\351n\351rale du projet}{}% 1
+\BOOKMARK [2][-]{subsection.0.1.1}{D\351roulement du projet}{section.0.1}% 2
+\BOOKMARK [2][-]{subsection.0.1.2}{Assistance}{section.0.1}% 3
+\BOOKMARK [2][-]{subsection.0.1.3}{\311valuation}{section.0.1}% 4
+\BOOKMARK [1][-]{section.0.2}{R\350gles du jeu}{}% 5
+\BOOKMARK [2][-]{subsection.0.2.1}{Le but du jeu}{section.0.2}% 6
+\BOOKMARK [2][-]{subsection.0.2.2}{Donn\351es d'une partie}{section.0.2}% 7
+\BOOKMARK [2][-]{subsection.0.2.3}{D\351placement classique d'un joueur}{section.0.2}% 8
+\BOOKMARK [2][-]{subsection.0.2.4}{Rotation du labyrinthe}{section.0.2}% 9
+\BOOKMARK [2][-]{subsection.0.2.5}{Conditions de fin de partie}{section.0.2}% 10
+\BOOKMARK [1][-]{section.0.3}{Structure du programme}{}% 11
+\BOOKMARK [2][-]{subsection.0.3.1}{Fichiers fournis}{section.0.3}% 12
+\BOOKMARK [2][-]{subsection.0.3.2}{\311tapes \340 respecter dans votre programme}{section.0.3}% 13
+\BOOKMARK [2][-]{subsection.0.3.3}{Les joueurs par d\351faut}{section.0.3}% 14
+\BOOKMARK [1][-]{section.0.4}{API}{}% 15
+\BOOKMARK [2][-]{subsection.0.4.1}{Les structures \340 utiliser}{section.0.4}% 16
+\BOOKMARK [2][-]{subsection.0.4.2}{Fonctions fournies}{section.0.4}% 17
+\BOOKMARK [1][-]{section.0.5}{Les \351tapes}{}% 18
